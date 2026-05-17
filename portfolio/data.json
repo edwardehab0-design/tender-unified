@@ -1,0 +1,190 @@
+{
+  "source": "نمو محفظة المناقصات.xlsx",
+  "sheet": "نمو المحفظة - إدارة المناقصات",
+  "generatedAt": "2026-05-17T08:39:11.966178+00:00",
+  "currency": "SAR",
+  "vatRate": 0.15,
+  "summary": {
+    "projectCount": 16,
+    "totalAmountExclVat": 7295296378.0,
+    "totalAmountInclVat": 8389590834.7
+  },
+  "projects": [
+    {
+      "number": "1",
+      "amount": 901598260.0,
+      "amountExclVat": 901598260.0,
+      "amountInclVat": 1036837999.0,
+      "project": "الخطوط الجديدة لتغذية مدينة الرياض 2",
+      "client": "الهيئة السعودية للمياه SWA",
+      "status": "awarded_not_signed",
+      "statusLabel": "تم الترسية ولم يتم توقيع العقد",
+      "portfolio": "المياه والنقل"
+    },
+    {
+      "number": "2",
+      "amount": 360869565.0,
+      "amountExclVat": 360869565.0,
+      "amountInclVat": 414999999.75,
+      "project": "أعمال الخزن الاستراتيجي بمشروع إستكمال أنظمة نقل مياه عسير",
+      "client": "الهيئة السعودية للمياه SWA",
+      "status": "awarded_not_signed",
+      "statusLabel": "تم الترسية ولم يتم توقيع العقد",
+      "portfolio": "المياه والنقل"
+    },
+    {
+      "number": "3",
+      "amount": 447805758.0,
+      "amountExclVat": 447805758.0,
+      "amountInclVat": 514976621.7,
+      "project": "مشروع توريد وتنفيذ أعمال الأنابيب والخزن الإستراتيجي -  استكمال أنظمة نقل مياه عسير المرحلة الثانية",
+      "client": "الهيئة السعودية للمياه SWA",
+      "status": "awarded_not_signed",
+      "statusLabel": "تم الترسية ولم يتم توقيع العقد",
+      "portfolio": "المياه والنقل"
+    },
+    {
+      "number": "4",
+      "amount": 298555574.0,
+      "amountExclVat": 298555574.0,
+      "amountInclVat": 343338910.1,
+      "project": "تطوير مواقع للتجمعات الصناعية الخاصة بخدمات إمدادات الطاقة - برنامج رأس الخير",
+      "client": "الهيئة الملكية للجبيل وينبع",
+      "status": "awarded_not_signed",
+      "statusLabel": "تم الترسية ولم يتم توقيع العقد",
+      "portfolio": "البنية التحتية"
+    },
+    {
+      "number": "5",
+      "amount": 46500000.0,
+      "amountExclVat": 46500000.0,
+      "amountInclVat": 53475000.0,
+      "project": "مشروع تركيب أنظمة المراقبة والحواجز البحرية بمنظومات إنتاج الشعيبة -004",
+      "client": "الهيئة السعودية للمياة",
+      "status": "awarded_not_signed",
+      "statusLabel": "تم الترسية ولم يتم توقيع العقد",
+      "portfolio": "محفظة خاصة"
+    },
+    {
+      "number": "6",
+      "amount": 1670787539.0,
+      "amountExclVat": 1670787539.0,
+      "amountInclVat": 1921405669.85,
+      "project": "البنية التحتية لمشروع سدره المراحل (6-9)",
+      "client": "روشن",
+      "status": "submitted_negotiation",
+      "statusLabel": "تم التقديم وقيد التفاوض والترسية",
+      "portfolio": "البنية التحتية"
+    },
+    {
+      "number": "7",
+      "amount": 400000000.0,
+      "amountExclVat": 400000000.0,
+      "amountInclVat": 460000000.0,
+      "project": "البنية التحتية لمشروع لازورد العزيزية",
+      "client": "الشركة الوطنية للإسكان",
+      "status": "submitted_negotiation",
+      "statusLabel": "تم التقديم وقيد التفاوض والترسية",
+      "portfolio": "البنية التحتية"
+    },
+    {
+      "number": "8",
+      "amount": 425000000.0,
+      "amountExclVat": 425000000.0,
+      "amountInclVat": 488750000.0,
+      "project": "محطة المعالجة-مطار الملك سلمان",
+      "client": "مطار الملك سلمان",
+      "status": "submitted_negotiation",
+      "statusLabel": "تم التقديم وقيد التفاوض والترسية",
+      "portfolio": "المياه والنقل"
+    },
+    {
+      "number": "9",
+      "amount": 306000000.0,
+      "amountExclVat": 306000000.0,
+      "amountInclVat": 351900000.0,
+      "project": "مشروع  تصميم تنفيذ البنية التحتية منطقة العقير",
+      "client": "شركة تطوير منطقة العقير",
+      "status": "submitted_negotiation",
+      "statusLabel": "تم التقديم وقيد التفاوض والترسية",
+      "portfolio": "البنية التحتية"
+    },
+    {
+      "number": "10",
+      "amount": 892163168.0,
+      "amountExclVat": 892163168.0,
+      "amountInclVat": 1025987643.2,
+      "project": "أعمال الفلل - أراسي لازورد - العزيزية - بعدد 1372 فيلا",
+      "client": "الشركة الوطنية للإسكان",
+      "status": "submitted_negotiation",
+      "statusLabel": "تم التقديم وقيد التفاوض والترسية",
+      "portfolio": "المباني"
+    },
+    {
+      "number": "11",
+      "amount": 942269513.0,
+      "amountExclVat": 942269513.0,
+      "amountInclVat": 1083609939.95,
+      "project": "أعمال الفلل - ثنايا الربى - الرياض - بعدد 1771 فيلا",
+      "client": "الشركة الوطنية للإسكان",
+      "status": "submitted_negotiation",
+      "statusLabel": "تم التقديم وقيد التفاوض والترسية",
+      "portfolio": "المباني"
+    },
+    {
+      "number": "12",
+      "amount": 50763920.0,
+      "amountExclVat": 50763920.0,
+      "amountInclVat": 58378508.0,
+      "project": "توريد وتركيب أنظمة المراقبة والحواجز البحرية بوحدات الإنتاج (حقل- ضباء- الوجه- أملج)",
+      "client": "الهيئة السعودية للمياة",
+      "status": "submitted_negotiation",
+      "statusLabel": "تم التقديم وقيد التفاوض والترسية",
+      "portfolio": "محفظة خاصة"
+    },
+    {
+      "number": "13",
+      "amount": 290000000.0,
+      "amountExclVat": 290000000.0,
+      "amountInclVat": 333500000.0,
+      "project": "مشروع توسعة وتطوير أرض مركز بن قاسم",
+      "client": "الرياض القابضة",
+      "status": "awarded_signed",
+      "statusLabel": "تم الترسية وتم توقيع العقد",
+      "portfolio": "المباني"
+    },
+    {
+      "number": "14",
+      "amount": 64800000.0,
+      "amountExclVat": 64800000.0,
+      "amountInclVat": 74520000.0,
+      "project": "تنفيذ أعمال البنية التحتية لمنطقة الثريا 2",
+      "client": "الشركة الوطنية للإسكان",
+      "status": "awarded_signed",
+      "statusLabel": "تم الترسية وتم توقيع العقد",
+      "portfolio": "البنية التحتية"
+    },
+    {
+      "number": "15",
+      "amount": 11626254.0,
+      "amountExclVat": 11626254.0,
+      "amountInclVat": 13370192.1,
+      "project": "مشروع أعمال تصميم وبناء بوابات منتزه الرمال",
+      "client": "المسار الرياضي",
+      "status": "awarded_signed",
+      "statusLabel": "تم الترسية وتم توقيع العقد",
+      "portfolio": "البنية التحتية"
+    },
+    {
+      "number": "16",
+      "amount": 186556827.0,
+      "amountExclVat": 186556827.0,
+      "amountInclVat": 214540351.05,
+      "project": "مشروع فلل سدو المشرقية بالرياض",
+      "client": "تلاد العقارية",
+      "status": "awarded_signed",
+      "statusLabel": "تم الترسية وتم توقيع العقد",
+      "portfolio": "المباني"
+    }
+  ]
+}

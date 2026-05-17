@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>نمو محفظة المناقصات</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="../config.js"></script>
+</head>
+<body>
+  <nav class="portal-nav" aria-label="تنقل البوابة">
+    <a href="../">البوابة</a>
+    <a class="active" href="./">محفظة المناقصات</a>
+    <a href="../tenders/">المناقصات الجارية</a>
+    <a href="../clients/">أهم العملاء</a>
+    <a href="../analytics/">التحليلات</a>
+    <a href="../tenders/#executive-report">تقارير الإدارة العليا</a>
+  </nav>
+  <header class="topbar">
+    <div class="logo-card company-logo">
+      <img src="./assets/alrawaf-logo.png" alt="ALRAWAF">
+    </div>
+    <div class="hero-copy">
+      <p class="eyebrow">إدارة المناقصات</p>
+      <h1>نمو محفظة المناقصات <span>2025/2026</span></h1>
+      <p class="hero-sub">قراءة تنفيذية فورية لقيمة المحفظة، حالة الترسية، تركيز العملاء، وتوزيع المحافظ.</p>
+    </div>
+    <div class="logo-card department-logo">
+      <img src="./assets/tendering-logo.jpg" alt="Tendering Department">
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="kpis" aria-label="ملخص المحفظة">
+      <article class="kpi">
+        <span>إجمالي قيمة المحفظة شامل الضريبة</span>
+        <strong id="kpi-total">-</strong>
+        <small id="kpi-total-sub">يعتمد على ضريبة 15%</small>
+      </article>
+      <article class="kpi">
+        <span>عدد المشاريع</span>
+        <strong id="kpi-count">-</strong>
+        <small>مشروع ضمن المحفظة</small>
+      </article>
+      <article class="kpi">
+        <span>أكبر محفظة</span>
+        <strong id="kpi-top-portfolio">-</strong>
+        <small id="kpi-top-portfolio-sub">شامل الضريبة</small>
+      </article>
+    </section>
+
+    <section class="workspace">
+      <aside class="panel filters">
+        <div class="panel-head">
+          <h2>الفلاتر</h2>
+          <button id="reset-btn" type="button">إعادة ضبط</button>
+        </div>
+        <label class="field">
+          <span>بحث</span>
+          <input id="search-input" type="search" placeholder="اسم مشروع أو عميل">
+        </label>
+        <label class="field">
+          <span>المحفظة</span>
+          <select id="portfolio-filter"></select>
+        </label>
+        <label class="field">
+          <span>الحالة</span>
+          <select id="status-filter"></select>
+        </label>
+        <div class="metric-list" id="status-list"></div>
+      </aside>
+
+      <section class="content">
+        <div class="charts charts-primary">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>توزيع المحافظ حسب القيمة</h2>
+              <span id="portfolio-chart-total"></span>
+            </div>
+            <div id="portfolio-chart" class="bar-chart"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>أعلى العملاء حسب القيمة</h2>
+              <span id="client-chart-total"></span>
+            </div>
+            <div id="client-chart" class="bar-chart"></div>
+          </article>
+        </div>
+
+        <div class="charts charts-secondary">
+          <article class="panel donut-panel">
+            <div class="panel-head">
+              <h2>حالة الترسية والتعاقد</h2>
+              <span>حسب عدد المشاريع</span>
+            </div>
+            <div class="donut-layout">
+              <div id="status-donut" class="donut"></div>
+              <div id="status-legend" class="legend"></div>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>قيمة المحافظ</h2>
+              <span>شامل الضريبة</span>
+            </div>
+            <div id="portfolio-cards" class="portfolio-cards"></div>
+          </article>
+        </div>
+
+        <article class="panel status-summary-panel">
+          <div class="panel-head">
+            <h2>النسبة المئوية حسب حالة الترسية والتعاقد</h2>
+          </div>
+          <div class="status-summary-wrap">
+            <table class="status-summary-table">
+              <thead>
+                <tr>
+                  <th>حالة الترسية والتعاقد</th>
+                  <th>الإجمالي غير شامل ضريبة القيمة المضافة</th>
+                  <th>الإجمالي شامل ضريبة القيمة المضافة</th>
+                  <th>النسبة المئوية</th>
+                </tr>
+              </thead>
+              <tbody id="status-summary-body"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel table-panel">
+          <div class="panel-head">
+            <h2>المشاريع</h2>
+            <span id="table-count">0 مشروع</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>م</th>
+                  <th>اسم المشروع</th>
+                  <th>العميل</th>
+                  <th>المحفظة</th>
+                  <th>الحالة</th>
+                  <th>غير شامل الضريبة</th>
+                  <th>شامل الضريبة</th>
+                </tr>
+              </thead>
+              <tbody id="projects-body"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
