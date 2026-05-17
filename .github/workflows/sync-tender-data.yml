@@ -1,0 +1,42 @@
+name: Sync Tender Data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-tender-data
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements-sync.txt
+
+      - name: Fetch Tender data
+        env:
+          ALRAWAF_USERNAME: ${{ secrets.ALRAWAF_USERNAME }}
+          ALRAWAF_PASSWORD: ${{ secrets.ALRAWAF_PASSWORD }}
+          ALRAWAF_CLIENT_ID: ${{ secrets.ALRAWAF_CLIENT_ID }}
+          ALRAWAF_TENANT: ${{ secrets.ALRAWAF_TENANT }}
+        run: python scripts/sync_tender_data.py
+
+      - name: Commit updated data
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "sync: update tender data"
+          file_pattern: data.json
