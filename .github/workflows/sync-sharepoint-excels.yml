@@ -1,0 +1,43 @@
+name: Sync SharePoint Excel Data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-sharepoint-excels
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements-sync.txt
+
+      - name: Sync SharePoint workbooks
+        env:
+          SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
+          SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+          SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
+          SP_EXECUTIVE_EXCEL_URL: "https://etech321.sharepoint.com/:x:/s/e-tech/IQCz-YQi0yYuTo2nSWtkJ_nFAZhUxo9BGN-5lxd8Zewcs6Q?e=szVgi8"
+          SP_PORTFOLIO_EXCEL_URL: "https://etech321.sharepoint.com/:x:/s/e-tech/IQBUS72YnIkdSbJgXENbslnUAUGJqGmiN8KSVH3EH8KTvvQ?e=b5McqU"
+        run: python scripts/sync_sharepoint_excels.py
+
+      - name: Commit updated SharePoint data
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "sync: update sharepoint excel data"
+          file_pattern: portfolio/data.json executive-report/data.json
