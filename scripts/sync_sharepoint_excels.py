@@ -42,6 +42,9 @@ def now_iso() -> str:
 
 
 def graph_token() -> str:
+    missing = [name for name in ("SP_TENANT_ID", "SP_CLIENT_ID", "SP_CLIENT_SECRET") if not os.getenv(name)]
+    if missing:
+        raise RuntimeError(f"Missing required GitHub secrets: {', '.join(missing)}")
     tenant_id = os.environ["SP_TENANT_ID"]
     client_id = os.environ["SP_CLIENT_ID"]
     client_secret = os.environ["SP_CLIENT_SECRET"]
@@ -111,6 +114,51 @@ def find_col(headers: list[Any], *needles: str, fallback: int | None = None) -> 
         for idx, header in enumerate(normalized):
             if n in header:
                 return idx
+    return fallback
+
+
+def find_amount_col(headers: list[Any], include_vat: bool) -> int | None:
+    normalized = [norm_key(h) for h in headers]
+    for idx, header in enumerate(normalized):
+        if not any(word in header for word in ("قيمة", "مبلغ", "اجمالي", "الإجمالي", "الاجمالي")):
+            continue
+        has_vat = "شامل" in header and "غير شامل" not in header
+        excludes_vat = "غير شامل" in header or "بدون ضريبة" in header
+        if include_vat and has_vat:
+            return idx
+        if not include_vat and excludes_vat:
+            return idx
+    return None
+
+
+def is_project_number(value: Any) -> bool:
+    text = clean_text(value)
+    if not text:
+        return False
+    try:
+        number = float(text.replace(",", ""))
+    except ValueError:
+        return False
+    return number.is_integer() and 1 <= int(number) <= 999
+
+
+def checked(value: Any) -> bool:
+    text = clean_text(value)
+    return text in {"✓", "✔", "√", "1", "true", "TRUE"} or text.lower() in {"yes", "y"}
+
+
+def infer_status_label(headers: list[Any], row: list[Any], fallback: str) -> str:
+    for idx, header in enumerate(headers):
+        if idx >= len(row) or not checked(row[idx]):
+            continue
+        label = clean_text(header)
+        compact = norm_key(label)
+        if "تفاوض" in compact or "قيد" in compact:
+            return "تم التقديم وقيد التفاوض والترسية"
+        if "لم" in compact and "توقيع" in compact:
+            return "تم الترسية ولم يتم توقيع العقد"
+        if "توقيع" in compact:
+            return "تم الترسية وتم توقيع العقد"
     return fallback
 
 
@@ -188,12 +236,16 @@ def build_portfolio_json(workbook_bytes: bytes, source_url: str) -> dict[str, An
     client_col = find_col(headers, "العميل", "المالك", fallback=3)
     status_col = find_col(headers, "الحالة", "الترسية", fallback=4)
     portfolio_col = find_col(headers, "المحفظة", "القطاع", fallback=5)
-    amount_ex_col = find_col(headers, "غير شامل", "بدون ضريبة", "القيمة", "المبلغ", fallback=1)
-    amount_in_col = find_col(headers, "شامل", "بالضريبة", fallback=None)
+    amount_ex_col = find_amount_col(headers, include_vat=False)
+    amount_in_col = find_amount_col(headers, include_vat=True)
+    if amount_ex_col is None:
+        amount_ex_col = find_col(headers, "القيمة", "المبلغ", fallback=1)
 
     projects = []
     for index, row in enumerate(data_rows, start=1):
         if not any(clean_text(cell) for cell in row):
+            continue
+        if number_col is not None and number_col < len(row) and not is_project_number(row[number_col]):
             continue
         project_name = clean_text(row[project_col]) if project_col is not None and project_col < len(row) else ""
         amount_excl = number_value(row[amount_ex_col]) if amount_ex_col is not None and amount_ex_col < len(row) else 0.0
@@ -205,6 +257,7 @@ def build_portfolio_json(workbook_bytes: bytes, source_url: str) -> dict[str, An
             else amount_excl * (1 + VAT_RATE)
         )
         status_label = clean_text(row[status_col]) if status_col is not None and status_col < len(row) else ""
+        status_label = infer_status_label(headers, row, status_label)
         projects.append(
             {
                 "number": clean_text(row[number_col]) if number_col is not None and number_col < len(row) else str(index),
@@ -265,8 +318,8 @@ def write_json(path: str, data: dict[str, Any]) -> None:
 
 def main() -> None:
     token = graph_token()
-    portfolio_url = os.getenv("SP_PORTFOLIO_EXCEL_URL", DEFAULT_PORTFOLIO_URL)
-    executive_url = os.getenv("SP_EXECUTIVE_EXCEL_URL", DEFAULT_EXECUTIVE_URL)
+    portfolio_url = os.getenv("SP_PORTFOLIO_EXCEL_URL") or DEFAULT_PORTFOLIO_URL
+    executive_url = os.getenv("SP_EXECUTIVE_EXCEL_URL") or DEFAULT_EXECUTIVE_URL
 
     portfolio_bytes = download_shared_workbook(portfolio_url, token)
     executive_bytes = download_shared_workbook(executive_url, token)
