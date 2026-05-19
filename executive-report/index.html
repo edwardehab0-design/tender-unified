@@ -18,7 +18,7 @@
         <span>غرفة قيادة مختصرة لقراءة حركة المناقصات، الفرص، التأهيل، ومؤشرات المتابعة العليا.</span>
       </div>
       <div class="hero-actions">
-        <a class="back-link" href="../index.html?view=portal" onclick="window.location.href='../index.html?view=portal'; return false;">البوابة</a>
+        <a class="back-link" href="../index.html?return=portal" onclick="window.location.href='../index.html?return=portal'; return false;">رجوع</a>
         <button class="export-excel-btn" type="button" onclick="exportExecutiveReportExcel()">تصدير Excel</button>
       </div>
     </section>
@@ -50,5 +50,15 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="./app.js"></script>
+  <script>
+  (() => {
+    let role = "";
+    try { role = sessionStorage.getItem("alrawafPortalRole") || ""; } catch {}
+    if (role !== "general") return;
+    document.querySelectorAll(".export-wrap, .export-btn, .export-excel-btn, .export-dropdown").forEach((item) => {
+      item.style.display = "none";
+    });
+  })();
+  </script>
 </body>
 </html>

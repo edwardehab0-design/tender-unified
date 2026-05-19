@@ -13,6 +13,7 @@ import json
 import logging
 import os
 import re
+import time
 from datetime import datetime, timezone
 from io import BytesIO
 from typing import Any
@@ -48,7 +49,8 @@ def graph_token() -> str:
     tenant_id = os.environ["SP_TENANT_ID"]
     client_id = os.environ["SP_CLIENT_ID"]
     client_secret = os.environ["SP_CLIENT_SECRET"]
-    response = requests.post(
+    response = request_with_retry(
+        "POST",
         f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token",
         data={
             "client_id": client_id,
@@ -58,7 +60,6 @@ def graph_token() -> str:
         },
         timeout=30,
     )
-    response.raise_for_status()
     return response.json()["access_token"]
 
 
@@ -67,10 +68,28 @@ def share_id(shared_url: str) -> str:
     return f"u!{encoded}"
 
 
+def request_with_retry(method: str, url: str, attempts: int = 4, **kwargs: Any) -> requests.Response:
+    last_error: Exception | None = None
+    retry_statuses = {408, 429, 500, 502, 503, 504}
+    for attempt in range(1, attempts + 1):
+        try:
+            response = requests.request(method, url, **kwargs)
+            if response.status_code not in retry_statuses:
+                response.raise_for_status()
+                return response
+            last_error = requests.HTTPError(f"HTTP {response.status_code}", response=response)
+            log.warning("Transient HTTP %s on %s attempt %s/%s", response.status_code, url, attempt, attempts)
+        except requests.RequestException as exc:
+            last_error = exc
+            log.warning("Transient request error on %s attempt %s/%s: %s", url, attempt, attempts, exc)
+        if attempt < attempts:
+            time.sleep(min(20, 2 ** attempt))
+    assert last_error is not None
+    raise last_error
+
+
 def graph_get(url: str, token: str) -> requests.Response:
-    response = requests.get(url, headers={"Authorization": f"Bearer {token}"}, timeout=60)
-    response.raise_for_status()
-    return response
+    return request_with_retry("GET", url, headers={"Authorization": f"Bearer {token}"}, timeout=60)
 
 
 def download_shared_workbook(shared_url: str, token: str) -> bytes:

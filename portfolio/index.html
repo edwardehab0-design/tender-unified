@@ -12,7 +12,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
-<a class="portal-home-link" href="../index.html?view=portal" onclick="window.location.href='../index.html?view=portal'; return false;">البوابة</a>
+<a class="portal-home-link" href="../index.html?return=portal" onclick="window.location.href='../index.html?return=portal'; return false;">رجوع</a>
   <header class="topbar">
     <div class="logo-card company-logo">
       <img src="./assets/alrawaf-logo.png" alt="ALRAWAF">
@@ -151,5 +151,15 @@
   </main>
 
   <script src="./app.js"></script>
+  <script>
+  (() => {
+    let role = "";
+    try { role = sessionStorage.getItem("alrawafPortalRole") || ""; } catch {}
+    if (role !== "general") return;
+    document.querySelectorAll(".export-wrap, .export-btn, .export-excel-btn, .export-dropdown").forEach((item) => {
+      item.style.display = "none";
+    });
+  })();
+  </script>
 </body>
 </html>

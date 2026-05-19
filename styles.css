@@ -14,6 +14,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -122,6 +126,13 @@ a {
   gap: clamp(28px, 5vw, 72px);
 }
 
+.role-welcome-active .welcome-content {
+  min-height: min(620px, calc(100vh - 210px));
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  align-content: center;
+}
+
 .welcome-copy {
   max-width: 690px;
 }
@@ -186,6 +197,173 @@ a {
   background: rgba(255,255,255,.08);
   font-size: 14px;
   font-weight: 900;
+}
+
+.login-panel {
+  padding: 30px;
+  border: 1px solid rgba(240, 205, 109, .34);
+  border-radius: 22px;
+  background: rgba(255,255,255,.08);
+  box-shadow: 0 28px 70px rgba(4, 14, 29, .24);
+  backdrop-filter: blur(14px);
+}
+
+.login-card {
+  margin-top: 28px;
+  padding: 18px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 18px;
+  background: rgba(255,255,255,.10);
+}
+
+.login-card label {
+  display: block;
+  margin-bottom: 10px;
+  color: rgba(255,255,255,.78);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.password-row {
+  display: flex;
+  gap: 10px;
+}
+
+.password-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(255,255,255,.20);
+  border-radius: 999px;
+  background: rgba(255,255,255,.96);
+  color: var(--navy);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  outline: none;
+}
+
+.password-row input:focus {
+  border-color: rgba(240, 205, 109, .92);
+  box-shadow: 0 0 0 4px rgba(240, 205, 109, .12);
+}
+
+.login-error {
+  min-height: 18px;
+  margin: 10px 4px 0;
+  color: #ffd3d3;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.role-welcome-card {
+  width: min(460px, 100%);
+  margin-inline: auto;
+  padding: 40px 34px;
+  text-align: center;
+  border: 1px solid rgba(240, 205, 109, .62);
+  border-radius: 24px;
+  background:
+    linear-gradient(160deg, rgba(20, 43, 73, .94), rgba(31, 95, 137, .78)),
+    rgba(255,255,255,.08);
+  box-shadow:
+    0 30px 78px rgba(4, 14, 29, .38),
+    inset 0 1px 0 rgba(255,255,255,.16),
+    inset 0 -1px 0 rgba(240, 205, 109, .18);
+  backdrop-filter: blur(16px);
+}
+
+.role-avatar {
+  width: 112px;
+  height: 112px;
+  margin: 0 auto 22px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 3px solid #f0c040;
+  border-radius: 50%;
+  background: rgba(255,255,255,.10);
+  box-shadow: 0 14px 34px rgba(4, 14, 29, .28);
+}
+
+.role-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.role-avatar img.role-logo-img {
+  width: 82%;
+  height: 82%;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 16px;
+}
+
+.role-avatar span {
+  color: #f0cd6d;
+  font-size: 46px;
+  font-weight: 900;
+}
+
+.role-kicker {
+  margin: 0 0 10px;
+  color: rgba(255,255,255,.68);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.role-welcome-card h2 {
+  margin: 0;
+  color: #f3cf72;
+  font-size: 26px;
+  line-height: 1.35;
+  font-weight: 900;
+}
+
+.role-divider {
+  width: 52px;
+  height: 2px;
+  margin: 12px auto 18px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #c79d43, #f0cd6d);
+}
+
+.role-message {
+  margin: 0 0 10px;
+  color: rgba(255,255,255,.94);
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 900;
+}
+
+.role-sub {
+  margin: 0 0 28px;
+  color: rgba(225,236,247,.72);
+  font-size: 14px;
+  line-height: 1.8;
+  font-weight: 700;
+}
+
+.role-enter-btn {
+  width: 100%;
+  padding: 15px 22px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f0cd6d, #c79d43);
+  color: #142b49;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 16px 34px rgba(4, 14, 29, .22);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.role-enter-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 42px rgba(4, 14, 29, .28);
 }
 
 .welcome-orbit {
@@ -358,6 +536,30 @@ a {
   color: #f0cd6d;
 }
 
+.portal-logout-btn {
+  margin-inline-start: 4px;
+  padding: 8px 14px;
+  border: 1px solid rgba(20, 43, 73, .16);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(20, 43, 73, .96), rgba(31, 95, 137, .92));
+  color: #f8d982;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, .16);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.portal-logout-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(199, 162, 75, .8);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, .20);
+}
+
 .brand-card {
   height: 112px;
   padding: 16px 20px;
@@ -445,14 +647,7 @@ h1 {
 }
 
 .card::after {
-  content: "";
-  position: absolute;
-  width: 128px;
-  height: 128px;
-  left: -42px;
-  bottom: -42px;
-  border-radius: 50%;
-  background: rgba(31, 95, 137, .08);
+  display: none;
 }
 
 .card:hover {

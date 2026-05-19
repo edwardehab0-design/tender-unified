@@ -9,6 +9,7 @@ import hashlib
 import json
 import logging
 import os
+import time
 from datetime import datetime
 from io import BytesIO
 
@@ -27,6 +28,26 @@ ALRAWAF_PASS = os.getenv("ALRAWAF_PASSWORD")
 ALRAWAF_CLIENT_ID = os.getenv("ALRAWAF_CLIENT_ID", "8e8af720-b54b-4f52-8858-95109b4a2c5d")
 ALRAWAF_TENANT = os.getenv("ALRAWAF_TENANT", "alrawaf.com.sa")
 OUTPUT_FILE = os.getenv("OUTPUT_FILE", "data.json")
+
+
+def request_with_retry(session, method, url, attempts=4, **kwargs):
+    last_error = None
+    retry_statuses = {408, 429, 500, 502, 503, 504}
+    for attempt in range(1, attempts + 1):
+        try:
+            response = session.request(method, url, **kwargs)
+            if response.status_code not in retry_statuses:
+                return response
+            last_error = requests.HTTPError(f"HTTP {response.status_code}", response=response)
+            log.warning("Transient HTTP %s on %s attempt %s/%s", response.status_code, url, attempt, attempts)
+        except requests.RequestException as exc:
+            last_error = exc
+            log.warning("Transient request error on %s attempt %s/%s: %s", url, attempt, attempts, exc)
+        if attempt < attempts:
+            time.sleep(min(20, 2 ** attempt))
+    if last_error:
+        raise last_error
+    raise RuntimeError(f"Request failed: {url}")
 
 
 class AlrawafClient:
@@ -71,7 +92,7 @@ class AlrawafClient:
 
     def fetch_excel(self, url, row_map):
         try:
-            response = self.session.get(url, timeout=30)
+            response = request_with_retry(self.session, "GET", url, timeout=30)
             if response.status_code != 200 or len(response.content) < 100:
                 log.warning("Excel download failed from %s: %s", url, response.status_code)
                 return []
@@ -153,7 +174,12 @@ class AlrawafClient:
 
     def fetch_submitted_from_page(self):
         try:
-            response = self.session.get(f"{ALRAWAF_URL}/en/tendering/tender_report_submitted/", timeout=30)
+            response = request_with_retry(
+                self.session,
+                "GET",
+                f"{ALRAWAF_URL}/en/tendering/tender_report_submitted/",
+                timeout=30,
+            )
             if response.status_code != 200:
                 log.warning("Submitted page fetch failed: %s", response.status_code)
                 return []
