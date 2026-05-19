@@ -9,16 +9,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
   <script src="../config.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
-  <nav class="portal-nav" aria-label="تنقل البوابة">
-    <a href="../">البوابة</a>
-    <a class="active" href="./">محفظة المناقصات</a>
-    <a href="../tenders/">المناقصات الجارية</a>
-    <a href="../clients/">أهم العملاء</a>
-    <a href="../analytics/">التحليلات</a>
-    <a href="../tenders/#executive-report">تقارير الإدارة العليا</a>
-  </nav>
+<a class="portal-home-link" href="../index.html?view=portal" onclick="window.location.href='../index.html?view=portal'; return false;">البوابة</a>
   <header class="topbar">
     <div class="logo-card company-logo">
       <img src="./assets/alrawaf-logo.png" alt="ALRAWAF">
@@ -28,8 +22,8 @@
       <h1>نمو محفظة المناقصات <span>2025/2026</span></h1>
       <p class="hero-sub">قراءة تنفيذية فورية لقيمة المحفظة، حالة الترسية، تركيز العملاء، وتوزيع المحافظ.</p>
     </div>
-    <div class="logo-card department-logo">
-      <img src="./assets/tendering-logo.jpg" alt="Tendering Department">
+    <div class="header-actions">
+      <button class="export-excel-btn" type="button" onclick="exportPortfolioExcel()">تصدير Excel</button>
     </div>
   </header>
 

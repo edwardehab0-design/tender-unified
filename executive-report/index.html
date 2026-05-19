@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تقارير الإدارة العليا</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="report-page">
+    <section class="hero">
+      <div class="hero-copy">
+        <p>إدارة المناقصات</p>
+        <h1>تقارير الإدارة العليا</h1>
+        <span>غرفة قيادة مختصرة لقراءة حركة المناقصات، الفرص، التأهيل، ومؤشرات المتابعة العليا.</span>
+      </div>
+      <div class="hero-actions">
+        <a class="back-link" href="../index.html?view=portal" onclick="window.location.href='../index.html?view=portal'; return false;">البوابة</a>
+        <button class="export-excel-btn" type="button" onclick="exportExecutiveReportExcel()">تصدير Excel</button>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <aside class="sheet-list" aria-label="صفحات التقرير">
+        <div class="panel-title">لوحة التقرير</div>
+        <div id="sheet-tabs" class="tabs"></div>
+      </aside>
+
+      <section class="table-panel">
+        <div class="table-toolbar">
+          <div>
+            <p id="active-sheet-count">-</p>
+            <h2 id="active-sheet-name">-</h2>
+          </div>
+          <input id="search-input" type="search" placeholder="بحث داخل التقرير">
+        </div>
+        <div id="report-stage" class="report-stage">
+          <div id="status-box" class="status-box">جاري التحميل...</div>
+          <div id="overview-view" class="overview-view"></div>
+          <div id="table-view" class="table-wrap">
+            <table id="report-table"></table>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

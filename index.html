@@ -7,71 +7,113 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles.css?v=portal-direct-1">
   <script src="./config.js"></script>
 </head>
-<body>
-  <nav class="portal-nav" aria-label="تنقل البوابة">
-    <a class="active" href="./">البوابة</a>
-    <a href="./portfolio/">محفظة المناقصات</a>
-    <a href="./tenders/">المناقصات الجارية</a>
-    <a href="./clients/">أهم العملاء</a>
-    <a href="./analytics/">التحليلات</a>
-    <a href="./tenders/#executive-report">تقارير الإدارة العليا</a>
-  </nav>
-  <header class="hero">
-    <div class="brand-card brand-company">
-      <img src="./portfolio/assets/alrawaf-logo.png" alt="ALRAWAF">
+<body class="intro-active">
+  <section class="welcome-screen" id="welcome-screen" aria-label="شاشة الترحيب">
+    <div class="welcome-grid" aria-hidden="true"></div>
+    <div class="data-stream data-stream-one" aria-hidden="true"></div>
+    <div class="data-stream data-stream-two" aria-hidden="true"></div>
+
+    <div class="welcome-shell">
+      <div class="welcome-brand-row">
+        <div class="welcome-logo">
+          <img src="./portfolio/assets/tendering-logo.jpg" alt="Tendering Department">
+        </div>
+        <div class="welcome-logo">
+          <img src="./portfolio/assets/alrawaf-logo.png" alt="ALRAWAF">
+        </div>
+      </div>
+
+      <div class="welcome-content">
+        <div class="welcome-copy">
+          <p class="welcome-eyebrow">إدارة المناقصات</p>
+          <h1>بوابة المناقصات الموحدة</h1>
+          <p class="welcome-lead">منصة تنفيذية لمتابعة المحفظة، المناقصات الجارية، العملاء، التحليلات، وتقارير الإدارة العليا في تجربة واحدة واضحة وآمنة.</p>
+          <div class="welcome-actions">
+            <button class="enter-portal-btn" id="enter-portal" type="button">الدخول إلى البوابة</button>
+            <span>2025/2026</span>
+          </div>
+        </div>
+
+        <div class="welcome-orbit" aria-hidden="true">
+          <div class="orbit-ring orbit-ring-one"></div>
+          <div class="orbit-ring orbit-ring-two"></div>
+          <div class="orbit-core">
+            <strong>5</strong>
+            <span>وحدات تنفيذية</span>
+          </div>
+          <span class="orbit-node node-one">المحفظة</span>
+          <span class="orbit-node node-two">المناقصات</span>
+          <span class="orbit-node node-three">العملاء</span>
+          <span class="orbit-node node-four">التحليلات</span>
+          <span class="orbit-node node-five">الإدارة العليا</span>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <section class="hero-copy" aria-label="عنوان البوابة">
-      <p class="eyebrow">إدارة المناقصات</p>
-      <h1>بوابة المناقصات الموحدة</h1>
-      <p>واجهة واحدة لمتابعة نمو المحفظة، المناقصات الجارية، العملاء، التحليلات، وتقارير الإدارة العليا.</p>
-    </section>
+  <div class="portal-dashboard" id="portal-dashboard" aria-hidden="true">
+    <nav class="portal-nav" aria-label="تنقل البوابة">
+          <a class="active" href="./index.html?view=portal">البوابة</a>
+      <a href="./portfolio/">محفظة المناقصات</a>
+      <a href="./tenders/">المناقصات الجارية</a>
+      <a href="./clients/">أهم العملاء</a>
+      <a href="./analytics/">التحليلات</a>
+      <a href="./executive-report/">تقارير الإدارة العليا</a>
+    </nav>
+    <main class="portal">
+      <section class="cards" aria-label="أقسام البوابة">
+        <a class="card primary" href="./portfolio/">
+          <span class="tag">2025/2026</span>
+          <h2>محفظة المناقصات</h2>
+          <strong>فتح الداشبورد</strong>
+        </a>
 
-    <div class="brand-card brand-department">
-      <img src="./portfolio/assets/tendering-logo.jpg" alt="Tendering Department">
-    </div>
-  </header>
+        <a class="card" href="./tenders/">
+          <span class="tag">Live Tender</span>
+          <h2>المناقصات الجارية</h2>
+          <strong>فتح المناقصات الجارية</strong>
+        </a>
 
-  <main class="portal">
-    <section class="cards" aria-label="أقسام البوابة">
-      <a class="card primary" href="./portfolio/">
-        <span class="tag">2025/2026</span>
-        <h2>نمو محفظة المناقصات</h2>
-        <p>الداشبورد التنفيذي لقيمة المحفظة، الحالات، العملاء، توزيع المحافظ، والنسب المئوية.</p>
-        <strong>فتح الداشبورد</strong>
-      </a>
+        <a class="card" href="./clients/">
+          <span class="tag">Clients</span>
+          <h2>أهم العملاء</h2>
+          <strong>فتح أهم العملاء</strong>
+        </a>
 
-      <a class="card" href="./tenders/">
-        <span class="tag">Live Tender</span>
-        <h2>المناقصات الجارية</h2>
-        <p>متابعة المناقصات الحية فقط، مواعيد الإغلاق، الضمانات، الأولويات، وروابط ملفات المناقصات.</p>
-        <strong>فتح المناقصات الجارية</strong>
-      </a>
+        <a class="card" href="./analytics/">
+          <span class="tag">Analytics</span>
+          <h2>التحليلات</h2>
+          <strong>فتح التحليلات</strong>
+        </a>
 
-      <a class="card" href="./clients/">
-        <span class="tag">Clients</span>
-        <h2>أهم العملاء</h2>
-        <p>صفحة مستقلة لقراءة العملاء الأكثر نشاطا، توزيع المناقصات، وتقارير العملاء.</p>
-        <strong>فتح أهم العملاء</strong>
-      </a>
+        <a class="card" href="./executive-report/">
+          <span class="tag">Management</span>
+          <h2>تقارير الإدارة العليا</h2>
+          <strong>فتح التقرير التنفيذي</strong>
+        </a>
+      </section>
+    </main>
+  </div>
 
-      <a class="card" href="./analytics/">
-        <span class="tag">Analytics</span>
-        <h2>التحليلات</h2>
-        <p>صفحة مستقلة للرسوم والتحليلات الخاصة بالمناقصات والقطاعات وأنواع الأعمال.</p>
-        <strong>فتح التحليلات</strong>
-      </a>
+  <script>
+    const enterPortalButton = document.getElementById("enter-portal");
+    const portalDashboard = document.getElementById("portal-dashboard");
+    const welcomeScreen = document.getElementById("welcome-screen");
+    const openPortal = () => {
+      document.body.classList.remove("intro-active");
+      document.body.classList.add("welcome-entered");
+      portalDashboard?.removeAttribute("aria-hidden");
+      welcomeScreen?.setAttribute("aria-hidden", "true");
+    };
 
-      <a class="card" href="./tenders/#executive-report">
-        <span class="tag">Management</span>
-        <h2>تقارير الإدارة العليا</h2>
-        <p>قسم التقارير المبني على ملف Excel مستقل في SharePoint ضمن صفحة المناقصات الحالية.</p>
-        <strong>فتح التقرير التنفيذي</strong>
-      </a>
-    </section>
-  </main>
+    if (new URLSearchParams(window.location.search).get("view") === "portal") {
+      openPortal();
+    }
+
+    enterPortalButton?.addEventListener("click", openPortal);
+  </script>
 </body>
 </html>

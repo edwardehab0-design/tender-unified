@@ -262,6 +262,32 @@ function renderTable(rows) {
     .join("");
 }
 
+function exportPortfolioExcel() {
+  if (!window.XLSX) {
+    alert("تعذر تحميل مكتبة التصدير. حاول تحديث الصفحة ثم أعد المحاولة.");
+    return;
+  }
+
+  const rows = filteredProjects()
+    .slice()
+    .sort((a, b) => Number(a.number) - Number(b.number))
+    .map((p) => ({
+      "م": p.number,
+      "اسم المشروع": p.project,
+      "العميل": p.client,
+      "المحفظة": p.portfolio,
+      "الحالة": p.statusLabel,
+      "غير شامل الضريبة": p.amountExclVat,
+      "شامل الضريبة": p.amountInclVat,
+    }));
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(rows);
+  XLSX.utils.book_append_sheet(wb, ws, "محفظة المناقصات");
+  const stamp = new Date().toISOString().slice(0, 10);
+  XLSX.writeFile(wb, `محفظة_المناقصات_${stamp}.xlsx`);
+}
+
 function groupBy(rows, key) {
   const map = new Map();
   rows.forEach((row) => {

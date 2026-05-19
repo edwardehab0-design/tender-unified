@@ -24,60 +24,83 @@ body {
   color: var(--text);
 }
 
-.portal-nav {
+.portal-home-link {
   position: fixed;
   top: 16px;
-  left: 50%;
-  right: auto;
-  transform: translateX(-50%);
+  left: 18px;
+  transform: none;
   z-index: 30;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px;
+  justify-content: center;
+  min-width: 96px;
+  padding: 11px 22px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.94);
+  background: #17385e;
+  color: #f0cd6d;
   border: 1px solid rgba(203, 163, 73, 0.65);
   box-shadow: 0 10px 26px rgba(15, 23, 42, 0.14);
-}
-
-.portal-nav a {
-  padding: 8px 12px;
-  border-radius: 999px;
-  color: #17385e;
   text-decoration: none;
   font-size: 13px;
   font-weight: 900;
   white-space: nowrap;
+  transition: transform .18s ease, box-shadow .18s ease;
 }
 
-.portal-nav a.active {
-  background: #17385e;
-  color: #f0cd6d;
+.portal-home-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.18);
+}
+
+.header-actions {
+  position: absolute;
+  left: 128px;
+  top: 16px;
+  z-index: 3;
+}
+
+.export-excel-btn {
+  border: 1px solid rgba(203, 163, 73, 0.72);
+  border-radius: 999px;
+  padding: 11px 20px;
+  background: linear-gradient(135deg, #c49a44, #f0cd72);
+  color: #17355d;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.export-excel-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.22);
 }
 
 @media (max-width: 760px) {
-  .portal-nav {
+  .portal-home-link {
     left: 10px;
-    right: 10px;
     transform: none;
-    overflow-x: auto;
-    justify-content: flex-start;
+  }
+
+  .portal-home-link:hover {
+    transform: translateY(-2px);
   }
 }
 
 .topbar {
-  min-height: 170px;
-  padding: 68px 32px 24px;
+  min-height: 130px;
+  padding: 58px 28px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
   background:
-    linear-gradient(135deg, rgba(20,43,73,0.97) 0%, rgba(31,95,137,0.94) 100%),
-    url("./assets/tendering-logo.jpg") center/cover;
+    radial-gradient(circle at 18% 12%, rgba(240, 205, 114, .16), transparent 28%),
+    linear-gradient(135deg, rgba(20,43,73,0.97) 0%, rgba(31,95,137,0.94) 100%);
   color: white;
-  border-bottom: 3px solid #d1a046;
+  border-bottom: 3px solid #c7a24b;
   box-shadow: 0 18px 46px rgba(16, 40, 74, 0.26);
   position: relative;
   overflow: hidden;
@@ -111,10 +134,10 @@ body {
 }
 
 .company-logo {
-  width: 144px;
-  height: 104px;
+  width: 112px;
+  height: 72px;
   border-radius: 9px;
-  padding: 13px 15px;
+  padding: 8px 10px;
   flex-shrink: 0;
 }
 
@@ -144,7 +167,7 @@ h1, h2, p { margin-top: 0; }
 
 h1 {
   margin-bottom: 0;
-  font-size: 38px;
+  font-size: 34px;
   font-weight: 900;
 }
 
