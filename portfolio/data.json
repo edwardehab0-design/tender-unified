@@ -2,13 +2,13 @@
   "source": "SharePoint Excel",
   "sourceUrl": "https://etech321.sharepoint.com/:x:/s/e-tech/IQBUS72YnIkdSbJgXENbslnUAUGJqGmiN8KSVH3EH8KTvvQ?e=b5McqU",
   "sheet": "نمو المحفظة - إدارة المناقصات",
-  "generatedAt": "2026-05-21T04:49:37.497756+00:00",
+  "generatedAt": "2026-05-21T08:24:58.590967+00:00",
   "currency": "SAR",
   "vatRate": 0.15,
   "summary": {
     "projectCount": 16,
-    "totalAmountExclVat": 7295296378.0,
-    "totalAmountInclVat": 8389590834.7
+    "totalAmountExclVat": 7272942066.0,
+    "totalAmountInclVat": 8363883375.9
   },
   "projects": [
     {
@@ -112,9 +112,9 @@
     },
     {
       "number": "10",
-      "amount": 892163168.0,
-      "amountExclVat": 892163168.0,
-      "amountInclVat": 1025987643.1999999,
+      "amount": 859719796.0,
+      "amountExclVat": 859719796.0,
+      "amountInclVat": 988677765.4,
       "project": "أعمال الفلل - أراسي لازورد - العزيزية - بعدد 1372 فيلا",
       "client": "الشركة الوطنية للإسكان",
       "status": "submitted_negotiation",
@@ -134,10 +134,10 @@
     },
     {
       "number": "12",
-      "amount": 50763920.0,
-      "amountExclVat": 50763920.0,
-      "amountInclVat": 58378507.99999999,
-      "project": "توريد وتركيب أنظمة المراقبة والحواجز البحرية بوحدات الإنتاج (حقل- ضباء- الوجه- أملج)",
+      "amount": 60852980.0,
+      "amountExclVat": 60852980.0,
+      "amountInclVat": 69980927.0,
+      "project": "توريد وتركيب أنظمة المراقبة والحواجز البحرية بوحدات الإنتاج (حقل- ضباء- الوجه- أملج-القنفذة)",
       "client": "الهيئة السعودية للمياة",
       "status": "submitted_negotiation",
       "statusLabel": "تم التقديم وقيد التفاوض والترسية",
