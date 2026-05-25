@@ -2,13 +2,13 @@
   "source": "SharePoint Excel",
   "sourceUrl": "https://etech321.sharepoint.com/:x:/s/e-tech/IQBUS72YnIkdSbJgXENbslnUAUGJqGmiN8KSVH3EH8KTvvQ?e=b5McqU",
   "sheet": "نمو المحفظة - إدارة المناقصات",
-  "generatedAt": "2026-05-25T00:15:44.492574+00:00",
+  "generatedAt": "2026-05-25T12:30:54.647724+00:00",
   "currency": "SAR",
   "vatRate": 0.15,
   "summary": {
-    "projectCount": 16,
-    "totalAmountExclVat": 7272942066.0,
-    "totalAmountInclVat": 8363883375.9
+    "projectCount": 17,
+    "totalAmountExclVat": 8630224750.5,
+    "totalAmountInclVat": 9924758463.074999
   },
   "projects": [
     {
@@ -62,8 +62,8 @@
       "amountInclVat": 53474999.99999999,
       "project": "مشروع تركيب أنظمة المراقبة والحواجز البحرية بمنظومات إنتاج الشعيبة -004",
       "client": "الهيئة السعودية للمياة",
-      "status": "awarded_not_signed",
-      "statusLabel": "تم الترسية ولم يتم توقيع العقد",
+      "status": "awarded_signed",
+      "statusLabel": "تم الترسية وتم توقيع العقد",
       "portfolio": "محفظة خاصة"
     },
     {
@@ -185,6 +185,17 @@
       "client": "تلاد العقارية",
       "status": "awarded_signed",
       "statusLabel": "تم الترسية وتم توقيع العقد",
+      "portfolio": "المبانى"
+    },
+    {
+      "number": "17",
+      "amount": 1357282684.5,
+      "amountExclVat": 1357282684.5,
+      "amountInclVat": 1560875087.175,
+      "project": "إنشاء مرافق إضافية بقاعدة الملك سلمان الجوية بالقطاع الأوسط وكلية الملك فيصل الجوية",
+      "client": "القوات الجوية",
+      "status": "submitted_negotiation",
+      "statusLabel": "تم التقديم وقيد التفاوض والترسية",
       "portfolio": "المبانى"
     }
   ]
