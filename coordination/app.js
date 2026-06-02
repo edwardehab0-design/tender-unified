@@ -1113,22 +1113,21 @@ function renderDepartments() {
       : departmentStats(dept);
     const flag = stats.late ? "risk" : stats.load > 70 ? "busy" : "calm";
     const status = flag === "risk" ? "خطر" : flag === "busy" ? "مزدحم" : "هادئ";
+    const meta = [
+      `${stats.open} مفتوحة`,
+      `${stats.completed} مكتملة`,
+      stats.late ? `<span class="m-late">${stats.late} متأخرة</span>` : "",
+      stats.unassigned ? `<span class="m-warn">${stats.unassigned} غير مسندة</span>` : ""
+    ].filter(Boolean).join('<i class="dept-sep"></i>');
     return `
       <button class="department-button ${selectedDepartment === dept.key ? "active" : ""}" type="button" data-department="${dept.key}">
-        <div class="dept-top">
+        <div class="dept-row">
           <span class="dept-code">${safe(dept.short)}</span>
+          <strong>${safe(dept.name)}</strong>
           <span class="dept-flag ${flag}">${safe(status)}</span>
         </div>
-        <strong>${safe(dept.name)}</strong>
-        <span class="department-load">
-          <i><b style="width:${Math.min(stats.load, 100)}%"></b></i>
-          <span>${stats.open} مفتوحة</span>
-        </span>
-        <span class="dept-stats">
-          <b>${stats.completed} مكتملة</b>
-          <b>${stats.late} متأخرة</b>
-          ${stats.unassigned ? `<b class="warn">${stats.unassigned} غير مسندة</b>` : ""}
-        </span>
+        <span class="dept-bar"><i style="width:${Math.min(stats.load, 100)}%"></i></span>
+        <span class="dept-meta">${meta}</span>
       </button>
     `;
   }).join("");
