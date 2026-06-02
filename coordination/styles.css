@@ -385,6 +385,41 @@ body {
 .kan-approve button:disabled { opacity: .4; cursor: not-allowed; }
 .kan-approved-badge { display: inline-flex; align-items: center; gap: 6px; color: var(--green); font-size: 12px; font-weight: 900; }
 
+/* ═══ Phase 2: Drag & drop, selection, quick assign ═══ */
+.kanban.can-drag .kan-card { cursor: grab; }
+.kanban.can-drag .kan-card:active { cursor: grabbing; }
+.kan-card.dragging { opacity: .5; transform: rotate(1.5deg) scale(.99); box-shadow: var(--shadow-lg); }
+.kan-col.drop-active { background: var(--blue-bg); outline: 2px dashed var(--navy); outline-offset: -2px; }
+.kan-col.drop-active .kan-col-body { min-height: 60px; }
+
+.kan-select { display: inline-flex; align-items: center; cursor: pointer; padding: 2px; margin-inline-end: auto; }
+.kan-select input { width: 16px; height: 16px; accent-color: var(--navy); cursor: pointer; }
+.kan-card.is-selected { border-color: var(--navy); box-shadow: 0 0 0 2px rgba(27,58,107,.18), var(--shadow-sm); }
+.kan-card.is-selected::before { width: 5px; background: var(--navy); }
+
+.kan-quick { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 8px; border: 1px dashed var(--border-2); border-radius: var(--r); background: var(--surface-2); }
+.kan-quick select { min-height: 32px; padding: 0 8px; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface); color: var(--ink); font: inherit; font-size: 11px; font-weight: 700; outline: none; cursor: pointer; }
+.kan-quick select:focus { border-color: var(--navy); }
+
+/* Floating bulk action bar */
+.bulk-bar {
+  position: fixed; z-index: 6000; left: 50%; bottom: 22px; transform: translate(-50%, 140%);
+  display: flex; align-items: center; gap: 16px; padding: 11px 16px;
+  border: 1px solid var(--navy-700); border-radius: 999px;
+  background: linear-gradient(180deg, var(--navy), var(--navy-900)); color: #fff;
+  box-shadow: var(--shadow-lg); opacity: 0; transition: transform .22s ease, opacity .2s ease;
+}
+.bulk-bar.show { transform: translate(-50%, 0); opacity: 1; }
+.bulk-count { font-size: 13px; font-weight: 800; white-space: nowrap; }
+.bulk-count b { color: var(--gold); font-size: 16px; font-weight: 900; margin-inline-end: 2px; }
+.bulk-actions { display: flex; gap: 7px; }
+.bulk-actions button { min-height: 36px; padding: 0 16px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; background: rgba(255,255,255,.10); color: #fff; font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; transition: background .14s, border-color .14s; }
+.bulk-actions button:hover { background: var(--gold); color: var(--navy-900); border-color: var(--gold); }
+.bulk-actions button.ghost { background: transparent; }
+.bulk-actions button.ghost:hover { background: rgba(255,255,255,.16); color: #fff; border-color: rgba(255,255,255,.3); }
+.bulk-actions button:disabled { opacity: .4; cursor: not-allowed; }
+@media (max-width: 620px) { .bulk-bar { left: 10px; right: 10px; transform: translateY(140%); flex-direction: column; gap: 9px; border-radius: var(--r-lg); } .bulk-bar.show { transform: translateY(0); } }
+
 /* ═══ Table View ═══ */
 .table-wrap { border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow-xs); overflow: auto; }
 .ops-table { width: 100%; border-collapse: collapse; font-size: 13px; }

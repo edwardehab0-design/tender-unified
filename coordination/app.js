@@ -89,6 +89,7 @@ let selectedDepartment = "all";
 let selectedFilter = ["all", "new", "active", "late", "ready"].includes(prefs.filter) ? prefs.filter : "all";
 let searchTerm = "";
 let selectedContext = null;
+let selectedIds = new Set();
 let selectedView = ["board", "table", "calendar", "analytics"].includes(prefs.view) ? prefs.view : "board";
 let calendarRef = new Date();
 let savedState = readState();
@@ -501,7 +502,7 @@ function visibleTenders() {
   return tenders.filter((tender) => {
     const visibleByRole = isExecutive() || selectedDepartment === "all" || selectedDepartment === currentDepartmentKey();
     const matchesDepartment = selectedDepartment === "all" || departmentRows(tender).some((row) => row.key === selectedDepartment);
-    const column = boardColumn(tender);
+    const column = tenderStage(tender);
     const matchesFilter = selectedFilter === "all"
       || column === selectedFilter
       || (selectedFilter === "ready" && column === "approved");
@@ -644,6 +645,47 @@ function boardColumn(tender) {
   return "active";
 }
 
+// المرحلة المعروضة على اللوحة: يدوية (سحب) إن وُجدت، وإلا محسوبة تلقائيا
+function tenderStage(tender) {
+  const manual = savedState[tender.id]?.stage;
+  if (manual && KANBAN_COLUMNS.some((col) => col.key === manual)) return manual;
+  return boardColumn(tender);
+}
+
+// نقل منافسة إلى عمود عبر السحب والإفلات
+function setTenderStage(tenderId, stage) {
+  if (!KANBAN_COLUMNS.some((col) => col.key === stage)) return;
+  const tender = tenders.find((item) => item.id === tenderId);
+  if (!tender) return;
+  savedState[tenderId] = savedState[tenderId] || {};
+  if (stage === "approved") {
+    savedState[tenderId].approval = "approved";
+  } else if (savedState[tenderId].approval === "approved") {
+    savedState[tenderId].approval = "";
+  }
+  if (stage === "ready") completeAllDepartments(tenderId, { skipWrite: true });
+  // إن طابقت المرحلة المحسوبة تلقائيا نمسح التجاوز ليبقى السجل نظيفا
+  const autoAfter = boardColumn(tender);
+  if (stage === autoAfter) delete savedState[tenderId].stage;
+  else savedState[tenderId].stage = stage;
+  writeState();
+}
+
+// اعتماد إكمال كل أقسام المنافسة دفعة واحدة
+function completeAllDepartments(tenderId, options = {}) {
+  savedState[tenderId] = savedState[tenderId] || {};
+  savedState[tenderId].departments = savedState[tenderId].departments || {};
+  savedState[tenderId].timing = savedState[tenderId].timing || {};
+  departments.forEach((dept) => {
+    savedState[tenderId].departments[dept.key] = "completed";
+    savedState[tenderId].timing[dept.key] = savedState[tenderId].timing[dept.key] || {};
+    if (!savedState[tenderId].timing[dept.key].completedAt) {
+      savedState[tenderId].timing[dept.key].completedAt = new Date().toISOString();
+    }
+  });
+  if (!options.skipWrite) writeState();
+}
+
 function renderKpis() {
   const source = tenders;
   const ready = source.filter((tender) => tenderState(tender) === "ready").length;
@@ -666,15 +708,14 @@ function setText(id, value) {
 function renderFilterCounts() {
   const cols = { all: tenders.length, new: 0, active: 0, late: 0, ready: 0 };
   tenders.forEach((tender) => {
-    const col = boardColumn(tender);
-    if (col === "approved") { cols.ready += 0; }
+    const col = tenderStage(tender);
     if (cols[col] !== undefined && col !== "all") cols[col] += 1;
   });
   setText("count-all", cols.all);
   setText("count-new", cols.new);
   setText("count-active", cols.active);
   setText("count-late", cols.late);
-  setText("count-ready", cols.ready + tenders.filter((t) => boardColumn(t) === "approved").length);
+  setText("count-ready", cols.ready + tenders.filter((tender) => tenderStage(tender) === "approved").length);
 }
 
 function employeeMetrics() {
@@ -928,40 +969,61 @@ function renderKanban() {
     const allowed = selectedFilter === "ready" ? ["ready", "approved"] : [selectedFilter];
     columns = KANBAN_COLUMNS.filter((col) => allowed.includes(col.key));
   }
+  const canManage = isExecutive();
+  board.classList.toggle("can-drag", canManage);
   board.innerHTML = columns.map((col) => {
-    const cards = list.filter((tender) => boardColumn(tender) === col.key);
+    const cards = list.filter((tender) => tenderStage(tender) === col.key);
     return `
       <div class="kan-col" data-col="${col.key}">
         <div class="kan-col-head">
           <span class="kan-col-title"><i></i>${safe(col.label)}</span>
           <span class="kan-col-count">${cards.length}</span>
         </div>
-        <div class="kan-col-body">
-          ${cards.length ? cards.map(renderKanCard).join("") : `<div class="kan-empty">لا توجد ملفات هنا</div>`}
+        <div class="kan-col-body" data-drop="${col.key}">
+          ${cards.length ? cards.map(renderKanCard).join("") : `<div class="kan-empty">${canManage ? "أفلت ملفا هنا" : "لا توجد ملفات هنا"}</div>`}
         </div>
       </div>
     `;
   }).join("");
 }
 
+function quickEngineerOptions(dept) {
+  const pool = dept ? assignableEmployees(dept) : [];
+  return `<option value="">إسناد سريع…</option>` + pool.map((person) => `<option value="${safe(personName(person))}">${safe(personName(person))} · ${safe(assignmentRoleLabel(person))}</option>`).join("");
+}
+
 function renderKanCard(tender) {
   const rows = departmentRows(tender);
   const completed = rows.filter((row) => row.status === "completed").length;
   const late = rows.filter((row) => row.status === "late").length;
-  const unassigned = rows.filter((row) => !row.engineers.length).length;
+  const unassignedRows = rows.filter((row) => !row.engineers.length);
+  const unassigned = unassignedRows.length;
   const pct = Math.round((completed / departments.length) * 100);
-  const col = boardColumn(tender);
+  const col = tenderStage(tender);
   const close = daysTo(tender.submitDate);
   const urgent = isUrgentClose(close);
   const ready = completed === departments.length;
   const approval = savedState[tender.id]?.approval || "";
   const risk = riskScore(tender);
+  const canManage = isExecutive();
+  const isSelected = selectedIds.has(tender.id);
   const deptChips = rows.map((row) => `
     <button class="dept-chip ${rowStateClass(row.status, row)}" type="button" data-tender="${safe(tender.id)}" data-dept="${safe(row.key)}" title="${safe(row.name)} · ${safe(statusLabel(row.status))}">${safe(row.short)}</button>
   `).join("");
+  const quickAssign = canManage && unassigned ? `
+    <div class="kan-quick" data-stop-open>
+      <select class="kan-quick-dept" aria-label="القسم غير المسند">
+        ${unassignedRows.map((row) => `<option value="${safe(row.key)}">${safe(row.name)}</option>`).join("")}
+      </select>
+      <select class="kan-quick-eng" data-tender="${safe(tender.id)}" aria-label="المهندس">
+        ${quickEngineerOptions(unassignedRows[0])}
+      </select>
+    </div>
+  ` : "";
   return `
-    <article class="kan-card state-${col}" data-tender="${safe(tender.id)}">
+    <article class="kan-card state-${col} ${isSelected ? "is-selected" : ""}" data-tender="${safe(tender.id)}" ${canManage ? 'draggable="true"' : ""}>
       <div class="kan-card-top">
+        <label class="kan-select" data-stop-open title="تحديد للإجراء الجماعي"><input type="checkbox" data-select="${safe(tender.id)}" ${isSelected ? "checked" : ""}></label>
         <span class="kan-id">${safe(tender.id)}</span>
         ${risk.level !== "ok" ? `<span class="risk-badge ${risk.level}" title="${safe(riskLabel(risk.level))}">${risk.level === "high" ? "● مخاطرة" : "● انتباه"}</span>` : ""}
         <span class="kan-close ${urgent ? "is-urgent" : ""}"><b>${safe(close)}</b><span>الإغلاق</span></span>
@@ -973,6 +1035,7 @@ function renderKanCard(tender) {
         <div class="kan-progress-meta"><span>${completed}/${departments.length} أقسام</span><span>${pct}%</span></div>
       </div>
       <div class="kan-depts">${deptChips}</div>
+      ${quickAssign}
       <div class="kan-foot">
         <div class="kan-tags">
           ${late ? `<span class="kan-tag late">${late} متأخر</span>` : ""}
@@ -998,7 +1061,7 @@ function renderTable() {
     const rows = departmentRows(tender);
     const completed = rows.filter((row) => row.status === "completed").length;
     const pct = Math.round((completed / departments.length) * 100);
-    const col = boardColumn(tender);
+    const col = tenderStage(tender);
     const close = daysTo(tender.submitDate);
     const urgent = isUrgentClose(close);
     const approval = savedState[tender.id]?.approval || "";
@@ -1047,7 +1110,7 @@ function renderCalendar() {
         <div class="cal-date">${day}</div>
         <div class="cal-events">
           ${events.map((tender) => {
-            const col = boardColumn(tender);
+            const col = tenderStage(tender);
             const cls = col === "late" ? "late" : (col === "ready" || col === "approved") ? "ready" : "";
             const rows = departmentRows(tender);
             return `<button class="cal-event ${cls}" type="button" data-tender="${safe(tender.id)}" data-dept="${safe(rows[0].key)}" title="${safe(tender.title)}">${safe(tender.title)}</button>`;
@@ -1273,6 +1336,59 @@ function render() {
   renderDeadlineBar();
   renderDepartments();
   renderActiveView();
+  renderBulkBar();
+}
+
+// شريط عائم للإجراءات الجماعية على المنافسات المحددة
+function renderBulkBar() {
+  let bar = qs("bulk-bar");
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.id = "bulk-bar";
+    bar.className = "bulk-bar";
+    document.body.appendChild(bar);
+  }
+  // أزل المعرّفات التي لم تعد ظاهرة
+  const visibleIds = new Set(tenders.map((tender) => tender.id));
+  selectedIds.forEach((id) => { if (!visibleIds.has(id)) selectedIds.delete(id); });
+
+  const count = selectedIds.size;
+  if (!count) {
+    bar.classList.remove("show");
+    bar.innerHTML = "";
+    return;
+  }
+  const canManage = isExecutive();
+  bar.innerHTML = `
+    <span class="bulk-count"><b>${count}</b> منافسة محددة</span>
+    <div class="bulk-actions">
+      <button type="button" data-bulk="ready" ${canManage ? "" : "disabled"}>نقل إلى جاهزة</button>
+      <button type="button" data-bulk="approve" ${canManage ? "" : "disabled"}>اعتماد المحدد</button>
+      <button type="button" class="ghost" data-bulk="clear">إلغاء التحديد</button>
+    </div>
+  `;
+  bar.classList.add("show");
+}
+
+function runBulkAction(action) {
+  if (action === "clear") {
+    selectedIds.clear();
+    render();
+    return;
+  }
+  if (!isExecutive()) return;
+  selectedIds.forEach((id) => {
+    const tender = tenders.find((item) => item.id === id);
+    if (!tender) return;
+    if (action === "ready") {
+      setTenderStage(id, "ready");
+    } else if (action === "approve") {
+      const done = departmentRows(tender).every((row) => row.status === "completed");
+      if (done) setApproval(id, "approved");
+    }
+  });
+  if (action === "approve") selectedIds.clear();
+  render();
 }
 
 // استعادة تفضيلات العرض المحفوظة على واجهة المستخدم
@@ -1327,6 +1443,12 @@ document.addEventListener("click", (event) => {
     writePrefs();
     document.querySelectorAll("[data-filter]").forEach((button) => button.classList.toggle("active", button === filterButton));
     renderActiveView();
+    return;
+  }
+
+  const bulkButton = event.target.closest("[data-bulk]");
+  if (bulkButton && !bulkButton.disabled) {
+    runBulkAction(bulkButton.dataset.bulk);
     return;
   }
 
@@ -1391,5 +1513,81 @@ qs("open-library").addEventListener("click", () => {
   const dept = departments.find((item) => item.key === selectedContext.departmentKey);
   alert(`سيتم ربط هذا الزر بمكتبة ${dept?.library || "SharePoint"} عند إضافة روابط SharePoint النهائية.`);
 });
+
+// ── التحديد الجماعي + التعيين السريع (أحداث change) ──
+document.addEventListener("change", (event) => {
+  const selectBox = event.target.closest("[data-select]");
+  if (selectBox) {
+    const id = selectBox.dataset.select;
+    if (selectBox.checked) selectedIds.add(id);
+    else selectedIds.delete(id);
+    const card = selectBox.closest(".kan-card");
+    if (card) card.classList.toggle("is-selected", selectBox.checked);
+    renderBulkBar();
+    return;
+  }
+
+  const deptSelect = event.target.closest(".kan-quick-dept");
+  if (deptSelect) {
+    const card = deptSelect.closest(".kan-card");
+    const engSelect = card?.querySelector(".kan-quick-eng");
+    const dept = departments.find((item) => item.key === deptSelect.value);
+    if (engSelect) engSelect.innerHTML = quickEngineerOptions(dept);
+    return;
+  }
+
+  const engSelect = event.target.closest(".kan-quick-eng");
+  if (engSelect && engSelect.value) {
+    const tenderId = engSelect.dataset.tender;
+    const card = engSelect.closest(".kan-card");
+    const deptKey = card?.querySelector(".kan-quick-dept")?.value;
+    if (tenderId && deptKey) {
+      setAssignment(tenderId, deptKey, [engSelect.value]);
+      render();
+    }
+  }
+});
+
+// ── السحب والإفلات بين أعمدة اللوحة (للصلاحية التنفيذية) ──
+(() => {
+  const board = qs("kanban");
+  if (!board) return;
+  let draggingId = null;
+
+  board.addEventListener("dragstart", (event) => {
+    const card = event.target.closest(".kan-card[draggable='true']");
+    if (!card) return;
+    draggingId = card.dataset.tender;
+    card.classList.add("dragging");
+    event.dataTransfer.effectAllowed = "move";
+    try { event.dataTransfer.setData("text/plain", draggingId); } catch {}
+  });
+
+  board.addEventListener("dragend", () => {
+    draggingId = null;
+    board.querySelectorAll(".dragging").forEach((el) => el.classList.remove("dragging"));
+    board.querySelectorAll(".drop-active").forEach((el) => el.classList.remove("drop-active"));
+  });
+
+  board.addEventListener("dragover", (event) => {
+    const zone = event.target.closest(".kan-col");
+    if (!zone) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    board.querySelectorAll(".drop-active").forEach((el) => { if (el !== zone) el.classList.remove("drop-active"); });
+    zone.classList.add("drop-active");
+  });
+
+  board.addEventListener("drop", (event) => {
+    const zone = event.target.closest(".kan-col[data-col]");
+    if (!zone) return;
+    event.preventDefault();
+    const id = draggingId || (() => { try { return event.dataTransfer.getData("text/plain"); } catch { return null; } })();
+    zone.classList.remove("drop-active");
+    if (!id || !isExecutive()) return;
+    setTenderStage(id, zone.dataset.col);
+    render();
+  });
+})();
 
 loadData();
