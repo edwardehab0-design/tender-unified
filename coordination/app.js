@@ -1248,60 +1248,24 @@ function quickEngineerOptions(dept) {
 
 function renderKanCard(tender) {
   const rows = departmentRows(tender);
-  const completed = rows.filter((row) => row.status === "completed").length;
-  const late = rows.filter((row) => row.status === "late").length;
-  const unassignedRows = rows.filter((row) => !row.engineers.length);
-  const unassigned = unassignedRows.length;
-  const pct = Math.round((completed / departments.length) * 100);
   const col = tenderStage(tender);
   const close = daysTo(tender.submitDate);
   const urgent = isUrgentClose(close);
-  const ready = completed === departments.length;
   const approval = savedState[tender.id]?.approval || "";
   const risk = riskScore(tender);
   const canManage = isExecutive();
   const isSelected = selectedIds.has(tender.id);
-  const deptChips = rows.map((row) => `
-    <button class="dept-chip ${rowStateClass(row.status, row)}" type="button" data-tender="${safe(tender.id)}" data-dept="${safe(row.key)}" title="${safe(row.name)} · ${safe(statusLabel(row.status))}">${safe(row.short)}</button>
-  `).join("");
-  const quickAssign = canManage && unassigned ? `
-    <div class="kan-quick" data-stop-open>
-      <select class="kan-quick-dept" aria-label="القسم غير المسند">
-        ${unassignedRows.map((row) => `<option value="${safe(row.key)}">${safe(row.name)}</option>`).join("")}
-      </select>
-      <select class="kan-quick-eng" data-tender="${safe(tender.id)}" aria-label="المهندس">
-        ${quickEngineerOptions(unassignedRows[0])}
-      </select>
-    </div>
-  ` : "";
+  const stateTag = approval === "approved" ? "معتمد" : columnLabel(col);
   return `
-    <article class="kan-card state-${col} ${isSelected ? "is-selected" : ""}" data-tender="${safe(tender.id)}" ${canManage ? 'draggable="true"' : ""}>
-      <div class="kan-card-top">
-        <label class="kan-select" data-stop-open title="تحديد للإجراء الجماعي"><input type="checkbox" data-select="${safe(tender.id)}" ${isSelected ? "checked" : ""}></label>
-        <span class="kan-id">${safe(tender.id)}</span>
-        ${risk.level !== "ok" ? `<span class="risk-badge ${risk.level}" title="${safe(riskLabel(risk.level))}">${risk.level === "high" ? "● مخاطرة" : "● انتباه"}</span>` : ""}
-        <span class="kan-close ${urgent ? "is-urgent" : ""}"><b>${safe(close)}</b><span>الإغلاق</span></span>
+    <article class="kan-card state-${col} ${isSelected ? "is-selected" : ""}" data-tender="${safe(tender.id)}" data-dept="${safe(rows[0].key)}" ${canManage ? 'draggable="true"' : ""}>
+      <div class="kan-head">
+        ${risk.level === "high" ? `<span class="kan-risk-dot" title="${safe(riskLabel(risk.level))}"></span>` : ""}
+        ${canManage ? `<label class="kan-select" data-stop-open title="تحديد للإجراء الجماعي"><input type="checkbox" data-select="${safe(tender.id)}" ${isSelected ? "checked" : ""}></label>` : ""}
       </div>
-      <h3 class="kan-title"><a href="../tenders/?q=${encodeURIComponent(tender.title)}" title="عرض في صفحة المناقصات">${safe(tender.title)}</a></h3>
-      <div class="kan-client">${safe(tender.client)} · ${safe(tender.sector)}</div>
-      <div class="kan-progress">
-        <div class="kan-progress-bar"><i style="width:${pct}%"></i></div>
-        <div class="kan-progress-meta"><span>${completed}/${departments.length} أقسام</span><span>${pct}%</span></div>
-      </div>
-      <div class="kan-depts">${deptChips}</div>
-      ${quickAssign}
-      <div class="kan-foot">
-        <div class="kan-tags">
-          ${late ? `<span class="kan-tag late">${late} متأخر</span>` : ""}
-          ${unassigned ? `<span class="kan-tag warn">${unassigned} غير مسند</span>` : ""}
-          ${!late && !unassigned ? `<span class="kan-tag">${safe(stateText(tenderState(tender)))}</span>` : ""}
-        </div>
-        ${approval === "approved"
-          ? `<span class="kan-approved-badge">✓ معتمد</span>`
-          : `<div class="kan-approve">
-               <button type="button" data-approve="${safe(tender.id)}" ${ready && isExecutive() ? "" : "disabled"}>اعتماد</button>
-               <button class="reject" type="button" data-reject="${safe(tender.id)}" ${ready && isExecutive() ? "" : "disabled"}>رفض</button>
-             </div>`}
+      <h3 class="kan-title">${safe(tender.title)}</h3>
+      <div class="kan-meta">
+        <span class="kan-state-tag ${col}">${safe(stateTag)}</span>
+        <span class="kan-close ${urgent ? "is-urgent" : ""}">${safe(close)}</span>
       </div>
     </article>
   `;
@@ -1735,7 +1699,7 @@ document.addEventListener("click", (event) => {
 
   if (event.target.closest("[data-stop-open]")) return;
 
-  const opener = event.target.closest(".dept-chip[data-tender][data-dept], tr[data-tender][data-dept], .cal-event[data-tender][data-dept], .deadline-chip[data-tender][data-dept]");
+  const opener = event.target.closest(".kan-card[data-tender][data-dept], .dept-chip[data-tender][data-dept], tr[data-tender][data-dept], .cal-event[data-tender][data-dept], .deadline-chip[data-tender][data-dept]");
   if (opener) {
     openDrawer(opener.dataset.tender, opener.dataset.dept);
     return;
