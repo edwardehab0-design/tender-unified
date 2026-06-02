@@ -646,3 +646,145 @@ body {
   .employee-summary { grid-template-columns: repeat(2, 1fr); }
   .view-tabs button { padding: 0 12px; }
 }
+
+/* ═══ Phase 3: Notifications, Activity Log, SharePoint, Export ═══ */
+
+/* Notification bell */
+.notif-wrap { position: relative; }
+.notif-bell {
+  position: relative; width: 42px; height: 42px;
+  display: grid; place-items: center;
+  border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface-2); color: var(--text); cursor: pointer;
+  transition: background .14s, border-color .14s, color .14s;
+}
+.notif-bell:hover, .notif-wrap.open .notif-bell {
+  border-color: var(--navy); background: var(--blue-bg); color: var(--navy);
+}
+.notif-bell svg { width: 18px; height: 18px; }
+.notif-count {
+  position: absolute; top: 4px; left: 4px;
+  min-width: 18px; height: 18px; padding: 0 4px;
+  display: grid; place-items: center;
+  border-radius: 999px; background: var(--red); color: #fff;
+  font-size: 10px; font-weight: 900; line-height: 1;
+  box-shadow: 0 0 0 2px var(--surface);
+}
+.notif-panel {
+  position: absolute; top: calc(100% + 8px); left: 0;
+  width: 340px; max-height: 460px; overflow-y: auto;
+  border: 1px solid var(--border); border-radius: var(--r-lg);
+  background: var(--surface); box-shadow: var(--shadow-lg);
+  z-index: 5100; animation: riseIn .18s ease;
+}
+.notif-panel[hidden] { display: none; }
+.notif-panel-head {
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; background: var(--surface); z-index: 1;
+}
+.notif-panel-head strong { color: var(--ink); font-size: 14px; font-weight: 900; }
+.notif-panel-head button {
+  width: 26px; height: 26px; border: 0; border-radius: 7px;
+  background: var(--surface-2); color: var(--muted); font-size: 18px;
+  cursor: pointer; display: grid; place-items: center; transition: background .14s;
+}
+.notif-panel-head button:hover { background: var(--red-bg); color: var(--red); }
+.notif-items { padding: 8px; display: grid; gap: 6px; }
+.notif-item {
+  display: grid; gap: 3px; padding: 10px 12px;
+  border: 1px solid var(--border); border-radius: var(--r); background: var(--surface-2);
+  animation: riseIn .2s ease both;
+}
+.notif-item strong { color: var(--ink); font-size: 12px; font-weight: 800; }
+.notif-item span { color: var(--muted); font-size: 11px; line-height: 1.5; }
+.notif-item.danger { border-color: rgba(220,38,38,.2); background: var(--red-bg); }
+.notif-item.danger strong { color: var(--red); }
+.notif-item.warning, .notif-item.soft { border-color: rgba(194,100,12,.2); background: var(--amber-bg); }
+.notif-item.warning strong, .notif-item.soft strong { color: var(--amber); }
+.notif-item.good { border-color: rgba(22,163,74,.2); background: var(--green-bg); }
+.notif-item.good strong { color: var(--green); }
+.notif-empty { padding: 22px 14px; text-align: center; color: var(--faint); font-size: 13px; }
+
+/* Viewbar end group */
+.viewbar-end { display: flex; align-items: center; gap: 10px; }
+
+/* Export button */
+.export-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  min-height: 38px; padding: 0 14px;
+  border: 1px solid var(--border); border-radius: var(--r);
+  background: var(--surface-2); color: var(--text);
+  font: inherit; font-size: 13px; font-weight: 800; cursor: pointer;
+  transition: background .14s, border-color .14s, color .14s;
+  white-space: nowrap;
+}
+.export-btn svg { width: 15px; height: 15px; flex: 0 0 auto; }
+.export-btn:hover { border-color: var(--navy); background: var(--navy); color: #fff; }
+
+/* Activity log in drawer */
+.activity-list { display: grid; gap: 6px; max-height: 240px; overflow-y: auto; padding: 2px; }
+.activity-list::-webkit-scrollbar { width: 5px; }
+.activity-list::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 999px; }
+.activity-item {
+  display: grid; grid-template-columns: auto minmax(0,1fr); gap: 10px; align-items: start;
+  padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--r);
+  background: var(--surface-2);
+}
+.activity-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--blue);
+  margin-top: 4px; flex: 0 0 auto;
+}
+.activity-dot.assign  { background: var(--blue); }
+.activity-dot.complete { background: var(--green); }
+.activity-dot.approve { background: var(--navy); }
+.activity-dot.stage   { background: var(--amber); }
+.activity-dot.comment { background: var(--purple); }
+.activity-dot.reject  { background: var(--red); }
+.activity-item strong { display: block; color: var(--ink); font-size: 12px; font-weight: 800; }
+.activity-item span   { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }
+.activity-item em     { display: block; margin-top: 2px; color: var(--faint); font-size: 10px; font-style: normal; }
+.activity-empty { padding: 14px; text-align: center; color: var(--faint); font-size: 12px; border: 1px dashed var(--border-2); border-radius: var(--r); }
+
+/* Drawer config gear button */
+.drawer-actions button.secondary {
+  min-width: 40px; max-width: 40px; padding: 0;
+  background: var(--surface); color: var(--muted);
+  border-color: var(--border-2); font-size: 18px;
+}
+.drawer-actions button.secondary:hover { background: var(--surface-2); color: var(--text); }
+
+/* SharePoint config modal */
+.sp-modal {
+  position: fixed; inset: 0; z-index: 7000;
+  display: grid; place-items: center; padding: 20px;
+}
+.sp-modal[hidden] { display: none; }
+.sp-modal-overlay { position: absolute; inset: 0; background: rgba(15,23,42,.50); }
+.sp-modal-box {
+  position: relative; z-index: 1;
+  width: min(480px, 100%); padding: 24px;
+  border: 1px solid var(--border); border-radius: var(--r-xl);
+  background: var(--surface); box-shadow: var(--shadow-lg);
+  animation: riseIn .2s ease;
+}
+.sp-modal-box h3 { margin: 0 0 6px; color: var(--ink); font-size: 18px; font-weight: 900; }
+.sp-modal-box p  { margin: 0 0 16px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.sp-url-label { display: grid; gap: 6px; margin-bottom: 16px; }
+.sp-url-label span { color: var(--muted); font-size: 12px; font-weight: 700; }
+.sp-url-label input {
+  width: 100%; min-height: 42px; padding: 0 13px;
+  border: 1px solid var(--border); border-radius: var(--r);
+  background: var(--surface-2); font: inherit; font-size: 14px; color: var(--ink); outline: none;
+  direction: ltr; text-align: left;
+}
+.sp-url-label input:focus { border-color: var(--navy); background: #fff; box-shadow: 0 0 0 3px rgba(27,58,107,.08); }
+.sp-modal-actions { display: flex; gap: 9px; }
+.sp-modal-actions button {
+  flex: 1; min-height: 40px; border: 1px solid var(--navy); border-radius: var(--r);
+  background: var(--navy); color: #fff; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer;
+  transition: background .14s;
+}
+.sp-modal-actions button:hover { background: var(--navy-700); }
+.sp-modal-actions button:last-child { background: var(--surface); color: var(--text); border-color: var(--border-2); }
+.sp-modal-actions button:last-child:hover { background: var(--surface-2); }

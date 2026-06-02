@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared-visual.css?v=4">
   <link rel="stylesheet" href="../portal-sidebar.css?v=4">
-  <link rel="stylesheet" href="./styles.css?v=22">
+  <link rel="stylesheet" href="./styles.css?v=23">
   <script src="../config.js"></script>
 </head>
 <body>
@@ -32,6 +32,13 @@
       </label>
 
       <div class="topbar-actions">
+        <div class="notif-wrap" id="notif-wrap">
+          <button class="notif-bell" id="notif-bell" type="button" aria-label="الإشعارات" title="الإشعارات">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="notif-count" id="notif-count" hidden>0</span>
+          </button>
+          <div class="notif-panel" id="notif-panel" hidden aria-label="لوحة الإشعارات"></div>
+        </div>
         <div class="topbar-role" id="role-chip">
           <span class="role-dot"></span>
           <div>
@@ -113,9 +120,15 @@
             <button type="button" data-view="calendar">التقويم</button>
             <button type="button" data-view="analytics">التحليل والأداء</button>
           </div>
-          <div class="view-context">
-            <span>العرض الحالي</span>
-            <strong id="toolbar-title">كل الأقسام</strong>
+          <div class="viewbar-end">
+            <div class="view-context">
+              <span>العرض الحالي</span>
+              <strong id="toolbar-title">كل الأقسام</strong>
+            </div>
+            <button class="export-btn" id="export-btn" type="button" title="تصدير البيانات إلى CSV">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              تصدير
+            </button>
           </div>
         </div>
 
@@ -234,6 +247,11 @@
         <div id="drawer-timing" class="timing-list"></div>
       </div>
 
+      <div class="drawer-section activity-section">
+        <h3>سجل النشاط</h3>
+        <div id="drawer-activity" class="activity-list"></div>
+      </div>
+
       <div class="drawer-section">
         <h3>الفريق المعين</h3>
         <div id="drawer-engineers" class="engineer-list"></div>
@@ -268,11 +286,29 @@
       <div class="drawer-actions">
         <button id="complete-department" type="button">اعتماد إكمال القسم</button>
         <button id="open-library" type="button">فتح مكتبة SharePoint</button>
+        <button id="config-sharepoint" type="button" class="secondary" title="إعداد روابط SharePoint">⚙</button>
       </div>
     </section>
   </aside>
 
-  <script src="./app.js?v=22"></script>
+  <!-- SharePoint Config Modal -->
+  <div class="sp-modal" id="sp-modal" hidden role="dialog" aria-modal="true" aria-labelledby="sp-modal-title">
+    <div class="sp-modal-overlay" id="sp-modal-overlay"></div>
+    <div class="sp-modal-box">
+      <h3 id="sp-modal-title">إعداد رابط SharePoint</h3>
+      <p>أدخل الرابط الأساسي لمكتبة وثائق المناقصات على SharePoint. سيتم استخدامه لفتح مجلد كل قسم تلقائيا.</p>
+      <label class="sp-url-label">
+        <span>الرابط الأساسي</span>
+        <input id="sp-url-input" type="url" placeholder="https://company.sharepoint.com/sites/tenders">
+      </label>
+      <div class="sp-modal-actions">
+        <button id="sp-save" type="button">حفظ الرابط</button>
+        <button id="sp-cancel" type="button">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js?v=23"></script>
   <script src="../portal-sidebar.js?v=4"></script>
 </body>
 </html>

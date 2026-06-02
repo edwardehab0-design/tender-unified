@@ -68,6 +68,9 @@ const fallbackTenders = [
 ];
 
 const PREF_KEY = "alrawafOpsPrefsV1";
+const ACTIVITY_KEY = "alrawafActivityLogV1";
+const SP_KEY = "alrawafSharePointBaseV1";
+const MAX_ACTIVITY_ENTRIES = 200;
 
 function readPrefs() {
   try {
@@ -294,12 +297,22 @@ function setDepartmentStatus(tenderId, departmentKey, status) {
     savedState[tenderId].timing[departmentKey].completedAt = new Date().toISOString();
   }
   writeState();
+  const tender = tenders.find((t) => t.id === tenderId);
+  const dept = departments.find((d) => d.key === departmentKey);
+  if (tender && status === "completed") {
+    addActivityEntry(tenderId, tender.title, "complete", `اعتماد إكمال ${dept?.name || departmentKey}`);
+  }
 }
 
 function setApproval(tenderId, status) {
   savedState[tenderId] = savedState[tenderId] || {};
   savedState[tenderId].approval = status;
   writeState();
+  const tender = tenders.find((t) => t.id === tenderId);
+  if (tender) {
+    addActivityEntry(tenderId, tender.title, status === "approved" ? "approve" : "reject",
+      status === "approved" ? "تم الاعتماد النهائي للمنافسة" : "تم رفض المنافسة");
+  }
 }
 
 function savedAssignedNames(tenderId, departmentKey) {
@@ -315,6 +328,12 @@ function setAssignment(tenderId, departmentKey, names) {
   savedState[tenderId].timing[departmentKey] = savedState[tenderId].timing[departmentKey] || {};
   savedState[tenderId].timing[departmentKey].assignedAt = new Date().toISOString();
   writeState();
+  const tender = tenders.find((t) => t.id === tenderId);
+  const dept = departments.find((d) => d.key === departmentKey);
+  if (tender && names.length) {
+    addActivityEntry(tenderId, tender.title, "assign",
+      `تعيين ${names.join("، ")} في ${dept?.name || departmentKey}`);
+  }
 }
 
 function departmentComments(tenderId, departmentKey) {
@@ -334,6 +353,152 @@ function addDepartmentComment(tenderId, departmentKey, text) {
     by: isExecutive() ? "مدير الإدارة" : "مدير القسم"
   });
   writeState();
+  const tender = tenders.find((t) => t.id === tenderId);
+  const dept = departments.find((d) => d.key === departmentKey);
+  if (tender) {
+    addActivityEntry(tenderId, tender.title, "comment",
+      `ملاحظة (${dept?.name || departmentKey}): ${value.slice(0, 80)}${value.length > 80 ? "…" : ""}`);
+  }
+}
+
+// ── سجل النشاط ──
+function readActivityLog() {
+  try { return JSON.parse(localStorage.getItem(ACTIVITY_KEY) || "[]"); } catch { return []; }
+}
+
+function writeActivityLog(log) {
+  try { localStorage.setItem(ACTIVITY_KEY, JSON.stringify(log)); } catch {}
+}
+
+function addActivityEntry(tenderId, tenderTitle, type, text) {
+  const log = readActivityLog();
+  log.unshift({
+    id: tenderId,
+    title: tenderTitle,
+    type,
+    text,
+    at: new Date().toISOString(),
+    by: isExecutive() ? "مدير الإدارة" : "مدير القسم"
+  });
+  if (log.length > MAX_ACTIVITY_ENTRIES) log.length = MAX_ACTIVITY_ENTRIES;
+  writeActivityLog(log);
+}
+
+function tenderActivityLog(tenderId) {
+  return readActivityLog().filter((entry) => entry.id === tenderId);
+}
+
+// ── إعداد SharePoint ──
+function getSharePointBase() {
+  try { return localStorage.getItem(SP_KEY) || ""; } catch { return ""; }
+}
+
+function saveSharePointBase(url) {
+  try { localStorage.setItem(SP_KEY, String(url || "").trim()); } catch {}
+}
+
+function openSharePointConfig() {
+  const modal = qs("sp-modal");
+  if (!modal) return;
+  qs("sp-url-input").value = getSharePointBase();
+  modal.hidden = false;
+}
+
+function closeSharePointConfig() {
+  const modal = qs("sp-modal");
+  if (modal) modal.hidden = true;
+}
+
+function openDeptLibrary(deptKey) {
+  const dept = departments.find((d) => d.key === deptKey);
+  const lib = dept?.library || deptKey;
+  const base = getSharePointBase();
+  if (!base) {
+    openSharePointConfig();
+    return;
+  }
+  const url = lib.startsWith("http") ? lib : `${base.replace(/\/$/, "")}/${lib}`;
+  window.open(url, "_blank", "noopener");
+}
+
+// ── الإشعارات ──
+function renderNotifications() {
+  const countBadge = qs("notif-count");
+  if (!countBadge) return;
+  const alerts = smartAlerts();
+  const critical = alerts.filter((a) => a.tone === "danger").length;
+  if (critical > 0) {
+    countBadge.textContent = critical;
+    countBadge.hidden = false;
+  } else {
+    countBadge.hidden = true;
+  }
+}
+
+function buildNotifPanel() {
+  const panel = qs("notif-panel");
+  if (!panel) return;
+  const alerts = smartAlerts();
+  panel.innerHTML = `
+    <div class="notif-panel-head">
+      <strong>الإشعارات (${alerts.length})</strong>
+      <button type="button" id="notif-close" aria-label="إغلاق">×</button>
+    </div>
+    <div class="notif-items">
+      ${alerts.length ? alerts.map((alert) => `
+        <div class="notif-item ${safe(alert.tone)}">
+          <strong>${safe(alert.title)}</strong>
+          <span>${safe(alert.text)}</span>
+        </div>
+      `).join("") : `<div class="notif-empty">لا توجد إشعارات حرجة الآن.</div>`}
+    </div>
+  `;
+  panel.querySelector("#notif-close")?.addEventListener("click", closeNotifPanel);
+}
+
+function openNotifPanel() {
+  buildNotifPanel();
+  qs("notif-panel").hidden = false;
+  qs("notif-wrap")?.classList.add("open");
+}
+
+function closeNotifPanel() {
+  qs("notif-panel").hidden = true;
+  qs("notif-wrap")?.classList.remove("open");
+}
+
+// ── تصدير CSV ──
+function exportCSV() {
+  const list = visibleTenders();
+  const headers = ["رقم المنافسة", "اسم المنافسة", "العميل", "القطاع", "موعد الإغلاق", "الحالة", "نسبة التقدم", "قرار المدير"];
+  const rows = list.map((tender) => {
+    const dRows = departmentRows(tender);
+    const completed = dRows.filter((row) => row.status === "completed").length;
+    const pct = Math.round((completed / departments.length) * 100);
+    const approval = savedState[tender.id]?.approval;
+    return [
+      tender.id,
+      tender.title,
+      tender.client,
+      tender.sector,
+      tender.submitDate,
+      columnLabel(tenderStage(tender)),
+      `${pct}%`,
+      approval ? statusLabel(approval) : "—"
+    ];
+  });
+  const csvContent = "﻿" + [headers, ...rows]
+    .map((row) => row.map((cell) => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(","))
+    .join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `تقرير-العمليات-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 function personLoad(name) {
@@ -669,6 +834,7 @@ function setTenderStage(tenderId, stage) {
   if (stage === autoAfter) delete savedState[tenderId].stage;
   else savedState[tenderId].stage = stage;
   writeState();
+  addActivityEntry(tenderId, tender.title, "stage", `نقل إلى: ${columnLabel(stage)}`);
 }
 
 // اعتماد إكمال كل أقسام المنافسة دفعة واحدة
@@ -1182,6 +1348,7 @@ function openDrawer(tenderId, departmentKey) {
   `).join("");
 
   renderComments(tender.id, row.key);
+  renderActivityLog(tender.id);
 
   const files = Array.from({ length: Math.max(row.files, 1) }, (_, index) => index + 1);
   qs("drawer-files").innerHTML = files.map((item) => `
@@ -1215,6 +1382,22 @@ function renderComments(tenderId, departmentKey) {
   `).join("") : `
     <div class="comment-empty">لا توجد ملاحظات بعد.</div>
   `;
+}
+
+function renderActivityLog(tenderId) {
+  const container = qs("drawer-activity");
+  if (!container) return;
+  const log = tenderActivityLog(tenderId);
+  container.innerHTML = log.length ? log.slice(0, 25).map((entry) => `
+    <div class="activity-item">
+      <span class="activity-dot ${safe(entry.type)}"></span>
+      <div>
+        <strong>${safe(entry.text)}</strong>
+        <span>${safe(entry.by)}</span>
+        <em>${safe(formatDateTime(entry.at))}</em>
+      </div>
+    </div>
+  `).join("") : `<div class="activity-empty">لا يوجد نشاط مسجل لهذه المنافسة بعد.</div>`;
 }
 
 function renderAssignmentTools(tender, row) {
@@ -1337,6 +1520,7 @@ function render() {
   renderDepartments();
   renderActiveView();
   renderBulkBar();
+  renderNotifications();
 }
 
 // شريط عائم للإجراءات الجماعية على المنافسات المحددة
@@ -1510,9 +1694,36 @@ qs("complete-department").addEventListener("click", () => {
 
 qs("open-library").addEventListener("click", () => {
   if (!selectedContext) return;
-  const dept = departments.find((item) => item.key === selectedContext.departmentKey);
-  alert(`سيتم ربط هذا الزر بمكتبة ${dept?.library || "SharePoint"} عند إضافة روابط SharePoint النهائية.`);
+  openDeptLibrary(selectedContext.departmentKey);
 });
+
+qs("config-sharepoint")?.addEventListener("click", openSharePointConfig);
+
+// ── Notification bell ──
+qs("notif-bell")?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  if (qs("notif-panel").hidden) openNotifPanel();
+  else closeNotifPanel();
+});
+
+document.addEventListener("click", (event) => {
+  if (!qs("notif-wrap")?.classList.contains("open")) return;
+  if (!qs("notif-wrap")?.contains(event.target)) closeNotifPanel();
+}, true);
+
+// ── Export CSV ──
+qs("export-btn")?.addEventListener("click", exportCSV);
+
+// ── SharePoint modal ──
+qs("sp-save")?.addEventListener("click", () => {
+  const url = qs("sp-url-input")?.value?.trim() || "";
+  saveSharePointBase(url);
+  closeSharePointConfig();
+  if (selectedContext) openDeptLibrary(selectedContext.departmentKey);
+});
+
+qs("sp-cancel")?.addEventListener("click", closeSharePointConfig);
+qs("sp-modal-overlay")?.addEventListener("click", closeSharePointConfig);
 
 // ── التحديد الجماعي + التعيين السريع (أحداث change) ──
 document.addEventListener("change", (event) => {
