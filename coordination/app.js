@@ -87,6 +87,11 @@ function writePrefs() {
 }
 
 let prefs = readPrefs();
+// تطبيق السمة فوراً لتفادي وميض الوضع النهاري قبل تحميل البيانات
+try {
+  document.documentElement.setAttribute("data-theme", prefs.theme === "dark" ? "dark" : "light");
+  if (prefs.density === "compact" && document.body) document.body.classList.add("density-compact");
+} catch {}
 let tenders = [];
 let selectedDepartment = "all";
 let selectedFilter = ["all", "new", "active", "late", "ready"].includes(prefs.filter) ? prefs.filter : "all";
@@ -94,6 +99,7 @@ let searchTerm = "";
 let selectedContext = null;
 let selectedIds = new Set();
 let selectedView = ["board", "table", "calendar", "analytics"].includes(prefs.view) ? prefs.view : "board";
+let advFilters = { sector: "", client: "", from: "", to: "" };
 let calendarRef = new Date();
 let savedState = readState();
 const HOUR_MS = 60 * 60 * 1000;
@@ -421,6 +427,75 @@ function openDeptLibrary(deptKey) {
   window.open(url, "_blank", "noopener");
 }
 
+// ── البحث المتقدم بفلاتر مركّبة ──
+function uniqueValues(key) {
+  return [...new Set(tenders.map((tender) => tender[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ar"));
+}
+
+function renderAdvancedFilters() {
+  const container = qs("adv-filters");
+  if (!container) return;
+  const sectors = uniqueValues("sector");
+  const clients = uniqueValues("client");
+  const active = hasActiveAdvanced();
+  document.querySelector(".rail-advanced")?.classList.toggle("has-active", active);
+  container.innerHTML = `
+    <label class="adv-field">
+      <span>القطاع</span>
+      <select data-adv="sector">
+        <option value="">كل القطاعات</option>
+        ${sectors.map((value) => `<option value="${safe(value)}" ${advFilters.sector === value ? "selected" : ""}>${safe(value)}</option>`).join("")}
+      </select>
+    </label>
+    <label class="adv-field">
+      <span>العميل</span>
+      <select data-adv="client">
+        <option value="">كل العملاء</option>
+        ${clients.map((value) => `<option value="${safe(value)}" ${advFilters.client === value ? "selected" : ""}>${safe(value)}</option>`).join("")}
+      </select>
+    </label>
+    <div class="adv-dates">
+      <label class="adv-field"><span>إغلاق من</span><input type="date" data-adv="from" value="${safe(advFilters.from)}"></label>
+      <label class="adv-field"><span>إلى</span><input type="date" data-adv="to" value="${safe(advFilters.to)}"></label>
+    </div>
+    ${active ? `<button type="button" class="adv-clear" id="adv-clear">مسح الفلاتر المتقدمة</button>` : ""}
+  `;
+}
+
+// ── الوضع الليلي ──
+function applyTheme() {
+  const dark = prefs.theme === "dark";
+  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  const btn = qs("theme-toggle");
+  if (btn) {
+    btn.setAttribute("aria-pressed", dark ? "true" : "false");
+    btn.title = dark ? "الوضع النهاري" : "الوضع الليلي";
+  }
+}
+
+function toggleTheme() {
+  prefs.theme = prefs.theme === "dark" ? "light" : "dark";
+  writePrefs();
+  applyTheme();
+}
+
+// ── كثافة البطاقات ──
+function applyDensity() {
+  const compact = prefs.density === "compact";
+  document.body.classList.toggle("density-compact", compact);
+  const btn = qs("density-toggle");
+  if (btn) {
+    btn.setAttribute("aria-pressed", compact ? "true" : "false");
+    btn.title = compact ? "عرض مريح" : "عرض مضغوط";
+  }
+}
+
+function toggleDensity() {
+  prefs.density = prefs.density === "compact" ? "comfortable" : "compact";
+  writePrefs();
+  applyDensity();
+}
+
 // ── الإشعارات ──
 function renderNotifications() {
   const countBadge = qs("notif-count");
@@ -672,8 +747,22 @@ function visibleTenders() {
       || column === selectedFilter
       || (selectedFilter === "ready" && column === "approved");
     const matchesSearch = !term || `${tender.title} ${tender.client} ${tender.sector}`.toLowerCase().includes(term);
-    return visibleByRole && matchesDepartment && matchesFilter && matchesSearch;
+    const matchesAdvanced = matchesAdvancedFilters(tender);
+    return visibleByRole && matchesDepartment && matchesFilter && matchesSearch && matchesAdvanced;
   });
+}
+
+function matchesAdvancedFilters(tender) {
+  if (advFilters.sector && tender.sector !== advFilters.sector) return false;
+  if (advFilters.client && tender.client !== advFilters.client) return false;
+  const close = new Date(tender.submitDate);
+  if (advFilters.from && !Number.isNaN(close.getTime()) && close < new Date(advFilters.from)) return false;
+  if (advFilters.to && !Number.isNaN(close.getTime()) && close > new Date(advFilters.to)) return false;
+  return true;
+}
+
+function hasActiveAdvanced() {
+  return Boolean(advFilters.sector || advFilters.client || advFilters.from || advFilters.to);
 }
 
 function departmentStats(dept) {
@@ -1518,6 +1607,7 @@ function render() {
   renderFilterCounts();
   renderDeadlineBar();
   renderDepartments();
+  renderAdvancedFilters();
   renderActiveView();
   renderBulkBar();
   renderNotifications();
@@ -1577,6 +1667,8 @@ function runBulkAction(action) {
 
 // استعادة تفضيلات العرض المحفوظة على واجهة المستخدم
 function applySavedPrefs() {
+  applyTheme();
+  applyDensity();
   document.querySelectorAll("#view-tabs button").forEach((button) => button.classList.toggle("active", button.dataset.view === selectedView));
   document.querySelectorAll(".ops-view").forEach((panel) => { panel.hidden = panel.dataset.view !== selectedView; });
   document.querySelectorAll("[data-filter]").forEach((button) => button.classList.toggle("active", button.dataset.filter === selectedFilter));
@@ -1633,6 +1725,12 @@ document.addEventListener("click", (event) => {
   const bulkButton = event.target.closest("[data-bulk]");
   if (bulkButton && !bulkButton.disabled) {
     runBulkAction(bulkButton.dataset.bulk);
+    return;
+  }
+
+  if (event.target.closest("#adv-clear")) {
+    advFilters = { sector: "", client: "", from: "", to: "" };
+    render();
     return;
   }
 
@@ -1714,6 +1812,10 @@ document.addEventListener("click", (event) => {
 // ── Export CSV ──
 qs("export-btn")?.addEventListener("click", exportCSV);
 
+// ── Theme + density toggles ──
+qs("theme-toggle")?.addEventListener("click", toggleTheme);
+qs("density-toggle")?.addEventListener("click", toggleDensity);
+
 // ── SharePoint modal ──
 qs("sp-save")?.addEventListener("click", () => {
   const url = qs("sp-url-input")?.value?.trim() || "";
@@ -1727,6 +1829,13 @@ qs("sp-modal-overlay")?.addEventListener("click", closeSharePointConfig);
 
 // ── التحديد الجماعي + التعيين السريع (أحداث change) ──
 document.addEventListener("change", (event) => {
+  const advField = event.target.closest("[data-adv]");
+  if (advField) {
+    advFilters[advField.dataset.adv] = advField.value;
+    render();
+    return;
+  }
+
   const selectBox = event.target.closest("[data-select]");
   if (selectBox) {
     const id = selectBox.dataset.select;
