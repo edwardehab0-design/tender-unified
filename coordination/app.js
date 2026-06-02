@@ -67,12 +67,29 @@ const fallbackTenders = [
   }
 ];
 
+const PREF_KEY = "alrawafOpsPrefsV1";
+
+function readPrefs() {
+  try {
+    return JSON.parse(localStorage.getItem(PREF_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function writePrefs() {
+  try {
+    localStorage.setItem(PREF_KEY, JSON.stringify(prefs));
+  } catch {}
+}
+
+let prefs = readPrefs();
 let tenders = [];
 let selectedDepartment = "all";
-let selectedFilter = "all";
+let selectedFilter = ["all", "new", "active", "late", "ready"].includes(prefs.filter) ? prefs.filter : "all";
 let searchTerm = "";
 let selectedContext = null;
-let selectedView = "board";
+let selectedView = ["board", "table", "calendar", "analytics"].includes(prefs.view) ? prefs.view : "board";
 let calendarRef = new Date();
 let savedState = readState();
 const HOUR_MS = 60 * 60 * 1000;
@@ -840,6 +857,68 @@ function isUrgentClose(label) {
   return label === "اليوم" || label === "متأخر";
 }
 
+function daysLeft(dateValue) {
+  const target = new Date(dateValue);
+  if (Number.isNaN(target.getTime())) return Infinity;
+  return Math.ceil((target - new Date()) / DAY_MS);
+}
+
+// نقاط مخاطرة المنافسة: تأخر + غير مسند + قرب الإغلاق
+function riskScore(tender) {
+  const rows = departmentRows(tender);
+  const late = rows.filter((row) => row.status === "late").length;
+  const unassigned = rows.filter((row) => !row.engineers.length).length;
+  const left = daysLeft(tender.submitDate);
+  let score = late * 3 + unassigned * 2;
+  if (left <= 0) score += 5;
+  else if (left <= 2) score += 3;
+  else if (left <= 5) score += 1;
+  if (savedState[tender.id]?.approval === "approved") score = 0;
+  const level = score >= 6 ? "high" : score >= 3 ? "watch" : "ok";
+  return { score, level, late, unassigned, left };
+}
+
+function riskLabel(level) {
+  return { high: "مخاطرة عالية", watch: "تحتاج انتباه", ok: "تحت السيطرة" }[level] || "";
+}
+
+function renderDeadlineBar() {
+  const bar = qs("deadline-bar");
+  if (!bar) return;
+  const upcoming = tenders
+    .filter((tender) => savedState[tender.id]?.approval !== "approved")
+    .map((tender) => ({ tender, left: daysLeft(tender.submitDate), rows: departmentRows(tender) }))
+    .filter((item) => Number.isFinite(item.left))
+    .sort((a, b) => a.left - b.left)
+    .slice(0, 5);
+
+  if (!upcoming.length) {
+    bar.innerHTML = "";
+    bar.hidden = true;
+    return;
+  }
+  bar.hidden = false;
+  bar.innerHTML = `
+    <div class="deadline-bar-head">
+      <span class="deadline-pulse"></span>
+      <strong>مواعيد إغلاق قريبة</strong>
+    </div>
+    <div class="deadline-track">
+      ${upcoming.map(({ tender, left, rows }) => {
+        const urgency = left <= 0 ? "over" : left <= 2 ? "soon" : "ok";
+        const text = left < 0 ? `متأخرة ${Math.abs(left)} يوم` : left === 0 ? "تغلق اليوم" : `بعد ${left} يوم`;
+        return `
+          <button class="deadline-chip ${urgency}" type="button" data-tender="${safe(tender.id)}" data-dept="${safe(rows[0].key)}" title="${safe(tender.title)}">
+            <em>${safe(text)}</em>
+            <span>${safe(tender.title)}</span>
+            <small>${safe(tender.client)}</small>
+          </button>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
 function renderKanban() {
   const board = qs("kanban");
   if (!board) return;
@@ -876,6 +955,7 @@ function renderKanCard(tender) {
   const urgent = isUrgentClose(close);
   const ready = completed === departments.length;
   const approval = savedState[tender.id]?.approval || "";
+  const risk = riskScore(tender);
   const deptChips = rows.map((row) => `
     <button class="dept-chip ${rowStateClass(row.status, row)}" type="button" data-tender="${safe(tender.id)}" data-dept="${safe(row.key)}" title="${safe(row.name)} · ${safe(statusLabel(row.status))}">${safe(row.short)}</button>
   `).join("");
@@ -883,6 +963,7 @@ function renderKanCard(tender) {
     <article class="kan-card state-${col}" data-tender="${safe(tender.id)}">
       <div class="kan-card-top">
         <span class="kan-id">${safe(tender.id)}</span>
+        ${risk.level !== "ok" ? `<span class="risk-badge ${risk.level}" title="${safe(riskLabel(risk.level))}">${risk.level === "high" ? "● مخاطرة" : "● انتباه"}</span>` : ""}
         <span class="kan-close ${urgent ? "is-urgent" : ""}"><b>${safe(close)}</b><span>الإغلاق</span></span>
       </div>
       <h3 class="kan-title"><a href="../tenders/?q=${encodeURIComponent(tender.title)}" title="عرض في صفحة المناقصات">${safe(tender.title)}</a></h3>
@@ -1178,6 +1259,8 @@ function renderActiveView() {
 
 function switchView(view) {
   selectedView = view;
+  prefs.view = view;
+  writePrefs();
   document.querySelectorAll("#view-tabs button").forEach((button) => button.classList.toggle("active", button.dataset.view === view));
   document.querySelectorAll(".ops-view").forEach((panel) => { panel.hidden = panel.dataset.view !== view; });
   renderActiveView();
@@ -1187,8 +1270,16 @@ function render() {
   renderRole();
   renderKpis();
   renderFilterCounts();
+  renderDeadlineBar();
   renderDepartments();
   renderActiveView();
+}
+
+// استعادة تفضيلات العرض المحفوظة على واجهة المستخدم
+function applySavedPrefs() {
+  document.querySelectorAll("#view-tabs button").forEach((button) => button.classList.toggle("active", button.dataset.view === selectedView));
+  document.querySelectorAll(".ops-view").forEach((panel) => { panel.hidden = panel.dataset.view !== selectedView; });
+  document.querySelectorAll("[data-filter]").forEach((button) => button.classList.toggle("active", button.dataset.filter === selectedFilter));
 }
 
 async function loadData() {
@@ -1211,6 +1302,7 @@ async function loadData() {
   } catch {
     tenders = fallbackTenders;
   }
+  applySavedPrefs();
   render();
 }
 
@@ -1231,6 +1323,8 @@ document.addEventListener("click", (event) => {
   const filterButton = event.target.closest("[data-filter]");
   if (filterButton) {
     selectedFilter = filterButton.dataset.filter;
+    prefs.filter = selectedFilter;
+    writePrefs();
     document.querySelectorAll("[data-filter]").forEach((button) => button.classList.toggle("active", button === filterButton));
     renderActiveView();
     return;
@@ -1238,7 +1332,7 @@ document.addEventListener("click", (event) => {
 
   if (event.target.closest("[data-stop-open]")) return;
 
-  const opener = event.target.closest(".dept-chip[data-tender][data-dept], tr[data-tender][data-dept], .cal-event[data-tender][data-dept]");
+  const opener = event.target.closest(".dept-chip[data-tender][data-dept], tr[data-tender][data-dept], .cal-event[data-tender][data-dept], .deadline-chip[data-tender][data-dept]");
   if (opener) {
     openDrawer(opener.dataset.tender, opener.dataset.dept);
     return;

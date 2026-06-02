@@ -253,6 +253,41 @@ body {
 
 .ops-view[hidden] { display: none; }
 
+/* ═══ Critical Deadlines Bar ═══ */
+.deadline-bar {
+  display: grid; grid-template-columns: auto minmax(0,1fr); gap: 14px; align-items: center;
+  padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--r-lg);
+  background: linear-gradient(180deg, #fff, var(--surface-2)); box-shadow: var(--shadow-xs);
+}
+.deadline-bar[hidden] { display: none; }
+.deadline-bar-head { display: flex; align-items: center; gap: 9px; padding-inline-end: 14px; border-inline-end: 1px solid var(--border); }
+.deadline-bar-head strong { color: var(--ink); font-size: 14px; font-weight: 900; white-space: nowrap; }
+.deadline-pulse { width: 10px; height: 10px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 4px rgba(220,38,38,.14); animation: pulse 1.6s infinite; }
+.deadline-track { display: flex; gap: 9px; overflow-x: auto; padding-bottom: 2px; }
+.deadline-track::-webkit-scrollbar { height: 6px; }
+.deadline-track::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 999px; }
+.deadline-chip {
+  flex: 0 0 auto; max-width: 230px; text-align: right;
+  display: grid; gap: 2px; padding: 9px 13px; cursor: pointer;
+  border: 1px solid var(--border); border-radius: var(--r); background: var(--surface);
+  border-inline-start: 3px solid var(--slate); font: inherit;
+  transition: transform .12s, box-shadow .14s;
+}
+.deadline-chip:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.deadline-chip em { font-style: normal; font-size: 12px; font-weight: 900; color: var(--slate); }
+.deadline-chip span { font-size: 12px; font-weight: 800; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.deadline-chip small { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.deadline-chip.soon { border-inline-start-color: var(--amber); }
+.deadline-chip.soon em { color: var(--amber); }
+.deadline-chip.over { border-inline-start-color: var(--red); background: var(--red-bg); }
+.deadline-chip.over em { color: var(--red); }
+
+/* ═══ Risk Badge ═══ */
+.risk-badge { font-size: 10px; font-weight: 900; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.risk-badge.high { color: var(--red); background: var(--red-bg); border: 1px solid rgba(220,38,38,.22); }
+.risk-badge.watch { color: var(--amber); background: var(--amber-bg); border: 1px solid rgba(194,100,12,.22); }
+.kan-card-top { align-items: center; }
+
 /* ═══ Kanban Board ═══ */
 .kanban {
   display: grid;
