@@ -7,7 +7,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>شركة الرواف — المناقصات</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="../config.js"></script>
 <style>
 :root {
@@ -1170,6 +1170,9 @@ body {
   display: none !important;
 }
 </style>
+<link rel="stylesheet" href="../shared-visual.css?v=4">
+<link rel="stylesheet" href="../internal-unified.css?v=15">
+<link rel="stylesheet" href="../portal-sidebar.css?v=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
@@ -3024,6 +3027,14 @@ function printFull() {
 // Initialize: تحميل البيانات الحية من ملف data.json الذي يحدثه سكربت Tender
 allSubmitted = [];
 renderAll();
+
+// Apply ?q= param from URL (deep-link from coordination page)
+(function applyURLQuery() {
+  const q = new URLSearchParams(window.location.search).get('q');
+  if (!q) return;
+  const input = document.getElementById('search-input');
+  if (input) { input.value = q; applyFilters(); input.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+})();
 document.getElementById('last-update').textContent = 'جاري التحميل...';
 // ثم جلب البيانات الحية
 fetchTenders();
@@ -3598,6 +3609,8 @@ window.addEventListener('hashchange', handleExecutiveReportHash);
   });
 })();
 </script>
+<script src="../internal-interactions.js?v=10"></script>
+<script src="../portal-sidebar.js?v=4"></script>
 </body>
 </html>
 

@@ -11,35 +11,6 @@ const statusLabels = {
   unknown: "غير محدد",
 };
 
-const statusOrder = ["awarded_signed", "awarded_not_signed", "submitted_negotiation", "unknown"];
-
-const statusMeta = {
-  awarded_signed: {
-    title: "تم الترسية وتم توقيع العقد",
-    short: "عقود موقعة",
-    note: "مشاريع انتقلت من المنافسة إلى الالتزام التعاقدي.",
-    tone: "signed",
-  },
-  awarded_not_signed: {
-    title: "تم الترسية ولم يتم توقيع العقد",
-    short: "بانتظار التوقيع",
-    note: "مشاريع مرساة تحتاج إنهاء إجراء التعاقد.",
-    tone: "pending",
-  },
-  submitted_negotiation: {
-    title: "تم التقديم وقيد التفاوض والترسية",
-    short: "تفاوض وترسية",
-    note: "فرص في مرحلة المتابعة قبل الحسم النهائي.",
-    tone: "negotiation",
-  },
-  unknown: {
-    title: "غير محدد",
-    short: "غير مصنف",
-    note: "سجلات تحتاج مراجعة حالة المشروع في المصدر.",
-    tone: "unknown",
-  },
-};
-
 const portfolioAliases = {
   "المبانى": "المباني",
   "المباني": "المباني",
@@ -47,7 +18,6 @@ const portfolioAliases = {
 
 let sourceData = { projects: [] };
 let filters = { search: "", portfolio: "all", status: "all" };
-let selectedProject = null;
 
 const sar = new Intl.NumberFormat("ar-SA", {
   style: "currency",
@@ -88,26 +58,15 @@ async function fetchFirstJson(urls) {
 
 function normalizeData() {
   sourceData.projects = (sourceData.projects || []).map((p, index) => ({
-    detailId: String(p.id || p.number || index + 1),
     number: p.number || String(index + 1),
     amountExclVat: Number(p.amountExclVat ?? p.amount) || 0,
     amountInclVat: Number(p.amountInclVat ?? ((Number(p.amountExclVat ?? p.amount) || 0) * (1 + VAT_RATE))) || 0,
     project: p.project || "-",
     client: p.client || "غير محدد",
     portfolio: normalizePortfolio(p.portfolio),
-    status: normalizeStatus(p.status, p.statusLabel),
-    statusLabel: p.statusLabel || statusLabels[normalizeStatus(p.status, p.statusLabel)] || "غير محدد",
+    status: p.status || "unknown",
+    statusLabel: p.statusLabel || statusLabels[p.status] || "غير محدد",
   }));
-}
-
-function normalizeStatus(status, label) {
-  const rawStatus = String(status || "").trim();
-  if (statusLabels[rawStatus]) return rawStatus;
-  const text = String(label || rawStatus || "").trim();
-  if (/تم\s*الترسية.*تم\s*توقيع\s*العقد/.test(text)) return "awarded_signed";
-  if (/تم\s*الترسية.*لم\s*يتم\s*توقيع\s*العقد/.test(text)) return "awarded_not_signed";
-  if (/قيد\s*التفاوض|الترسية/.test(text) && /تم\s*التقديم/.test(text)) return "submitted_negotiation";
-  return "unknown";
 }
 
 function normalizePortfolio(value) {
@@ -123,7 +82,7 @@ function populateFilters() {
   portfolioSelect.value = portfolios.includes(currentPortfolio) ? currentPortfolio : "all";
   filters.portfolio = portfolioSelect.value;
 
-  const statuses = orderedStatuses(sourceData.projects.map((p) => p.status));
+  const statuses = unique(sourceData.projects.map((p) => p.status));
   const statusSelect = qs("status-filter");
   const currentStatus = statusSelect.value || "all";
   statusSelect.innerHTML = option("all", "كل الحالات") + statuses.map((s) => option(s, statusLabels[s] || s)).join("");
@@ -135,16 +94,11 @@ function unique(values) {
   return [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b, "ar"));
 }
 
-function orderedStatuses(values) {
-  const set = new Set(values.filter(Boolean));
-  return statusOrder.filter((key) => set.has(key)).concat([...set].filter((key) => !statusOrder.includes(key)).sort());
-}
-
 function option(value, label) {
   return `<option value="${escapeAttr(value)}">${escapeHtml(label)}</option>`;
 }
 
-function filteredProjects(ignoreStatus = false) {
+function filteredProjects() {
   const term = filters.search.trim().toLowerCase();
   return sourceData.projects.filter((p) => {
     const matchesSearch = !term ||
@@ -152,40 +106,32 @@ function filteredProjects(ignoreStatus = false) {
       p.client.toLowerCase().includes(term) ||
       p.portfolio.toLowerCase().includes(term);
     const matchesPortfolio = filters.portfolio === "all" || p.portfolio === filters.portfolio;
-    const matchesStatus = ignoreStatus || filters.status === "all" || p.status === filters.status;
+    const matchesStatus = filters.status === "all" || p.status === filters.status;
     return matchesSearch && matchesPortfolio && matchesStatus;
   });
 }
 
 function render() {
   const rows = filteredProjects();
-  const stageRows = filteredProjects(true);
   renderKpis(rows);
-  renderStatusList(stageRows);
+  renderStatusList(rows);
   renderBars("portfolio-chart", "portfolio-chart-total", groupBy(rows, "portfolio"), true);
   renderBars("client-chart", "client-chart-total", groupBy(rows, "client"), true, 8);
-  renderStatusDonut(stageRows);
-  renderStatusSummary(stageRows);
+  renderStatusDonut(rows);
+  renderStatusSummary(rows);
   renderPortfolioCards(rows);
-  renderStatusStages(stageRows);
   renderTable(rows);
 }
 
 function renderKpis(rows) {
-  const grouped = groupBy(rows, "status");
-
-  const signedGroup    = grouped.get("awarded_signed")    || { count: 0, amountExclVat: 0 };
-  const notSignedGroup = grouped.get("awarded_not_signed") || { count: 0, amountExclVat: 0 };
-  const submittedGroup = grouped.get("submitted_negotiation") || { count: 0, amountExclVat: 0 };
-
-  qs("kpi-awarded-signed").textContent       = sar.format(signedGroup.amountExclVat);
-  qs("kpi-awarded-signed-count").textContent = `${numberFmt.format(signedGroup.count)} مشروع · غير شامل الضريبة`;
-
-  qs("kpi-awarded-not-signed").textContent       = sar.format(notSignedGroup.amountExclVat);
-  qs("kpi-awarded-not-signed-count").textContent = `${numberFmt.format(notSignedGroup.count)} مشروع · غير شامل الضريبة`;
-
-  qs("kpi-submitted").textContent       = sar.format(submittedGroup.amountExclVat);
-  qs("kpi-submitted-count").textContent = `${numberFmt.format(submittedGroup.count)} مشروع · غير شامل الضريبة`;
+  const totalExcl = sum(rows.map((p) => p.amountExclVat));
+  const total = sum(rows.map((p) => p.amountInclVat));
+  const topPortfolio = topEntry(groupBy(rows, "portfolio"));
+  qs("kpi-total").textContent = sar.format(total);
+  qs("kpi-total-sub").textContent = `غير شامل الضريبة: ${sar.format(totalExcl)}`;
+  qs("kpi-count").textContent = numberFmt.format(rows.length);
+  qs("kpi-top-portfolio").textContent = topPortfolio ? topPortfolio[0] : "-";
+  qs("kpi-top-portfolio-sub").textContent = topPortfolio ? sar.format(topPortfolio[1].amountInclVat) : "-";
 }
 
 function renderStatusList(rows) {
@@ -201,13 +147,13 @@ function renderStatusList(rows) {
 
 function renderBars(targetId, totalId, grouped, useAmount, limit = 10) {
   const entries = [...grouped.entries()]
-    .sort((a, b) => (useAmount ? b[1].amountExclVat - a[1].amountExclVat : b[1].count - a[1].count))
+    .sort((a, b) => (useAmount ? b[1].amountInclVat - a[1].amountInclVat : b[1].count - a[1].count))
     .slice(0, limit);
-  const max = entries[0] ? (useAmount ? entries[0][1].amountExclVat : entries[0][1].count) : 1;
-  const total = sum(entries.map(([, item]) => useAmount ? item.amountExclVat : item.count));
+  const max = entries[0] ? (useAmount ? entries[0][1].amountInclVat : entries[0][1].count) : 1;
+  const total = sum(entries.map(([, item]) => useAmount ? item.amountInclVat : item.count));
   qs(totalId).textContent = useAmount ? sar.format(total) : `${numberFmt.format(total)} مشروع`;
   qs(targetId).innerHTML = entries.length ? entries.map(([name, item]) => {
-    const value = useAmount ? item.amountExclVat : item.count;
+    const value = useAmount ? item.amountInclVat : item.count;
     const width = Math.max(4, (value / max) * 100);
     return `<div class="bar-row">
       <div class="bar-label" title="${escapeAttr(name)}">${escapeHtml(name)}</div>
@@ -249,7 +195,7 @@ function renderStatusDonut(rows) {
     <span class="legend-dot" style="background:${colors[key] || colors.unknown}"></span>
     <div>
       <strong>${escapeHtml(statusLabels[key] || key)}</strong>
-      <small>${numberFmt.format(item.count)} مشروع | ${compactSar(item.amountExclVat)} | ${percent(item.amountExclVat / totalExcl)}</small>
+      <small>${numberFmt.format(item.count)} مشروع | ${compactSar(item.amountInclVat)} | ${percent(item.amountExclVat / totalExcl)}</small>
     </div>
   </div>`).join("");
 }
@@ -257,20 +203,22 @@ function renderStatusDonut(rows) {
 function renderStatusSummary(rows) {
   const grouped = groupBy(rows, "status");
   const totalExcl = sum(rows.map((p) => p.amountExclVat));
+  const totalIncl = sum(rows.map((p) => p.amountInclVat));
   const ordered = ["awarded_signed", "awarded_not_signed", "submitted_negotiation"];
   const bodyRows = ordered.map((key) => {
     const item = grouped.get(key) || { count: 0, amountExclVat: 0, amountInclVat: 0 };
-    return statusSummaryRow(statusLabels[key], item.amountExclVat, totalExcl, false);
+    return statusSummaryRow(statusLabels[key], item.amountExclVat, item.amountInclVat, totalExcl, false);
   });
-  bodyRows.push(statusSummaryRow("الإجمالي العام", totalExcl, totalExcl, true));
+  bodyRows.push(statusSummaryRow("الإجمالي العام", totalExcl, totalIncl, totalExcl, true));
   qs("status-summary-body").innerHTML = bodyRows.join("");
 }
 
-function statusSummaryRow(label, amountExcl, totalExcl, isTotal) {
+function statusSummaryRow(label, amountExcl, amountIncl, totalExcl, isTotal) {
   const ratio = totalExcl ? amountExcl / totalExcl : 0;
   return `<tr class="${isTotal ? "summary-total" : ""}">
     <td>${escapeHtml(label)}</td>
     <td class="amount muted-amount">${sar.format(amountExcl)}</td>
+    <td class="amount">${sar.format(amountIncl)}</td>
     <td>
       <div class="percent-cell">
         <strong>${percent(ratio)}</strong>
@@ -282,138 +230,36 @@ function statusSummaryRow(label, amountExcl, totalExcl, isTotal) {
 
 function renderPortfolioCards(rows) {
   const entries = [...groupBy(rows, "portfolio").entries()]
-    .sort((a, b) => b[1].amountExclVat - a[1].amountExclVat);
-  const total = sum(entries.map(([, item]) => item.amountExclVat)) || 1;
+    .sort((a, b) => b[1].amountInclVat - a[1].amountInclVat);
+  const total = sum(entries.map(([, item]) => item.amountInclVat)) || 1;
   qs("portfolio-cards").innerHTML = entries.map(([name, item]) => {
-    const share = (item.amountExclVat / total) * 100;
+    const share = (item.amountInclVat / total) * 100;
     return `<div class="portfolio-card">
       <div>
         <strong>${escapeHtml(name)}</strong>
         <span>${numberFmt.format(item.count)} مشروع</span>
       </div>
-      <b>${compactSar(item.amountExclVat)}</b>
+      <b>${compactSar(item.amountInclVat)}</b>
       <div class="share"><i style="width:${Math.max(3, share)}%"></i></div>
     </div>`;
   }).join("");
 }
 
-function renderStatusStages(rows) {
-  const board = qs("status-stage-board");
-  if (!board) return;
-  const grouped = groupBy(rows, "status");
-  const totalAmount = sum(rows.map((p) => p.amountExclVat)) || 1;
-  const statuses = statusOrder.filter((key) => key !== "unknown" || grouped.has(key));
-  board.innerHTML = statuses.map((key) => {
-    const item = grouped.get(key) || { count: 0, amountExclVat: 0 };
-    const meta = statusMeta[key] || statusMeta.unknown;
-    const projects = rows.filter((p) => p.status === key).sort((a, b) => b.amountExclVat - a.amountExclVat);
-    const topProject = projects[0];
-    const share = Math.max(0, Math.min(100, (item.amountExclVat / totalAmount) * 100));
-    const active = filters.status === key;
-    return `<button class="stage-card ${meta.tone} ${active ? "is-active" : ""}" type="button" data-status="${escapeAttr(key)}">
-      <span class="stage-kicker">${escapeHtml(meta.short)}</span>
-      <strong>${escapeHtml(meta.title)}</strong>
-      <em>${escapeHtml(meta.note)}</em>
-      <div class="stage-metrics">
-        <span><b>${numberFmt.format(item.count)}</b> مشروع</span>
-        <span>${compactSar(item.amountExclVat)}</span>
-      </div>
-      <div class="stage-share" aria-hidden="true"><i style="width:${Math.max(4, share)}%"></i></div>
-      <small>${topProject ? escapeHtml(topProject.project) : "لا توجد مشاريع في هذا المسار حالياً"}</small>
-    </button>`;
-  }).join("");
-}
-
 function renderTable(rows) {
-  const sortedRows = rows
-    .slice()
-    .sort((a, b) => statusRank(a.status) - statusRank(b.status) || Number(a.number) - Number(b.number));
   qs("table-count").textContent = `${numberFmt.format(rows.length)} مشروع`;
-  const groups = statusOrder
-    .concat(sortedRows.map((p) => p.status).filter((status) => !statusOrder.includes(status)))
-    .filter((status, index, list) => list.indexOf(status) === index)
-    .map((status) => [status, sortedRows.filter((p) => p.status === status)])
-    .filter(([, items]) => items.length);
-  qs("projects-body").innerHTML = groups
-    .map(([status, items]) => statusGroupHeader(status, items) + items.map((p, i) => projectRow(p, i)).join(""))
-    .join("");
-}
-
-function statusRank(status) {
-  const index = statusOrder.indexOf(status);
-  return index === -1 ? statusOrder.length : index;
-}
-
-function statusGroupHeader(status, items) {
-  const meta = statusMeta[status] || statusMeta.unknown;
-  const total = sum(items.map((p) => p.amountExclVat));
-  return `<tr class="project-group-row ${escapeAttr(meta.tone)}">
-      <td colspan="6">
-      <div class="project-group-banner">
-        <span>${escapeHtml(meta.short)}</span>
-        <strong>${escapeHtml(meta.title)}</strong>
-        <em>${numberFmt.format(items.length)} مشروع · ${compactSar(total)}</em>
-      </div>
-    </td>
-  </tr>`;
-}
-
-function projectRow(p, i) {
-  const meta = statusMeta[p.status] || statusMeta.unknown;
-  return `<tr class="project-row status-${escapeAttr(meta.tone)} ${selectedProject?.detailId === p.detailId ? "is-selected" : ""}" data-detail-id="${escapeAttr(p.detailId)}" tabindex="0">
+  qs("projects-body").innerHTML = rows
+    .slice()
+    .sort((a, b) => Number(a.number) - Number(b.number))
+    .map((p, i) => `<tr>
       <td>${escapeHtml(p.number || String(i + 1))}</td>
       <td class="project-name">${escapeHtml(p.project)}</td>
       <td>${escapeHtml(p.client)}</td>
       <td>${escapeHtml(p.portfolio)}</td>
       <td><span class="badge ${escapeAttr(p.status)}">${escapeHtml(p.statusLabel)}</span></td>
       <td class="amount muted-amount">${sar.format(p.amountExclVat)}</td>
-    </tr>`;
-}
-
-function findProjectById(id) {
-  return filteredProjects().find((p) => p.detailId === id) ||
-    sourceData.projects.find((p) => p.detailId === id);
-}
-
-function openProjectDrawer(project) {
-  if (!project) return;
-  selectedProject = project;
-  const rows = filteredProjects();
-  const total = sum(rows.map((p) => p.amountExclVat)) || project.amountExclVat || 1;
-  const share = Math.max(0, Math.min(1, project.amountExclVat / total));
-
-  qs("drawer-project-number").textContent = `مشروع رقم ${project.number || "-"}`;
-  qs("drawer-project-title").textContent = project.project;
-  qs("drawer-project-client").textContent = project.client;
-  qs("drawer-project-portfolio").textContent = project.portfolio;
-  qs("drawer-project-status").textContent = project.statusLabel;
-  qs("drawer-amount-excl").textContent = sar.format(project.amountExclVat);
-  qs("drawer-share").textContent = percent(share);
-  qs("drawer-share-bar").style.width = `${Math.max(3, share * 100)}%`;
-  qs("project-drawer").classList.add("open");
-  qs("project-drawer").setAttribute("aria-hidden", "false");
-  renderTable(rows);
-}
-
-function closeProjectDrawer() {
-  selectedProject = null;
-  qs("project-drawer").classList.remove("open");
-  qs("project-drawer").setAttribute("aria-hidden", "true");
-  renderTable(filteredProjects());
-}
-
-function applyDrawerFilter(type) {
-  if (!selectedProject) return;
-  if (type === "client") {
-    filters.search = selectedProject.client;
-    qs("search-input").value = selectedProject.client;
-  }
-  if (type === "portfolio") {
-    filters.portfolio = selectedProject.portfolio;
-    qs("portfolio-filter").value = selectedProject.portfolio;
-  }
-  closeProjectDrawer();
-  render();
+      <td class="amount">${sar.format(p.amountInclVat)}</td>
+    </tr>`)
+    .join("");
 }
 
 function exportPortfolioExcel() {
@@ -432,6 +278,7 @@ function exportPortfolioExcel() {
       "المحفظة": p.portfolio,
       "الحالة": p.statusLabel,
       "غير شامل الضريبة": p.amountExclVat,
+      "شامل الضريبة": p.amountInclVat,
     }));
 
   const wb = XLSX.utils.book_new();
@@ -455,7 +302,7 @@ function groupBy(rows, key) {
 }
 
 function topEntry(grouped) {
-  return [...grouped.entries()].sort((a, b) => b[1].amountExclVat - a[1].amountExclVat)[0];
+  return [...grouped.entries()].sort((a, b) => b[1].amountInclVat - a[1].amountInclVat)[0];
 }
 
 function sum(values) {
@@ -506,48 +353,6 @@ qs("reset-btn").addEventListener("click", () => {
   qs("portfolio-filter").value = "all";
   qs("status-filter").value = "all";
   render();
-});
-
-qs("status-stage-board")?.addEventListener("click", (event) => {
-  const card = event.target.closest("[data-status]");
-  if (!card) return;
-  const nextStatus = card.dataset.status;
-  filters.status = filters.status === nextStatus ? "all" : nextStatus;
-  qs("status-filter").value = filters.status;
-  render();
-});
-
-qs("status-stage-board")?.addEventListener("keydown", (event) => {
-  if (event.key !== "Enter" && event.key !== " ") return;
-  const card = event.target.closest("[data-status]");
-  if (!card) return;
-  event.preventDefault();
-  card.click();
-});
-
-qs("projects-body").addEventListener("click", (event) => {
-  const row = event.target.closest("[data-detail-id]");
-  if (!row) return;
-  openProjectDrawer(findProjectById(row.dataset.detailId));
-});
-
-qs("projects-body").addEventListener("keydown", (event) => {
-  if (event.key !== "Enter" && event.key !== " ") return;
-  const row = event.target.closest("[data-detail-id]");
-  if (!row) return;
-  event.preventDefault();
-  openProjectDrawer(findProjectById(row.dataset.detailId));
-});
-
-qs("project-drawer-close").addEventListener("click", closeProjectDrawer);
-qs("project-drawer-backdrop").addEventListener("click", closeProjectDrawer);
-qs("drawer-filter-client").addEventListener("click", () => applyDrawerFilter("client"));
-qs("drawer-filter-portfolio").addEventListener("click", () => applyDrawerFilter("portfolio"));
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && qs("project-drawer").classList.contains("open")) {
-    closeProjectDrawer();
-  }
 });
 
 loadData();

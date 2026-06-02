@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0e2a47">
+  <title>محفظة المناقصات | الإدارة العامة للمناقصات</title>
+  <link rel="icon" href="../assets/alrawaf-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/brand.css?v=4">
+  <link rel="stylesheet" href="./styles.css?v=4">
+  <script src="../config.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body class="page-portfolio">
+
+  <!-- ════════════════════ HEADER ════════════════════ -->
+  <header class="brand-header" id="brand-header">
+    <div class="container brand-header-inner">
+      <a class="brand-mark-link" href="../index.html?return=portal">
+        <img src="../assets/alrawaf-logo.png" alt="الرواف للمقاولات">
+        <span class="brand-mark-text">
+          <strong>الرواف للمقاولات</strong>
+          <em>الإدارة العامة للمناقصات</em>
+        </span>
+      </a>
+      <nav class="brand-crumbs" aria-label="مسار التنقل">
+        <a href="../index.html?return=portal">البوابة</a>
+        <span class="sep">›</span>
+        <span class="current">محفظة المناقصات</span>
+      </nav>
+      <div class="brand-actions">
+        <button class="cta cta-ghost export-excel-btn" type="button" onclick="exportPortfolioExcel()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          <span>تصدير Excel</span>
+        </button>
+        <a class="cta cta-link" href="../index.html?return=portal">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          رجوع
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ════════════════════ PREMIUM DARK HERO BAND ════════════════════ -->
+  <section class="hero-band">
+    <!-- Background scenography -->
+    <div class="hb-bg" aria-hidden="true">
+      <!-- skyline -->
+      <svg class="hb-skyline" viewBox="0 0 1600 400" preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <linearGradient id="hbSky" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#163a5f"/>
+            <stop offset="1" stop-color="#0e2a47"/>
+          </linearGradient>
+          <linearGradient id="hbSun" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#c89b3c" stop-opacity=".55"/>
+            <stop offset="1" stop-color="#c89b3c" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <rect width="1600" height="400" fill="url(#hbSky)"/>
+        <circle cx="1300" cy="120" r="180" fill="url(#hbSun)"/>
+        <!-- distant skyline silhouette -->
+        <g fill="#0a1f36" opacity=".85">
+          <polygon points="0,400 0,260 80,260 80,200 140,200 140,280 220,280 220,180 300,180 300,250 360,250 360,300 440,300 440,220 540,220 540,180 600,180 600,260 700,260 700,160 760,160 760,200 820,200 820,250 900,250 900,200 980,200 980,160 1040,160 1040,240 1120,240 1120,200 1200,200 1200,260 1280,260 1280,220 1340,220 1340,280 1440,280 1440,240 1520,240 1520,300 1600,300 1600,400"/>
+        </g>
+        <!-- closer architectural facade -->
+        <g fill="#08182b">
+          <rect x="60" y="220" width="200" height="180"/>
+          <rect x="280" y="180" width="240" height="220"/>
+          <rect x="540" y="260" width="160" height="140"/>
+          <rect x="720" y="200" width="280" height="200"/>
+          <rect x="1020" y="240" width="180" height="160"/>
+          <rect x="1220" y="200" width="220" height="200"/>
+          <rect x="1460" y="240" width="140" height="160"/>
+        </g>
+        <!-- window grid -->
+        <g fill="#c89b3c" opacity=".22">
+          <!-- building 1 -->
+          <rect x="80" y="240" width="6" height="10"/><rect x="100" y="240" width="6" height="10"/><rect x="120" y="240" width="6" height="10"/><rect x="140" y="240" width="6" height="10"/><rect x="160" y="240" width="6" height="10"/><rect x="180" y="240" width="6" height="10"/><rect x="200" y="240" width="6" height="10"/><rect x="220" y="240" width="6" height="10"/><rect x="240" y="240" width="6" height="10"/>
+          <rect x="80" y="270" width="6" height="10"/><rect x="100" y="270" width="6" height="10"/><rect x="120" y="270" width="6" height="10"/><rect x="140" y="270" width="6" height="10"/><rect x="160" y="270" width="6" height="10"/><rect x="180" y="270" width="6" height="10"/><rect x="200" y="270" width="6" height="10"/><rect x="220" y="270" width="6" height="10"/><rect x="240" y="270" width="6" height="10"/>
+          <rect x="80" y="300" width="6" height="10"/><rect x="100" y="300" width="6" height="10"/><rect x="120" y="300" width="6" height="10"/><rect x="140" y="300" width="6" height="10"/><rect x="160" y="300" width="6" height="10"/><rect x="180" y="300" width="6" height="10"/><rect x="200" y="300" width="6" height="10"/><rect x="220" y="300" width="6" height="10"/><rect x="240" y="300" width="6" height="10"/>
+          <rect x="80" y="330" width="6" height="10"/><rect x="100" y="330" width="6" height="10"/><rect x="120" y="330" width="6" height="10"/><rect x="140" y="330" width="6" height="10"/><rect x="160" y="330" width="6" height="10"/><rect x="180" y="330" width="6" height="10"/><rect x="200" y="330" width="6" height="10"/><rect x="220" y="330" width="6" height="10"/><rect x="240" y="330" width="6" height="10"/>
+          <!-- building 2 (tall) -->
+          <rect x="300" y="200" width="6" height="10"/><rect x="320" y="200" width="6" height="10"/><rect x="340" y="200" width="6" height="10"/><rect x="360" y="200" width="6" height="10"/><rect x="380" y="200" width="6" height="10"/><rect x="400" y="200" width="6" height="10"/><rect x="420" y="200" width="6" height="10"/><rect x="440" y="200" width="6" height="10"/><rect x="460" y="200" width="6" height="10"/><rect x="480" y="200" width="6" height="10"/><rect x="500" y="200" width="6" height="10"/>
+          <rect x="300" y="230" width="6" height="10"/><rect x="320" y="230" width="6" height="10"/><rect x="340" y="230" width="6" height="10"/><rect x="360" y="230" width="6" height="10"/><rect x="380" y="230" width="6" height="10"/><rect x="400" y="230" width="6" height="10"/><rect x="420" y="230" width="6" height="10"/><rect x="440" y="230" width="6" height="10"/><rect x="460" y="230" width="6" height="10"/><rect x="480" y="230" width="6" height="10"/><rect x="500" y="230" width="6" height="10"/>
+          <rect x="300" y="260" width="6" height="10"/><rect x="340" y="260" width="6" height="10"/><rect x="380" y="260" width="6" height="10"/><rect x="420" y="260" width="6" height="10"/><rect x="460" y="260" width="6" height="10"/><rect x="500" y="260" width="6" height="10"/>
+          <rect x="300" y="290" width="6" height="10"/><rect x="320" y="290" width="6" height="10"/><rect x="340" y="290" width="6" height="10"/><rect x="380" y="290" width="6" height="10"/><rect x="420" y="290" width="6" height="10"/><rect x="460" y="290" width="6" height="10"/><rect x="480" y="290" width="6" height="10"/><rect x="500" y="290" width="6" height="10"/>
+          <rect x="300" y="320" width="6" height="10"/><rect x="340" y="320" width="6" height="10"/><rect x="380" y="320" width="6" height="10"/><rect x="420" y="320" width="6" height="10"/><rect x="460" y="320" width="6" height="10"/><rect x="500" y="320" width="6" height="10"/>
+        </g>
+        <!-- gold horizontal beams -->
+        <line x1="0" y1="395" x2="1600" y2="395" stroke="#c89b3c" stroke-width="2" opacity=".6"/>
+      </svg>
+
+      <!-- subtle grid overlay -->
+      <svg class="hb-grid" viewBox="0 0 1600 400" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <pattern id="hbGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M40 0H0V40" fill="none" stroke="#ffffff" stroke-opacity=".035"/>
+          </pattern>
+        </defs>
+        <rect width="1600" height="400" fill="url(#hbGrid)"/>
+      </svg>
+
+      <!-- gold sun glow -->
+      <span class="hb-glow"></span>
+
+      <!-- sage diagonal cut at bottom -->
+      <svg class="hb-cut" viewBox="0 0 1600 80" preserveAspectRatio="none">
+        <polygon points="0,80 1600,80 1600,40 0,80" fill="#7e9f82" opacity=".18"/>
+        <polygon points="0,80 1600,80 1600,0 0,80" fill="#fafbfd"/>
+      </svg>
+    </div>
+
+    <div class="container hb-inner">
+      <span class="hb-eyebrow">
+        <i></i>
+        <span>محفظة المناقصات • السنة المالية 2025 / 2026</span>
+        <i></i>
+      </span>
+
+      <h1 class="hb-title">
+        نمو محفظة <span class="accent">المناقصات</span>
+      </h1>
+
+      <p class="hb-lead">
+        قراءة تنفيذية فورية لقيمة المحفظة، حالة الترسية، تركيز العملاء، وتوزيع المحافظ —
+        ضمن منظومة موحّدة لإدارة دورة المناقصة.
+      </p>
+
+      <div class="hb-stats">
+        <span class="hb-stat"><strong>تنفيذية</strong> الصياغة</span>
+        <span class="hb-stat-dot"></span>
+        <span class="hb-stat"><strong>لحظية</strong> البيانات</span>
+        <span class="hb-stat-dot"></span>
+        <span class="hb-stat"><strong>موحّدة</strong> المنظومة</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════ FLOATING METRICS (overlap hero band) ════════════════════ -->
+  <section class="metrics-deck container" aria-label="ملخص المحفظة">
+    <!-- Featured large metric -->
+    <article class="kpi kpi-feature">
+      <!-- decorative sparkline backdrop -->
+      <svg class="kpi-sparkline" viewBox="0 0 400 100" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="kpiSpark" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#c89b3c" stop-opacity=".45"/>
+            <stop offset="1" stop-color="#c89b3c" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="M0 70 L40 60 L80 65 L120 50 L160 55 L200 40 L240 45 L280 30 L320 35 L360 20 L400 25 L400 100 L0 100 Z" fill="url(#kpiSpark)"/>
+        <path d="M0 70 L40 60 L80 65 L120 50 L160 55 L200 40 L240 45 L280 30 L320 35 L360 20 L400 25" stroke="#c89b3c" stroke-width="2" fill="none" opacity=".9"/>
+        <circle cx="400" cy="25" r="4" fill="#c89b3c"/>
+      </svg>
+
+      <div class="kpi-seal" aria-hidden="true">
+        <svg viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="28" fill="none" stroke="#c89b3c" stroke-width="1" stroke-dasharray="2 4"/>
+          <circle cx="32" cy="32" r="22" fill="rgba(200,155,60,.12)"/>
+          <polygon points="32,12 40,20 40,44 32,52 24,44 24,20" fill="none" stroke="#c89b3c" stroke-width="1.4"/>
+          <polygon points="32,22 38,32 32,42 26,32" fill="#7e9f82"/>
+        </svg>
+      </div>
+
+      <span class="kpi-eyebrow">المؤشر الرئيسي • شامل ضريبة القيمة المضافة</span>
+      <span class="kpi-title">إجمالي قيمة المحفظة</span>
+      <strong id="kpi-total">-</strong>
+      <small id="kpi-total-sub">يعتمد على ضريبة 15%</small>
+
+      <span class="kpi-tag-up">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l10-10M17 7v10H7"/></svg>
+        أداء متنامٍ
+      </span>
+    </article>
+
+    <article class="kpi kpi-sage">
+      <span class="kpi-corner" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
+      </span>
+      <span class="kpi-title">عدد المشاريع</span>
+      <strong id="kpi-count">-</strong>
+      <small>مشروع ضمن المحفظة</small>
+      <div class="kpi-bar" aria-hidden="true"><span style="width: 78%"></span></div>
+    </article>
+
+    <article class="kpi kpi-gold">
+      <span class="kpi-corner" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M12 2 4 5v7c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V5l-8-3z"/><path d="m9 12 2 2 4-4"/>
+        </svg>
+      </span>
+      <span class="kpi-title">أكبر محفظة</span>
+      <strong id="kpi-top-portfolio">-</strong>
+      <small id="kpi-top-portfolio-sub">شامل الضريبة</small>
+      <div class="kpi-bar" aria-hidden="true"><span style="width: 92%"></span></div>
+    </article>
+  </section>
+
+  <!-- ════════════════════ PAGE BODY ════════════════════ -->
+  <main class="page container">
+
+    <!-- Filter Bar -->
+    <section class="panel filter-bar" aria-label="الفلاتر">
+      <div class="filter-bar-inner">
+        <span class="filter-label">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+          الفلاتر
+        </span>
+        <div class="filter-row">
+          <label class="field field-inline field-search">
+            <span class="field-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            </span>
+            <input id="search-input" type="search" placeholder="ابحث باسم مشروع أو عميل…">
+          </label>
+          <label class="field field-inline">
+            <span class="field-label">المحفظة</span>
+            <select id="portfolio-filter"></select>
+          </label>
+          <label class="field field-inline">
+            <span class="field-label">الحالة</span>
+            <select id="status-filter"></select>
+          </label>
+          <button id="reset-btn" class="cta cta-ghost cta-sm" type="button">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+            <span>إعادة ضبط</span>
+          </button>
+        </div>
+      </div>
+      <div class="metric-list" id="status-list" hidden></div>
+    </section>
+
+    <!-- Charts Row 1 -->
+    <section class="charts charts-primary">
+      <article class="panel chart-panel">
+        <div class="panel-head">
+          <h2><span class="ph-deco gold"></span>توزيع المحافظ حسب القيمة</h2>
+          <span id="portfolio-chart-total"></span>
+        </div>
+        <div id="portfolio-chart" class="bar-chart"></div>
+      </article>
+      <article class="panel chart-panel">
+        <div class="panel-head">
+          <h2><span class="ph-deco sage"></span>أعلى العملاء حسب القيمة</h2>
+          <span id="client-chart-total"></span>
+        </div>
+        <div id="client-chart" class="bar-chart"></div>
+      </article>
+    </section>
+
+    <!-- Charts Row 2 -->
+    <section class="charts charts-secondary">
+      <article class="panel donut-panel">
+        <div class="panel-head">
+          <h2><span class="ph-deco navy"></span>حالة الترسية والتعاقد</h2>
+          <span>حسب عدد المشاريع</span>
+        </div>
+        <div class="donut-layout">
+          <div id="status-donut" class="donut"></div>
+          <div id="status-legend" class="legend"></div>
+        </div>
+      </article>
+      <article class="panel">
+        <div class="panel-head">
+          <h2><span class="ph-deco gold"></span>قيمة المحافظ</h2>
+          <span>شامل الضريبة</span>
+        </div>
+        <div id="portfolio-cards" class="portfolio-cards"></div>
+      </article>
+    </section>
+
+    <!-- Status Summary -->
+    <article class="panel status-summary-panel">
+      <div class="panel-head">
+        <h2><span class="ph-deco sage"></span>النسبة المئوية حسب حالة الترسية والتعاقد</h2>
+      </div>
+      <div class="status-summary-wrap table-wrap">
+        <table class="status-summary-table">
+          <thead>
+            <tr>
+              <th>حالة الترسية والتعاقد</th>
+              <th>الإجمالي غير شامل ضريبة القيمة المضافة</th>
+              <th>الإجمالي شامل ضريبة القيمة المضافة</th>
+              <th>النسبة المئوية</th>
+            </tr>
+          </thead>
+          <tbody id="status-summary-body"></tbody>
+        </table>
+      </div>
+    </article>
+
+    <!-- Projects Table -->
+    <article class="panel table-panel">
+      <div class="panel-head">
+        <h2><span class="ph-deco navy"></span>المشاريع</h2>
+        <span id="table-count">0 مشروع</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>م</th>
+              <th>اسم المشروع</th>
+              <th>العميل</th>
+              <th>المحفظة</th>
+              <th>الحالة</th>
+              <th>غير شامل الضريبة</th>
+              <th>شامل الضريبة</th>
+            </tr>
+          </thead>
+          <tbody id="projects-body"></tbody>
+        </table>
+      </div>
+    </article>
+  </main>
+
+  <!-- ════════════════════ FOOTER ════════════════════ -->
+  <footer class="brand-footer">
+    <div class="container brand-footer-inner">
+      <div class="brand-footer-brand">
+        <img src="../assets/alrawaf-logo.png" alt="الرواف">
+        <p>شركة الرواف للمقاولات — الإدارة العامة للمناقصات. منصة موحّدة لإدارة دورة المناقصات داخل الشركة.</p>
+      </div>
+      <div>
+        <h4>تواصل</h4>
+        <ul>
+          <li><span>الموقع</span> المملكة العربية السعودية</li>
+          <li><span>البريد</span> tenders@alrawaf.com.sa</li>
+          <li><span>المجال</span> alrawaf.com.sa</li>
+        </ul>
+      </div>
+      <div>
+        <h4>روابط</h4>
+        <ul>
+          <li><a href="../index.html?return=portal">البوابة</a></li>
+          <li><a href="../index.html#mission">عن الإدارة</a></li>
+          <li><a href="../index.html#contact">تواصل</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="brand-footer-bottom">
+      <div class="container">
+        <span>© <span id="copy-year"></span> شركة الرواف للمقاولات — جميع الحقوق محفوظة</span>
+        <span class="dot">•</span>
+        <span>الإدارة العامة للمناقصات</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./app.js"></script>
+  <script>
+    const yEl = document.getElementById("copy-year"); if (yEl) yEl.textContent = new Date().getFullYear();
+    const bh = document.getElementById("brand-header");
+    const onS = () => bh && bh.classList.toggle("scrolled", window.scrollY > 8);
+    window.addEventListener("scroll", onS, { passive: true }); onS();
+
+    (() => {
+      let role = "";
+      try { role = sessionStorage.getItem("alrawafPortalRole") || ""; } catch {}
+      if (role !== "general") return;
+      document.querySelectorAll(".export-wrap, .export-btn, .export-excel-btn, .export-dropdown").forEach((item) => {
+        item.style.display = "none";
+      });
+    })();
+  </script>
+</body>
+</html>

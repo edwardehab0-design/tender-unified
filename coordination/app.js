@@ -1,0 +1,1193 @@
+const SESSION_KEY = "alrawafPortalRole";
+const STATE_KEY = "alrawafCoordinationStateV1";
+
+const fallbackDepartments = [
+  {
+    key: "BS",
+    name: "إدارة دراسات السوق",
+    short: "BS",
+    manager: "مدير دراسات السوق",
+    library: "SharePoint/BS",
+    engineers: ["أحمد", "عبدالله", "نواف", "سلمان"],
+    tasks: ["تحليل المنافسة", "قراءة المتطلبات", "تحديد المخاطر", "رفع توصية المشاركة"]
+  },
+  {
+    key: "INF",
+    name: "إدارة البنية التحتية",
+    short: "INF",
+    manager: "مدير البنية التحتية",
+    library: "SharePoint/INF",
+    engineers: ["خالد", "فيصل", "مازن", "تركي"],
+    tasks: ["مراجعة النطاق الفني", "تقدير الموارد", "حصر البنود الحرجة", "رفع الملاحظات الفنية"]
+  },
+  {
+    key: "TECH",
+    name: "الإدارة الفنية",
+    short: "TECH",
+    manager: "المدير الفني",
+    library: "SharePoint/TECH",
+    engineers: ["محمد", "راكان", "بندر", "مشاري"],
+    tasks: ["مراجعة المواصفات", "تحليل المخططات", "مطابقة المتطلبات", "تجهيز الاستفسارات"]
+  },
+  {
+    key: "DESIGN",
+    name: "إدارة التصميم",
+    short: "DESIGN",
+    manager: "مدير التصميم",
+    library: "SharePoint/DESIGN",
+    engineers: ["سارة", "ريما", "لينا", "هند"],
+    tasks: ["تقييم متطلبات التصميم", "مراجعة المخططات", "حصر النواقص", "رفع ملفات التصميم"]
+  }
+];
+
+let departments = fallbackDepartments;
+let techOfferData = null;
+
+const fallbackTenders = [
+  {
+    id: "TND-106-26",
+    title: "تنفيذ وتشغيل وصيانة الحدائق العامة والسقيا لوجهة صفوى",
+    client: "الشركة الوطنية للإسكان",
+    sector: "محفظة مشاريع البنية التحتية",
+    submitDate: "2026-06-05"
+  },
+  {
+    id: "TND-81-26",
+    title: "توريد وتركيب أنابيب الألياف الزجاجية لنظام نقل الرياض القصيم",
+    client: "الهيئة السعودية للمياه",
+    sector: "محفظة مشاريع المياه والنقل",
+    submitDate: "2026-06-08"
+  },
+  {
+    id: "TND-73-26",
+    title: "مشروع إنشاء دور إيواء في مناطق متعددة",
+    client: "وزارة الداخلية",
+    sector: "محفظة مشاريع المباني",
+    submitDate: "2026-06-12"
+  }
+];
+
+let tenders = [];
+let selectedDepartment = "all";
+let selectedFilter = "all";
+let searchTerm = "";
+let selectedContext = null;
+let savedState = readState();
+const HOUR_MS = 60 * 60 * 1000;
+const DAY_MS = 24 * HOUR_MS;
+
+function qs(id) {
+  return document.getElementById(id);
+}
+
+function role() {
+  try {
+    return sessionStorage.getItem(SESSION_KEY) || "manager";
+  } catch {
+    return "manager";
+  }
+}
+
+function isExecutive() {
+  const current = role();
+  return current === "manager" || current === "vp";
+}
+
+function currentDepartmentKey() {
+  try {
+    return sessionStorage.getItem("alrawafDepartmentKey") || "BS";
+  } catch {
+    return "BS";
+  }
+}
+
+function readState() {
+  try {
+    return JSON.parse(localStorage.getItem(STATE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function writeState() {
+  try {
+    localStorage.setItem(STATE_KEY, JSON.stringify(savedState));
+  } catch {}
+}
+
+function isManagerTitle(title = "") {
+  const value = String(title).toLowerCase();
+  return value.includes("manager") || value.includes("director") || value.includes("office manager");
+}
+
+function isSupportTitle(title = "") {
+  const value = String(title).toLowerCase();
+  return value.includes("administrative") || value.includes("document controller") || value.includes("office manager");
+}
+
+function personName(person) {
+  return typeof person === "string" ? person : person?.name || "";
+}
+
+function personTitle(person) {
+  return typeof person === "string" ? "" : person?.title || "";
+}
+
+function rosterEmployees(dept) {
+  const employees = Array.isArray(dept.employees) ? dept.employees : [];
+  if (employees.length) return employees;
+  return (dept.engineers || []).map((name) => ({ name, title: "Engineer" }));
+}
+
+function assignableEmployees(dept) {
+  return rosterEmployees(dept);
+}
+
+function autoAssignableEmployees(dept) {
+  const employees = rosterEmployees(dept);
+  const technical = employees.filter((employee) => !isManagerTitle(employee.title) && !isSupportTitle(employee.title));
+  if (technical.length) return technical;
+  return employees;
+}
+
+function assignmentRoleLabel(person) {
+  const title = personTitle(person);
+  if (isSupportTitle(title)) return "دعم";
+  if (isManagerTitle(title)) return "قيادي";
+  return "مهندس";
+}
+
+function assignmentRoleKey(person) {
+  const title = personTitle(person);
+  if (isSupportTitle(title)) return "support";
+  if (isManagerTitle(title)) return "leader";
+  return "engineer";
+}
+
+async function loadEmployees() {
+  try {
+    const response = await fetch("./employees.json?v=1", { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    if (!Array.isArray(data.departments) || !data.departments.length) return;
+    departments = data.departments.map((dept) => ({
+      key: dept.key,
+      name: dept.name,
+      short: dept.key,
+      manager: dept.manager || "",
+      library: dept.library || `SharePoint/${dept.key}`,
+      tasks: Array.isArray(dept.tasks) ? dept.tasks : [],
+      employees: Array.isArray(dept.employees) ? dept.employees : [],
+      sourceLabel: dept.sourceLabel || ""
+    }));
+  } catch (error) {
+    departments = fallbackDepartments;
+  }
+}
+
+async function loadTechOffers() {
+  try {
+    const response = await fetch("./tech-offers.json?v=2", { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    techOfferData = await response.json();
+  } catch {
+    techOfferData = null;
+  }
+}
+
+function normalizeText(value) {
+  return String(value || "")
+    .replace(/[\u064B-\u065F]/g, "")
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ى/g, "ي")
+    .replace(/ؤ/g, "و")
+    .replace(/ئ/g, "ي")
+    .replace(/ـ/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function techRecordForTender(tender) {
+  if (!techOfferData || !Array.isArray(techOfferData.inProgress)) return null;
+  const title = normalizeText(tender.title);
+  const id = normalizeText(tender.id);
+  return techOfferData.inProgress.find((row) => {
+    const rowTitle = normalizeText(row.projectName);
+    const rowId = normalizeText(row.tenderId);
+    return (rowTitle && rowTitle === title) || (rowId && rowId === id);
+  }) || null;
+}
+
+function employeeByFullName(dept, fullName) {
+  const target = normalizeText(fullName);
+  if (!target) return null;
+  return (dept.employees || []).find((employee) => normalizeText(employee.name) === target) || null;
+}
+
+function safe(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  }[ch]));
+}
+
+function pick(row, labels, fallbackIndex) {
+  for (const label of labels) {
+    if (row[label]) return row[label];
+  }
+  const keys = Object.keys(row);
+  const matched = keys.find((key) => labels.some((label) => key.includes(label)));
+  if (matched && row[matched]) return row[matched];
+  return row[keys[fallbackIndex]] || "";
+}
+
+function normalizeTender(row, index) {
+  return {
+    id: row.tender_id || row.id || `TND-${String(index + 1).padStart(3, "0")}`,
+    title: pick(row, ["اسم المناقصة", "Tender Title", "tender_title", "name"], 1) || fallbackTenders[index % fallbackTenders.length].title,
+    client: pick(row, ["المالك", "Client", "client", "owner"], 4) || "غير محدد",
+    sector: pick(row, ["القطاع", "Sector", "sector"], 6) || "غير محدد",
+    submitDate: pick(row, ["تاريخ التقديم", "Submission", "submission", "date"], 2) || "2026-06-01"
+  };
+}
+
+function statusFor(tender, deptIndex) {
+  const state = savedState[tender.id]?.departments?.[departments[deptIndex].key];
+  if (state) return state;
+  const seed = [...String(tender.id)].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) + deptIndex;
+  if (seed % 7 === 0) return "late";
+  if (seed % 4 === 0) return "completed";
+  return "in-progress";
+}
+
+function setDepartmentStatus(tenderId, departmentKey, status) {
+  savedState[tenderId] = savedState[tenderId] || {};
+  savedState[tenderId].departments = savedState[tenderId].departments || {};
+  savedState[tenderId].departments[departmentKey] = status;
+  if (status === "completed") {
+    savedState[tenderId].timing = savedState[tenderId].timing || {};
+    savedState[tenderId].timing[departmentKey] = savedState[tenderId].timing[departmentKey] || {};
+    savedState[tenderId].timing[departmentKey].completedAt = new Date().toISOString();
+  }
+  writeState();
+}
+
+function setApproval(tenderId, status) {
+  savedState[tenderId] = savedState[tenderId] || {};
+  savedState[tenderId].approval = status;
+  writeState();
+}
+
+function savedAssignedNames(tenderId, departmentKey) {
+  const names = savedState[tenderId]?.assignments?.[departmentKey];
+  return Array.isArray(names) ? names : [];
+}
+
+function setAssignment(tenderId, departmentKey, names) {
+  savedState[tenderId] = savedState[tenderId] || {};
+  savedState[tenderId].assignments = savedState[tenderId].assignments || {};
+  savedState[tenderId].assignments[departmentKey] = names;
+  savedState[tenderId].timing = savedState[tenderId].timing || {};
+  savedState[tenderId].timing[departmentKey] = savedState[tenderId].timing[departmentKey] || {};
+  savedState[tenderId].timing[departmentKey].assignedAt = new Date().toISOString();
+  writeState();
+}
+
+function departmentComments(tenderId, departmentKey) {
+  const comments = savedState[tenderId]?.comments?.[departmentKey];
+  return Array.isArray(comments) ? comments : [];
+}
+
+function addDepartmentComment(tenderId, departmentKey, text) {
+  const value = String(text || "").trim();
+  if (!value) return;
+  savedState[tenderId] = savedState[tenderId] || {};
+  savedState[tenderId].comments = savedState[tenderId].comments || {};
+  savedState[tenderId].comments[departmentKey] = savedState[tenderId].comments[departmentKey] || [];
+  savedState[tenderId].comments[departmentKey].unshift({
+    text: value,
+    at: new Date().toISOString(),
+    by: isExecutive() ? "مدير الإدارة" : "مدير القسم"
+  });
+  writeState();
+}
+
+function personLoad(name) {
+  const target = normalizeText(name);
+  let open = 0;
+  let late = 0;
+  let completed = 0;
+  let totalHours = 0;
+  let completedWithTime = 0;
+
+  tenders.forEach((tender) => {
+    departmentRows(tender).forEach((row, index) => {
+      if (!row.engineers.some((person) => normalizeText(personName(person)) === target)) return;
+      const timeline = timelineFor(tender, row.key, index, row.status);
+      if (row.status === "completed" && timeline.completedAt) {
+        completed += 1;
+        completedWithTime += 1;
+        totalHours += hoursBetween(timeline.assignedAt, timeline.completedAt);
+      } else {
+        open += 1;
+        if (row.status === "late") late += 1;
+      }
+    });
+  });
+
+  return {
+    open,
+    late,
+    completed,
+    avgHours: completedWithTime ? totalHours / completedWithTime : 0
+  };
+}
+
+function personLoadLabel(name) {
+  const load = personLoad(name);
+  const avg = load.avgHours ? ` · متوسط ${formatHours(load.avgHours)}` : "";
+  return `${load.open} مهام مفتوحة · ${load.late} متأخرة${avg}`;
+}
+
+function statusLabel(status) {
+  return {
+    completed: "مكتمل",
+    "in-progress": "قيد العمل",
+    late: "متأخر",
+    rejected: "مرفوض",
+    approved: "معتمد"
+  }[status] || "لم يبدأ";
+}
+
+function departmentRows(tender) {
+  return departments.map((dept, index) => {
+    const engineers = assignedEngineers(tender, dept, index);
+    return {
+      ...dept,
+      status: statusFor(tender, index),
+      engineers,
+      assignmentNote: dept.key === "TECH" && !engineers.length ? techAssignmentNote(tender) : "",
+      files: fileCount(tender, index)
+    };
+  });
+}
+
+function assignedEngineers(tender, dept, index) {
+  const savedNames = savedAssignedNames(tender.id, dept.key);
+  if (savedNames.length) {
+    return savedNames
+      .map((name) => employeeByFullName(dept, name) || { name, title: "Assigned Engineer" })
+      .filter(Boolean);
+  }
+  if (dept.key === "TECH") {
+    const record = techRecordForTender(tender);
+    const matched = record?.ownerIsValid ? employeeByFullName(dept, record.ownerFullName) : null;
+    return matched ? [matched] : [];
+  }
+  const seed = [...String(tender.id)].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) + index * 3;
+  const count = (seed % 3) + 1;
+  const pool = autoAssignableEmployees(dept);
+  if (!pool.length) return [];
+  return Array.from({ length: Math.min(count, pool.length) }, (_, offset) => pool[(seed + offset) % pool.length]);
+}
+
+function fileCount(tender, index) {
+  const seed = [...String(tender.id)].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+  return (seed + index) % 5;
+}
+
+function techAssignmentNote(tender) {
+  const record = techRecordForTender(tender);
+  if (!record) return "لا يوجد سجل مطابق لهذه المنافسة داخل شيت العروض الفنية.";
+  const owner = record.ownerShortName ? `الاسم المختصر في الشيت: ${record.ownerShortName}. ` : "";
+  return `${owner}هذا الاسم غير موجود داخل ملف منسوبي قسم العروض الفنية، لذلك لم يتم إسناده تلقائيا.`;
+}
+
+function daysTo(dateValue) {
+  const target = new Date(dateValue);
+  if (Number.isNaN(target.getTime())) return "غير محدد";
+  const now = new Date();
+  const diff = Math.ceil((target - now) / 86400000);
+  if (diff < 0) return "متأخر";
+  if (diff === 0) return "اليوم";
+  return `${diff} يوم`;
+}
+
+function seedFor(value) {
+  return [...String(value)].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+}
+
+function addHours(date, hours) {
+  return new Date(date.getTime() + hours * HOUR_MS);
+}
+
+function timelineFor(tender, departmentKey, departmentIndex, status) {
+  const seed = seedFor(`${tender.id}-${departmentKey}`);
+  const submitDate = new Date(tender.submitDate);
+  const anchor = Number.isNaN(submitDate.getTime()) ? new Date() : submitDate;
+  const receivedAt = new Date(anchor.getTime() - ((8 + (seed % 7)) * DAY_MS));
+  const taskCreatedAt = addHours(receivedAt, 3 + (seed % 12));
+  const assignedAt = addHours(taskCreatedAt, 4 + ((seed + departmentIndex) % 20));
+  const workStartedAt = addHours(assignedAt, 1 + (seed % 7));
+  const generatedCompletedAt = addHours(assignedAt, 14 + (seed % 76));
+  const savedCompletedAt = savedState[tender.id]?.timing?.[departmentKey]?.completedAt;
+  const savedAssignedAt = savedState[tender.id]?.timing?.[departmentKey]?.assignedAt;
+  return {
+    receivedAt,
+    taskCreatedAt,
+    assignedAt: savedAssignedAt ? new Date(savedAssignedAt) : assignedAt,
+    workStartedAt,
+    completedAt: status === "completed" ? new Date(savedCompletedAt || generatedCompletedAt) : null
+  };
+}
+
+function hoursBetween(start, end) {
+  return Math.max(0, (new Date(end).getTime() - new Date(start).getTime()) / HOUR_MS);
+}
+
+function formatHours(hours) {
+  if (!Number.isFinite(hours)) return "-";
+  if (hours < 24) return `${Math.round(hours)} ساعة`;
+  return `${(hours / 24).toFixed(hours > 72 ? 0 : 1)} يوم`;
+}
+
+function formatDateTime(date) {
+  if (!date) return "-";
+  return new Intl.DateTimeFormat("ar-SA", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(new Date(date));
+}
+
+function progress(tender) {
+  const rows = departmentRows(tender);
+  return rows.filter((row) => row.status === "completed").length;
+}
+
+function tenderState(tender) {
+  const rows = departmentRows(tender);
+  if (rows.some((row) => row.status === "late")) return "late";
+  if (rows.every((row) => row.status === "completed")) return "ready";
+  return "active";
+}
+
+function visibleTenders() {
+  const term = searchTerm.trim().toLowerCase();
+  return tenders.filter((tender) => {
+    const visibleByRole = isExecutive() || selectedDepartment === "all" || selectedDepartment === currentDepartmentKey();
+    const matchesDepartment = selectedDepartment === "all" || departmentRows(tender).some((row) => row.key === selectedDepartment);
+    const rows = departmentRows(tender);
+    const matchesFilter = selectedFilter === "all"
+      || tenderState(tender) === selectedFilter
+      || (selectedFilter === "new" && rows.some((row) => !row.engineers.length || row.status === "in-progress"));
+    const matchesSearch = !term || `${tender.title} ${tender.client} ${tender.sector}`.toLowerCase().includes(term);
+    return visibleByRole && matchesDepartment && matchesFilter && matchesSearch;
+  });
+}
+
+function departmentStats(dept) {
+  const rows = tenders.map((tender) => departmentRows(tender).find((row) => row.key === dept.key)).filter(Boolean);
+  const open = rows.filter((row) => row.status !== "completed").length;
+  const completed = rows.filter((row) => row.status === "completed").length;
+  const late = rows.filter((row) => row.status === "late").length;
+  const unassigned = rows.filter((row) => row.key === "TECH" && !row.engineers.length).length;
+  const load = tenders.length ? Math.round((open / tenders.length) * 100) : 0;
+  return { open, completed, late, unassigned, load };
+}
+
+function stateText(state) {
+  return {
+    ready: "جاهزة للاعتماد",
+    late: "تحتاج تدخل",
+    active: "قيد التنسيق"
+  }[state] || "قيد التنسيق";
+}
+
+function rowStateClass(status, row) {
+  if (!row.engineers.length && row.key === "TECH") return "unassigned";
+  return status;
+}
+
+function renderInsights() {
+  const health = qs("data-health-list");
+  const best = qs("ops-best-employee");
+  const bestNote = qs("ops-best-note");
+  const pulse = qs("ops-pulse-list");
+  if (!health || !best || !bestNote || !pulse) return;
+
+  const unmatched = techOfferData?.validation?.unmatchedActiveOwners || {};
+  const unmatchedEntries = Object.entries(unmatched);
+  const missingRecords = tenders.filter((tender) => !techRecordForTender(tender)).length;
+  health.innerHTML = unmatchedEntries.length || missingRecords ? `
+    ${unmatchedEntries.map(([name, count]) => `
+      <div class="health-row danger">
+        <strong>${safe(name)}</strong>
+        <span>${count} منافسات غير مربوطة بموظف حقيقي</span>
+      </div>
+    `).join("")}
+    ${missingRecords ? `
+      <div class="health-row warning">
+        <strong>${missingRecords}</strong>
+        <span>منافسات لا يوجد لها سجل مطابق في شيت العروض الفنية</span>
+      </div>
+    ` : ""}
+  ` : `
+    <div class="health-row good">
+      <strong>ممتاز</strong>
+      <span>كل أسماء العروض الفنية مطابقة لملف المنسوبين</span>
+    </div>
+  `;
+
+  const metrics = employeeMetrics();
+  const top = metrics[0];
+  best.textContent = top ? top.name : "-";
+  bestNote.textContent = top ? `${top.department} · ${top.score} نقطة · ${top.open} مهام مفتوحة` : "لا توجد مهام محسوبة بعد";
+
+  const ready = tenders.filter((tender) => tenderState(tender) === "ready").length;
+  const late = tenders.filter((tender) => tenderState(tender) === "late").length;
+  const unassigned = tenders.reduce((sum, tender) => sum + departmentRows(tender).filter((row) => row.key === "TECH" && !row.engineers.length).length, 0);
+  pulse.innerHTML = `
+    <div><b>${ready}</b><span>ملفات تنتظر قرار المدير</span></div>
+    <div><b>${late}</b><span>ملفات تحتاج متابعة فورية</span></div>
+    <div><b>${unassigned}</b><span>مهام عروض فنية غير مسندة</span></div>
+  `;
+}
+
+function smartAlerts() {
+  const alerts = [];
+  const now = new Date();
+  tenders.forEach((tender) => {
+    const rows = departmentRows(tender);
+    const closeLabel = daysTo(tender.submitDate);
+    rows.forEach((row, index) => {
+      const timeline = timelineFor(tender, row.key, index, row.status);
+      const assignmentAge = hoursBetween(timeline.taskCreatedAt, now);
+      const workAge = hoursBetween(timeline.assignedAt, now);
+      if (!row.engineers.length) {
+        alerts.push({ tone: "danger", title: "مهمة غير مسندة", text: `${row.short} · ${tender.title}` });
+      } else if (row.status !== "completed" && workAge > 48) {
+        alerts.push({ tone: "warning", title: "مفتوحة أكثر من يومين", text: `${row.short} · ${formatHours(workAge)} · ${tender.title}` });
+      } else if (row.status !== "completed" && assignmentAge > 6) {
+        alerts.push({ tone: "soft", title: "تحتاج متابعة", text: `${row.short} · ${formatHours(assignmentAge)} منذ إنشاء المهمة` });
+      }
+    });
+    if (rows.every((row) => row.status === "completed")) {
+      alerts.push({ tone: "good", title: "جاهزة للاعتماد", text: tender.title });
+    } else if (closeLabel.includes("اليوم") || closeLabel.includes("متأخر")) {
+      alerts.push({ tone: "danger", title: "موعد إغلاق حرج", text: `${closeLabel} · ${tender.title}` });
+    }
+  });
+  return alerts.slice(0, 6);
+}
+
+function renderSmartAlerts() {
+  const container = qs("smart-alerts");
+  if (!container) return;
+  const alerts = smartAlerts();
+  container.innerHTML = alerts.length ? alerts.map((alert) => `
+    <article class="smart-alert ${safe(alert.tone)}">
+      <strong>${safe(alert.title)}</strong>
+      <span>${safe(alert.text)}</span>
+    </article>
+  `).join("") : `
+    <article class="smart-alert good">
+      <strong>الوضع مستقر</strong>
+      <span>لا توجد تنبيهات تشغيلية حرجة الآن.</span>
+    </article>
+  `;
+}
+
+function renderRole() {
+  const executive = isExecutive();
+  qs("role-label").textContent = executive ? "مدير الإدارة - عرض شامل" : "مدير قسم - عرض محدود";
+  qs("role-note").textContent = executive
+    ? "تظهر كل الأقسام وأزرار الاعتماد النهائي عند اكتمال المسارات"
+    : "تظهر مهام القسم المرتبط بصلاحيتك فقط";
+  if (!executive && selectedDepartment === "all") selectedDepartment = currentDepartmentKey();
+}
+
+function renderKpis() {
+  const source = tenders;
+  const ready = source.filter((tender) => tenderState(tender) === "ready").length;
+  const late = source.filter((tender) => tenderState(tender) === "late").length;
+  const files = source.reduce((sum, tender) => sum + departmentRows(tender).reduce((inner, dept) => inner + dept.files, 0), 0);
+  qs("kpi-active").textContent = source.length;
+  qs("kpi-ready").textContent = ready;
+  qs("kpi-attention").textContent = source.length - ready;
+  qs("kpi-files").textContent = files;
+}
+
+function employeeMetrics() {
+  const metrics = new Map();
+  const now = new Date();
+
+  function ensure(name, department) {
+    if (!metrics.has(name)) {
+      metrics.set(name, {
+        name,
+        department,
+        title: "",
+        assigned: 0,
+        completed: 0,
+        open: 0,
+        late: 0,
+        onTime: 0,
+        files: 0,
+        totalHours: 0,
+        fastest: Infinity,
+        slowest: 0,
+        currentLoadHours: 0,
+        score: 0
+      });
+    }
+    return metrics.get(name);
+  }
+
+  tenders.forEach((tender) => {
+    departmentRows(tender).forEach((row, index) => {
+      const timeline = timelineFor(tender, row.key, index, row.status);
+      const engineers = row.engineers;
+      if (!engineers.length) return;
+      const fileShare = row.files / engineers.length;
+      engineers.forEach((engineer) => {
+        const item = ensure(personName(engineer), row.short);
+        item.title = item.title || personTitle(engineer);
+        item.assigned += 1;
+        item.files += fileShare;
+        if (row.status === "completed" && timeline.completedAt) {
+          const duration = hoursBetween(timeline.assignedAt, timeline.completedAt);
+          item.completed += 1;
+          item.totalHours += duration;
+          item.fastest = Math.min(item.fastest, duration);
+          item.slowest = Math.max(item.slowest, duration);
+          if (new Date(timeline.completedAt) <= new Date(tender.submitDate)) item.onTime += 1;
+        } else {
+          item.open += 1;
+          item.currentLoadHours += hoursBetween(timeline.assignedAt, now);
+          if (row.status === "late") item.late += 1;
+        }
+      });
+    });
+  });
+
+  return [...metrics.values()].map((item) => {
+    const avgHours = item.completed ? item.totalHours / item.completed : 0;
+    const completionRate = item.assigned ? item.completed / item.assigned : 0;
+    const onTimeRate = item.completed ? item.onTime / item.completed : 0;
+    const speedBonus = avgHours ? Math.max(0, 32 - avgHours / 4) : 0;
+    item.avgHours = avgHours;
+    item.completionRate = completionRate;
+    item.onTimeRate = onTimeRate;
+    item.score = Math.max(0, Math.round((completionRate * 42) + (onTimeRate * 28) + speedBonus + Math.min(item.files, 18) - (item.late * 12)));
+    if (!Number.isFinite(item.fastest)) item.fastest = 0;
+    return item;
+  }).sort((a, b) => b.score - a.score || b.completed - a.completed || a.avgHours - b.avgHours);
+}
+
+function renderEmployeePerformance() {
+  const metrics = employeeMetrics();
+  const top = metrics[0];
+  const avg = metrics.filter((item) => item.completed).reduce((sum, item, _, arr) => sum + (item.avgHours / arr.length), 0);
+  const openTasks = metrics.reduce((sum, item) => sum + item.open, 0);
+  const lateTasks = metrics.reduce((sum, item) => sum + item.late, 0);
+
+  qs("kpi-best-score").textContent = top ? top.score : 0;
+  qs("employee-summary").innerHTML = `
+    <article>
+      <span>أفضل أداء</span>
+      <strong>${safe(top?.name || "-")}</strong>
+      <small>${top ? `${top.department} · ${top.title || "فريق العمل"} · ${top.completed} مهمة مكتملة` : "-"}</small>
+    </article>
+    <article>
+      <span>متوسط الإنجاز</span>
+      <strong>${formatHours(avg)}</strong>
+      <small>من وقت التعيين إلى Complete</small>
+    </article>
+    <article>
+      <span>مهام مفتوحة</span>
+      <strong>${openTasks}</strong>
+      <small>قيد العمل لدى المهندسين</small>
+    </article>
+    <article>
+      <span>مهام متأخرة</span>
+      <strong>${lateTasks}</strong>
+      <small>تحتاج متابعة مباشرة</small>
+    </article>
+  `;
+
+  qs("employee-ranking").innerHTML = metrics.slice(0, 8).map((item, index) => `
+    <div class="rank-card ${index === 0 ? "is-top" : ""}">
+      <div class="rank-index">${index + 1}</div>
+      <div>
+        <strong>${safe(item.name)}</strong>
+        <span>${safe(item.department)} · ${safe(item.title || "فريق العمل")} · ${item.assigned} مهمة · ${item.completed} مكتملة</span>
+      </div>
+      <b>${item.score}</b>
+    </div>
+  `).join("");
+
+  const maxScore = Math.max(...metrics.map((item) => item.score), 1);
+  qs("employee-time-grid").innerHTML = metrics.slice(0, 10).map((item) => `
+    <div class="time-row">
+      <div>
+        <strong>${safe(item.name)}</strong>
+        <span>${safe(item.department)} · ${safe(item.title || "فريق العمل")} · متوسط ${formatHours(item.avgHours)} · أسرع ${formatHours(item.fastest)}</span>
+      </div>
+      <div class="time-track"><i style="width:${Math.max(8, (item.score / maxScore) * 100)}%"></i></div>
+      <em>${item.open} مفتوحة</em>
+    </div>
+  `).join("");
+}
+
+function renderDepartments() {
+  const executive = isExecutive();
+  const departmentButtons = executive
+    ? [{ key: "all", name: "كل الإدارات", short: "ALL", virtual: true }, ...departments]
+    : departments.filter((dept) => dept.key === currentDepartmentKey());
+
+  qs("department-list").innerHTML = departmentButtons.map((dept) => {
+    const stats = dept.key === "all"
+      ? {
+        open: tenders.filter((tender) => tenderState(tender) !== "ready").length,
+        completed: tenders.filter((tender) => tenderState(tender) === "ready").length,
+        late: tenders.filter((tender) => tenderState(tender) === "late").length,
+        unassigned: tenders.reduce((sum, tender) => sum + departmentRows(tender).filter((row) => row.key === "TECH" && !row.engineers.length).length, 0),
+        load: tenders.length ? Math.round((tenders.filter((tender) => tenderState(tender) !== "ready").length / tenders.length) * 100) : 0
+      }
+      : departmentStats(dept);
+    const status = stats.late ? "خطر" : stats.load > 70 ? "مزدحم" : "هادئ";
+    return `
+      <button class="department-button ${selectedDepartment === dept.key ? "active" : ""}" type="button" data-department="${dept.key}">
+        <span class="dept-code">${safe(dept.short)}</span>
+        <strong>${safe(dept.name)}</strong>
+        <em>${safe(status)}</em>
+        <span class="department-load">
+          <i><b style="width:${Math.min(stats.load, 100)}%"></b></i>
+          <span>${stats.open} مفتوحة</span>
+        </span>
+        <span class="dept-stats">
+          <b>${stats.completed} مكتملة</b>
+          <b>${stats.late} متأخرة</b>
+          ${stats.unassigned ? `<b class="warn">${stats.unassigned} غير مسندة</b>` : ""}
+        </span>
+      </button>
+    `;
+  }).join("");
+
+  const active = departmentButtons.find((dept) => dept.key === selectedDepartment);
+  qs("toolbar-title").textContent = active ? active.name : "كل الأقسام";
+}
+
+function renderBoard() {
+  const rows = visibleTenders();
+  qs("tender-board").innerHTML = rows.length ? rows.map(renderTender).join("") : `
+    <div class="empty-state">لا توجد منافسات مطابقة للتصفية الحالية.</div>
+  `;
+}
+
+function renderTender(tender) {
+  const rows = departmentRows(tender);
+  const completed = rows.filter((row) => row.status === "completed").length;
+  const late = rows.filter((row) => row.status === "late").length;
+  const ready = completed === departments.length;
+  const state = tenderState(tender);
+  const completionPct = Math.round((completed / departments.length) * 100);
+  const unassigned = rows.filter((row) => row.key === "TECH" && !row.engineers.length).length;
+  const approval = savedState[tender.id]?.approval || "";
+  return `
+    <article class="tender-card compact-card state-${state}" data-tender="${safe(tender.id)}">
+      <div class="tender-head">
+        <div>
+          <div class="mission-signal">
+            <span>${safe(stateText(state))}</span>
+            <b>${completed}/${departments.length} مكتمل</b>
+            ${late ? `<em>${late} متأخر</em>` : ""}
+            ${unassigned ? `<em class="data-alert">${unassigned} غير مسند</em>` : ""}
+          </div>
+          <h2 class="tender-title">
+            <a class="tender-title-link" href="../tenders/?q=${encodeURIComponent(tender.title)}" title="عرض في صفحة المناقصات">${safe(tender.title)}</a>
+          </h2>
+          <div class="tender-meta">
+            <span class="pill">${safe(tender.id)}</span>
+            <span class="pill">${safe(tender.client)}</span>
+            <span class="pill">${safe(tender.sector)}</span>
+          </div>
+        </div>
+        <div class="tender-side">
+          <article class="compact-stat">
+            <span>الجاهزية</span>
+            <strong>${completionPct}%</strong>
+          </article>
+          <article class="compact-stat">
+            <span>الإغلاق</span>
+            <strong>${safe(daysTo(tender.submitDate))}</strong>
+          </article>
+        </div>
+      </div>
+
+      <div class="compact-hint">
+        <span>اختر القسم لفتح التعيين، خط الزمن، الملفات، والملاحظات.</span>
+      </div>
+
+      <div class="ops-timeline compact-timeline" aria-label="مسار الأقسام">
+        ${rows.map((row, index) => `
+          <button class="timeline-node ${rowStateClass(row.status, row)}" type="button" data-tender="${safe(tender.id)}" data-dept="${safe(row.key)}">
+            <span>${safe(row.short)}</span>
+            <strong>${safe(statusLabel(row.status))}</strong>
+            <small>${safe(row.engineers.map(personName).join("، ") || "غير مسند")}</small>
+          </button>
+        `).join("")}
+      </div>
+
+      <div class="approval-row">
+        <div class="approval-state">
+          ${approval ? `قرار المدير: ${statusLabel(approval)}` : ready ? "كل الأقسام اكتملت. المنافسة جاهزة لاعتماد المدير." : `اكتمل ${completed} من ${departments.length} أقسام.`}
+        </div>
+        <div class="approval-actions">
+          <button type="button" data-approve="${safe(tender.id)}" ${ready && isExecutive() ? "" : "disabled"}>اعتماد</button>
+          <button class="reject" type="button" data-reject="${safe(tender.id)}" ${ready && isExecutive() ? "" : "disabled"}>رفض</button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderLane(tender, row) {
+  const engineerAvatars = row.engineers.length
+    ? row.engineers.map((person) => `<span class="avatar">${safe(personName(person).slice(0, 1))}</span>`).join("")
+    : `<span class="unassigned-chip">غير مسند</span>`;
+  const engineerCountText = row.engineers.length ? `${row.engineers.length} مهندس` : "لا يوجد مهندس مطابق";
+  const timeline = timelineFor(tender, row.key, departments.findIndex((dept) => dept.key === row.key), row.status);
+  const quickPool = assignableEmployees(row);
+  return `
+    <article class="lane ${rowStateClass(row.status, row)}" tabindex="0" data-tender="${safe(tender.id)}" data-dept="${safe(row.key)}">
+      <span class="lane-beam"></span>
+      <div>
+        <span class="lane-status">${safe(statusLabel(row.status))}</span>
+        <h3>${safe(row.name)}</h3>
+      </div>
+      <p>${safe(row.tasks.slice(0, 2).join(" · "))}</p>
+      <div class="avatar-row">
+        ${engineerAvatars}
+      </div>
+      <div class="lane-foot">
+        <span>${safe(engineerCountText)}</span>
+        <span>${formatHours(timeline.completedAt ? hoursBetween(timeline.assignedAt, timeline.completedAt) : hoursBetween(timeline.assignedAt, new Date()))}</span>
+        <span>${row.files} ملف</span>
+      </div>
+      <div class="quick-assign" data-stop-open>
+        <select data-quick-engineer="${safe(tender.id)}" data-quick-dept="${safe(row.key)}">
+          <option value="">تعيين سريع</option>
+          ${quickPool.map((person) => `<option value="${safe(personName(person))}">${safe(personName(person))} · ${safe(assignmentRoleLabel(person))} · ${personLoad(personName(person)).open} مفتوحة</option>`).join("")}
+        </select>
+        <button type="button" data-save-quick="${safe(tender.id)}" data-quick-dept="${safe(row.key)}">حفظ</button>
+      </div>
+    </article>
+  `;
+}
+
+function openDrawer(tenderId, departmentKey) {
+  const tender = tenders.find((item) => item.id === tenderId);
+  const row = tender && departmentRows(tender).find((dept) => dept.key === departmentKey);
+  if (!tender || !row) return;
+  selectedContext = { tenderId, departmentKey };
+
+  qs("drawer-department").textContent = `${row.short} - ${row.manager}`;
+  qs("drawer-title").textContent = row.name;
+  qs("drawer-subtitle").textContent = tender.title;
+  qs("drawer-status").textContent = statusLabel(row.status);
+  qs("drawer-engineers-count").textContent = row.engineers.length;
+  qs("drawer-files-count").textContent = row.files;
+  qs("drawer-tender-overview").innerHTML = `
+    <div><span>العميل</span><strong>${safe(tender.client)}</strong></div>
+    <div><span>القطاع</span><strong>${safe(tender.sector)}</strong></div>
+    <div><span>موعد الإغلاق</span><strong>${safe(daysTo(tender.submitDate))}</strong></div>
+    <div><span>تعليقات القسم</span><strong>${departmentComments(tender.id, row.key).length}</strong></div>
+  `;
+  const departmentIndex = departments.findIndex((dept) => dept.key === departmentKey);
+  const timeline = timelineFor(tender, departmentKey, departmentIndex, row.status);
+  qs("drawer-timing").innerHTML = `
+    <div class="timing-item"><span>وصول المنافسة</span><strong>${formatDateTime(timeline.receivedAt)}</strong></div>
+    <div class="timing-item"><span>إنشاء مهمة القسم</span><strong>${formatDateTime(timeline.taskCreatedAt)}</strong></div>
+    <div class="timing-item"><span>تعيين المهندس</span><strong>${formatDateTime(timeline.assignedAt)}</strong></div>
+    <div class="timing-item"><span>بداية العمل</span><strong>${formatDateTime(timeline.workStartedAt)}</strong></div>
+    <div class="timing-item"><span>الإكمال</span><strong>${timeline.completedAt ? formatDateTime(timeline.completedAt) : "لم يكتمل"}</strong></div>
+    <div class="timing-item is-total"><span>زمن إنجاز الموظف</span><strong>${timeline.completedAt ? formatHours(hoursBetween(timeline.assignedAt, timeline.completedAt)) : formatHours(hoursBetween(timeline.assignedAt, new Date()))}</strong></div>
+  `;
+
+  qs("drawer-engineers").innerHTML = row.engineers.length ? row.engineers.map((person, index) => `
+    <div class="engineer-item">
+      <span class="avatar">${safe(personName(person).slice(0, 1))}</span>
+      <div>
+        <strong>${safe(personName(person))}</strong>
+        <span>${safe(personTitle(person) || (index === 0 ? "مسؤول رئيسي" : "مساند"))}</span>
+      </div>
+    </div>
+  `).join("") : `
+    <div class="engineer-item is-unassigned">
+      <span class="avatar">!</span>
+      <div>
+        <strong>لا يوجد مهندس مطابق</strong>
+        <span>${safe(row.assignmentNote || "الاسم المختصر في شيت العروض الفنية غير موجود داخل ملف منسوبي قسم العروض الفنية.")}</span>
+      </div>
+    </div>
+  `;
+
+  renderAssignmentTools(tender, row);
+
+  qs("drawer-tasks").innerHTML = row.tasks.map((task, index) => `
+    <div class="task-item">
+      <div>
+        <strong>${safe(task)}</strong>
+        <span>${row.status === "completed" ? "تم الإنجاز" : index === 0 ? "قيد التنفيذ" : "بانتظار التحديث"}</span>
+      </div>
+      <span class="lane-status">${index + 1}</span>
+    </div>
+  `).join("");
+
+  renderComments(tender.id, row.key);
+
+  const files = Array.from({ length: Math.max(row.files, 1) }, (_, index) => index + 1);
+  qs("drawer-files").innerHTML = files.map((item) => `
+    <div class="file-item">
+      <div>
+        <strong>${row.files ? `ملف القسم ${item}` : "لا توجد ملفات مرفوعة بعد"}</strong>
+        <span>${safe(row.library)}</span>
+      </div>
+      <span class="lane-status">${row.files ? "SharePoint" : "فارغ"}</span>
+    </div>
+  `).join("");
+
+  const canComplete = isExecutive() || departmentKey === currentDepartmentKey();
+  qs("complete-department").disabled = !canComplete || row.status === "completed";
+  qs("complete-department").textContent = row.status === "completed" ? "القسم مكتمل" : "اعتماد إكمال القسم";
+  qs("open-library").textContent = `فتح مكتبة ${row.short}`;
+  qs("detail-drawer").classList.add("open");
+  qs("detail-drawer").setAttribute("aria-hidden", "false");
+}
+
+function renderComments(tenderId, departmentKey) {
+  const comments = departmentComments(tenderId, departmentKey);
+  const list = qs("drawer-comments");
+  if (!list) return;
+  list.innerHTML = comments.length ? comments.map((comment) => `
+    <div class="comment-item">
+      <strong>${safe(comment.by || "فريق العمل")}</strong>
+      <span>${safe(formatDateTime(comment.at))}</span>
+      <p>${safe(comment.text)}</p>
+    </div>
+  `).join("") : `
+    <div class="comment-empty">لا توجد ملاحظات بعد.</div>
+  `;
+}
+
+function renderAssignmentTools(tender, row) {
+  const container = qs("drawer-assignment-tools");
+  if (!container) return;
+  const pool = assignableEmployees(row);
+  const selected = new Set(row.engineers.map(personName));
+  if (!pool.length) {
+    container.innerHTML = `<div class="assignment-empty">لا توجد قائمة موظفين متاحة لهذا القسم حتى الآن.</div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="assignment-controls">
+      <label class="assignment-search">
+        <span>بحث داخل القسم</span>
+        <input type="search" data-assignment-search placeholder="اكتب اسم الموظف أو المسمى">
+      </label>
+      <div class="assignment-tabs" aria-label="تصفية قائمة القسم">
+        <button type="button" class="active" data-assignment-filter="all">الكل</button>
+        <button type="button" data-assignment-filter="engineer">مهندسون</button>
+        <button type="button" data-assignment-filter="leader">قياديون</button>
+        <button type="button" data-assignment-filter="support">دعم</button>
+      </div>
+      <small class="assignment-count" data-assignment-count></small>
+    </div>
+    <div class="assignment-roster">
+      ${pool.map((person) => {
+        const name = personName(person);
+        const roleKey = assignmentRoleKey(person);
+        const searchText = `${name} ${personTitle(person)} ${assignmentRoleLabel(person)}`;
+        return `
+          <label class="assign-person ${selected.has(name) ? "selected" : ""}" data-role="${safe(roleKey)}" data-search="${safe(searchText.toLowerCase())}">
+            <input type="checkbox" name="engineer-assignment" value="${safe(name)}" ${selected.has(name) ? "checked" : ""}>
+            <span>${safe(name.slice(0, 1))}</span>
+            <b>${safe(name)}</b>
+            <small>
+              <i class="assign-tag">${safe(assignmentRoleLabel(person))}</i>
+              ${safe(personTitle(person) || "فريق العمل")} · ${safe(personLoadLabel(name))}
+            </small>
+          </label>
+        `;
+      }).join("")}
+    </div>
+    <div class="assignment-actions">
+      <button type="button" id="save-assignment">حفظ التعيين</button>
+      <small>${row.key === "TECH" ? "يمكنك تصحيح أي اسم غير مطابق من الشيت بتعيين مهندس فعلي من القائمة." : "التعيين محفوظ محليا في نسخة التجربة الحالية."}</small>
+    </div>
+  `;
+
+  const applyAssignmentFilter = () => {
+    const activeFilter = container.querySelector("[data-assignment-filter].active")?.dataset.assignmentFilter || "all";
+    const term = (container.querySelector("[data-assignment-search]")?.value || "").trim().toLowerCase();
+    const people = [...container.querySelectorAll(".assign-person")];
+    let shown = 0;
+    people.forEach((person) => {
+      const matchesRole = activeFilter === "all" || person.dataset.role === activeFilter;
+      const matchesSearch = !term || (person.dataset.search || "").includes(term);
+      const visible = matchesRole && matchesSearch;
+      person.hidden = !visible;
+      if (visible) shown += 1;
+    });
+    const count = container.querySelector("[data-assignment-count]");
+    if (count) count.textContent = `${shown} ظاهر من ${people.length} موظف`;
+  };
+
+  container.querySelector("[data-assignment-search]")?.addEventListener("input", applyAssignmentFilter);
+  container.querySelectorAll("[data-assignment-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      container.querySelectorAll("[data-assignment-filter]").forEach((item) => item.classList.toggle("active", item === button));
+      applyAssignmentFilter();
+    });
+  });
+  applyAssignmentFilter();
+
+  const saveButton = qs("save-assignment");
+  if (saveButton) {
+    saveButton.addEventListener("click", () => {
+      const names = [...container.querySelectorAll('input[name="engineer-assignment"]:checked')].map((input) => input.value);
+      setAssignment(tender.id, row.key, names);
+      openDrawer(tender.id, row.key);
+      render();
+    });
+  }
+}
+
+function closeDrawer() {
+  qs("detail-drawer").classList.remove("open");
+  qs("detail-drawer").setAttribute("aria-hidden", "true");
+}
+
+function render() {
+  renderRole();
+  renderKpis();
+  renderEmployeePerformance();
+  renderDepartments();
+  renderInsights();
+  renderSmartAlerts();
+  renderBoard();
+}
+
+async function loadData() {
+  try {
+    await loadEmployees();
+    await loadTechOffers();
+    const sources = window.TENDER_PORTAL_CONFIG?.sources?.liveTenders || ["../data.json"];
+    let data = null;
+    for (const source of sources) {
+      try {
+        const response = await fetch(source, { cache: "no-store" });
+        if (response.ok) {
+          data = await response.json();
+          break;
+        }
+      } catch {}
+    }
+    const rows = Array.isArray(data?.tenders) ? data.tenders : fallbackTenders;
+    tenders = rows.map(normalizeTender);
+  } catch {
+    tenders = fallbackTenders;
+  }
+  render();
+}
+
+document.addEventListener("click", (event) => {
+  const deptButton = event.target.closest("[data-department]");
+  if (deptButton) {
+    selectedDepartment = deptButton.dataset.department;
+    render();
+    return;
+  }
+
+  const filterButton = event.target.closest("[data-filter]");
+  if (filterButton) {
+    selectedFilter = filterButton.dataset.filter;
+    document.querySelectorAll("[data-filter]").forEach((button) => button.classList.toggle("active", button === filterButton));
+    renderBoard();
+    return;
+  }
+
+  const quickSave = event.target.closest("[data-save-quick]");
+  if (quickSave) {
+    const tenderId = quickSave.dataset.saveQuick;
+    const departmentKey = quickSave.dataset.quickDept;
+    const select = quickSave.closest(".quick-assign")?.querySelector("select");
+    if (select?.value) {
+      setAssignment(tenderId, departmentKey, [select.value]);
+      render();
+    }
+    return;
+  }
+
+  if (event.target.closest("[data-stop-open]")) return;
+
+  const lane = event.target.closest(".lane[data-tender][data-dept], .timeline-node[data-tender][data-dept]");
+  if (lane) {
+    openDrawer(lane.dataset.tender, lane.dataset.dept);
+    return;
+  }
+
+  const approve = event.target.closest("[data-approve]");
+  if (approve && !approve.disabled) {
+    setApproval(approve.dataset.approve, "approved");
+    render();
+    return;
+  }
+
+  const reject = event.target.closest("[data-reject]");
+  if (reject && !reject.disabled) {
+    setApproval(reject.dataset.reject, "rejected");
+    render();
+  }
+});
+
+qs("search-input").addEventListener("input", (event) => {
+  searchTerm = event.target.value;
+  renderBoard();
+});
+
+qs("drawer-close").addEventListener("click", closeDrawer);
+qs("drawer-backdrop").addEventListener("click", closeDrawer);
+
+qs("save-comment").addEventListener("click", () => {
+  if (!selectedContext) return;
+  const input = qs("comment-input");
+  const text = input.value.trim();
+  if (!text) return;
+  addDepartmentComment(selectedContext.tenderId, selectedContext.departmentKey, text);
+  input.value = "";
+  openDrawer(selectedContext.tenderId, selectedContext.departmentKey);
+});
+
+qs("complete-department").addEventListener("click", () => {
+  if (!selectedContext) return;
+  setDepartmentStatus(selectedContext.tenderId, selectedContext.departmentKey, "completed");
+  closeDrawer();
+  render();
+});
+
+qs("open-library").addEventListener("click", () => {
+  if (!selectedContext) return;
+  const dept = departments.find((item) => item.key === selectedContext.departmentKey);
+  alert(`سيتم ربط هذا الزر بمكتبة ${dept?.library || "SharePoint"} عند إضافة روابط SharePoint النهائية.`);
+});
+
+loadData();

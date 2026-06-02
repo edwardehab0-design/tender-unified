@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>إدارة العمليات | الرواف</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared-visual.css?v=4">
+  <link rel="stylesheet" href="../portal-sidebar.css?v=4">
+  <link rel="stylesheet" href="./styles.css?v=11">
+  <script src="../config.js"></script>
+</head>
+<body>
+  <a class="portal-home-link" href="../index.html?return=portal">رجوع</a>
+
+  <main class="command-page">
+    <section class="command-hero">
+      <div>
+        <p class="kicker">إدارة العمليات</p>
+        <h1>صفحة مدير القسم اليومية لتوزيع المهام ومتابعة الإنجاز</h1>
+        <p class="hero-lead">
+          واجهة تشغيلية بسيطة: اعرف المهام الجديدة، اختر المهندس المناسب حسب العبء، تابع الزمن، أضف ملاحظاتك، وأغلق مهمة القسم عند اكتمالها.
+        </p>
+      </div>
+      <div class="hero-status">
+        <span>صلاحية العرض الحالية</span>
+        <strong id="role-label">جاري التحقق</strong>
+        <small id="role-note">يتم ضبط الواجهة حسب جلسة الدخول الحالية</small>
+      </div>
+    </section>
+
+    <section class="command-kpis" aria-label="مؤشرات غرفة العمليات">
+      <article>
+        <span>منافسات نشطة</span>
+        <strong id="kpi-active">0</strong>
+        <small>داخل دورة إدارة العمليات</small>
+      </article>
+      <article>
+        <span>جاهزة للاعتماد</span>
+        <strong id="kpi-ready">0</strong>
+        <small>كل الأقسام أكملت مهامها</small>
+      </article>
+      <article>
+        <span>تحتاج متابعة</span>
+        <strong id="kpi-attention">0</strong>
+        <small>قسم واحد أو أكثر لم يكتمل</small>
+      </article>
+      <article>
+        <span>ملفات مرفوعة</span>
+        <strong id="kpi-files">0</strong>
+        <small>ضمن مكتبات الأقسام</small>
+      </article>
+    </section>
+
+    <section class="command-layout">
+      <aside class="department-rail">
+        <div class="rail-head">
+          <span>الأقسام</span>
+          <strong>ضغط العمل الآن</strong>
+        </div>
+        <div id="department-list" class="department-list"></div>
+      </aside>
+
+      <section class="mission-area">
+        <div class="mission-toolbar">
+          <div>
+            <span>ملفات العمليات</span>
+            <strong id="toolbar-title">كل الأقسام</strong>
+          </div>
+          <label class="search-field">
+            <span>بحث سريع</span>
+            <input id="search-input" type="search" placeholder="اسم المنافسة أو العميل">
+          </label>
+          <div class="segmented" id="status-tabs" aria-label="تصفية الحالة">
+            <button type="button" data-filter="all" class="active">الكل</button>
+            <button type="button" data-filter="new">مهام جديدة</button>
+            <button type="button" data-filter="active">قيد العمل</button>
+            <button type="button" data-filter="late">متأخرة</button>
+            <button type="button" data-filter="ready">جاهزة</button>
+          </div>
+        </div>
+
+        <div id="smart-alerts" class="smart-alerts"></div>
+        <div id="tender-board" class="tender-board" aria-live="polite"></div>
+      </section>
+
+      <aside class="ops-insight">
+        <div class="insight-card data-health">
+          <span>جودة البيانات</span>
+          <strong>تنبيهات الربط</strong>
+          <div id="data-health-list" class="data-health-list"></div>
+        </div>
+        <div class="insight-card quick-focus">
+          <span>أفضل أداء</span>
+          <strong id="ops-best-employee">-</strong>
+          <small id="ops-best-note">يتم الحساب من زمن التعيين حتى الإكمال</small>
+        </div>
+        <div class="insight-card pulse-card">
+          <span>نبض الصفحة</span>
+          <div id="ops-pulse-list" class="ops-pulse-list"></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="employee-performance" aria-label="مؤشرات أداء الموظفين">
+      <div class="performance-head">
+        <div>
+          <span>Employee KPI</span>
+          <h2>مؤشرات أداء المهندسين</h2>
+          <p>ترتيب تشغيلي يعتمد على عدد المهام، زمن الإنجاز، الالتزام، والمهام المتأخرة، حتى تساعد مدير القسم في توزيع العمل بذكاء.</p>
+        </div>
+        <div class="performance-orbit">
+          <strong id="kpi-best-score">0</strong>
+          <span>أفضل نتيجة</span>
+        </div>
+      </div>
+      <div id="employee-summary" class="employee-summary"></div>
+      <div class="performance-grid">
+        <article class="performance-panel">
+          <div class="panel-title">
+            <span>Ranking</span>
+            <h3>ترتيب الموظفين</h3>
+          </div>
+          <div id="employee-ranking" class="employee-ranking"></div>
+        </article>
+        <article class="performance-panel wide">
+          <div class="panel-title">
+            <span>Time Intelligence</span>
+            <h3>تحليل وقت الإنجاز</h3>
+          </div>
+          <div id="employee-time-grid" class="employee-time-grid"></div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <aside class="detail-drawer" id="detail-drawer" aria-hidden="true">
+    <button class="drawer-backdrop" id="drawer-backdrop" type="button" aria-label="إغلاق"></button>
+    <section class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+      <button class="drawer-close" id="drawer-close" type="button" aria-label="إغلاق">×</button>
+      <span class="drawer-kicker" id="drawer-department">القسم</span>
+      <h2 id="drawer-title">تفاصيل المهمة</h2>
+      <p id="drawer-subtitle">-</p>
+
+      <div class="drawer-grid">
+        <article>
+          <span>الحالة</span>
+          <strong id="drawer-status">-</strong>
+        </article>
+        <article>
+          <span>المهندسون</span>
+          <strong id="drawer-engineers-count">0</strong>
+        </article>
+        <article>
+          <span>الملفات</span>
+          <strong id="drawer-files-count">0</strong>
+        </article>
+      </div>
+
+      <div class="drawer-section tender-overview-section">
+        <h3>ملخص المنافسة</h3>
+        <div id="drawer-tender-overview" class="tender-overview"></div>
+      </div>
+
+      <div class="drawer-section timing-section">
+        <h3>خط الزمن</h3>
+        <div id="drawer-timing" class="timing-list"></div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>الفريق المعين</h3>
+        <div id="drawer-engineers" class="engineer-list"></div>
+      </div>
+
+      <div class="drawer-section assignment-section">
+        <h3>تعيين المهندسين</h3>
+        <p class="assignment-note">اختر مهندسا أو أكثر لهذه المهمة، ثم احفظ التعيين ليظهر مباشرة على بطاقة المنافسة ومؤشرات الأداء.</p>
+        <div id="drawer-assignment-tools" class="assignment-tools"></div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>المهام المطلوبة</h3>
+        <div id="drawer-tasks" class="task-list"></div>
+      </div>
+
+      <div class="drawer-section comment-section">
+        <h3>ملاحظات المهمة</h3>
+        <div id="drawer-comments" class="comment-list"></div>
+        <label class="comment-box">
+          <span>إضافة ملاحظة</span>
+          <textarea id="comment-input" rows="3" placeholder="مثال: تمت مراجعة الكراسة أو نحتاج استفسار من العميل"></textarea>
+        </label>
+        <button id="save-comment" class="comment-save" type="button">حفظ الملاحظة</button>
+      </div>
+
+      <div class="drawer-section">
+        <h3>مكتبة القسم</h3>
+        <div id="drawer-files" class="file-list"></div>
+      </div>
+
+      <div class="drawer-actions">
+        <button id="complete-department" type="button">اعتماد إكمال القسم</button>
+        <button id="open-library" type="button">فتح مكتبة SharePoint</button>
+      </div>
+    </section>
+  </aside>
+
+  <script src="./app.js?v=11"></script>
+  <script src="../portal-sidebar.js?v=4"></script>
+</body>
+</html>

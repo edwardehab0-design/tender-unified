@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="../shared-visual.css?v=4">
+  <link rel="stylesheet" href="./visual-prototype.css?v=12">
+  <link rel="stylesheet" href="../portal-sidebar.css?v=1">
   <script src="../config.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
@@ -29,20 +32,20 @@
 
   <main class="page">
     <section class="kpis" aria-label="ملخص المحفظة">
-      <article class="kpi">
-        <span>إجمالي قيمة المحفظة شامل الضريبة</span>
-        <strong id="kpi-total">-</strong>
-        <small id="kpi-total-sub">يعتمد على ضريبة 15%</small>
+      <article class="kpi kpi-signed">
+        <span>تم الترسية وتوقيع العقد</span>
+        <strong id="kpi-awarded-signed">-</strong>
+        <small id="kpi-awarded-signed-count">- مشروع · غير شامل الضريبة</small>
       </article>
       <article class="kpi">
-        <span>عدد المشاريع</span>
-        <strong id="kpi-count">-</strong>
-        <small>مشروع ضمن المحفظة</small>
+        <span>تم الترسية ولم يتم توقيع العقد</span>
+        <strong id="kpi-awarded-not-signed">-</strong>
+        <small id="kpi-awarded-not-signed-count">- مشروع · غير شامل الضريبة</small>
       </article>
       <article class="kpi">
-        <span>أكبر محفظة</span>
-        <strong id="kpi-top-portfolio">-</strong>
-        <small id="kpi-top-portfolio-sub">شامل الضريبة</small>
+        <span>تم التقديم وقيد التفاوض والترسية</span>
+        <strong id="kpi-submitted">-</strong>
+        <small id="kpi-submitted-count">- مشروع · غير شامل الضريبة</small>
       </article>
     </section>
 
@@ -65,6 +68,13 @@
           <select id="status-filter"></select>
         </label>
         <div class="metric-list" id="status-list"></div>
+        <article class="status-stage-panel">
+          <div class="panel-head">
+            <h2>مسارات المشاريع حسب حالة الترسية</h2>
+            <span>اضغط على أي مسار لتركيز الجدول</span>
+          </div>
+          <div id="status-stage-board" class="status-stage-board"></div>
+        </article>
       </aside>
 
       <section class="content">
@@ -99,7 +109,7 @@
           <article class="panel">
             <div class="panel-head">
               <h2>قيمة المحافظ</h2>
-              <span>شامل الضريبة</span>
+              <span>غير شامل الضريبة</span>
             </div>
             <div id="portfolio-cards" class="portfolio-cards"></div>
           </article>
@@ -115,7 +125,6 @@
                 <tr>
                   <th>حالة الترسية والتعاقد</th>
                   <th>الإجمالي غير شامل ضريبة القيمة المضافة</th>
-                  <th>الإجمالي شامل ضريبة القيمة المضافة</th>
                   <th>النسبة المئوية</th>
                 </tr>
               </thead>
@@ -139,7 +148,6 @@
                   <th>المحفظة</th>
                   <th>الحالة</th>
                   <th>غير شامل الضريبة</th>
-                  <th>شامل الضريبة</th>
                 </tr>
               </thead>
               <tbody id="projects-body"></tbody>
@@ -150,7 +158,47 @@
     </section>
   </main>
 
-  <script src="./app.js"></script>
+  <aside class="project-drawer" id="project-drawer" aria-hidden="true" aria-label="تفاصيل المشروع">
+    <div class="project-drawer-backdrop" id="project-drawer-backdrop"></div>
+    <section class="project-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="drawer-project-title">
+      <button class="project-drawer-close" id="project-drawer-close" type="button" aria-label="إغلاق">×</button>
+      <div class="project-drawer-head">
+        <span id="drawer-project-number">مشروع</span>
+        <h2 id="drawer-project-title">-</h2>
+        <p id="drawer-project-client">-</p>
+      </div>
+      <div class="project-drawer-grid">
+        <article>
+          <span>المحفظة</span>
+          <strong id="drawer-project-portfolio">-</strong>
+        </article>
+        <article>
+          <span>الحالة</span>
+          <strong id="drawer-project-status">-</strong>
+        </article>
+      </div>
+      <div class="project-money-card">
+        <div>
+          <span>القيمة غير شاملة الضريبة</span>
+          <strong id="drawer-amount-excl">-</strong>
+        </div>
+      </div>
+      <div class="project-share-card">
+        <div>
+          <span>مساهمة المشروع في المحفظة المعروضة</span>
+          <strong id="drawer-share">-</strong>
+        </div>
+        <span class="project-share-track"><i id="drawer-share-bar"></i></span>
+      </div>
+      <div class="project-drawer-actions">
+        <button id="drawer-filter-client" type="button">عرض مشاريع العميل</button>
+        <button id="drawer-filter-portfolio" type="button">عرض نفس المحفظة</button>
+      </div>
+    </section>
+  </aside>
+
+  <script src="./app.js?v=status-stages-3"></script>
+  <script src="../portal-sidebar.js?v=4"></script>
   <script>
   (() => {
     let role = "";

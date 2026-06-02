@@ -1,0 +1,205 @@
+/* Shared right-side control dashboard */
+:root {
+  --ps-plum: #2a1b47;
+  --ps-plum-dark: #1a0f2e;
+  --ps-green: #173128;
+  --ps-gold: #c9a227;
+  --ps-gold-light: #e8b547;
+}
+
+body.has-control-sidebar {
+  padding-right: 258px !important;
+  box-sizing: border-box;
+}
+
+.control-sidebar {
+  position: fixed;
+  z-index: 4800;
+  top: 16px;
+  right: 14px;
+  bottom: 16px;
+  width: 224px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid rgba(232, 181, 71, .62);
+  border-radius: 18px;
+  background:
+    radial-gradient(220px 180px at 20% 0%, rgba(232, 181, 71, .16), transparent 66%),
+    radial-gradient(260px 220px at 100% 70%, rgba(49, 70, 53, .45), transparent 70%),
+    linear-gradient(180deg, rgba(26, 15, 46, .96), rgba(42, 27, 71, .94) 44%, rgba(23, 49, 40, .94));
+  box-shadow: 0 28px 70px rgba(18, 11, 32, .30), inset 0 0 0 1px rgba(255, 246, 214, .14);
+  color: #fff;
+}
+
+.control-sidebar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(138deg, transparent 0 72%, rgba(232, 181, 71, .20) 72.08%, transparent 72.28% 100%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, transparent 1px 86px);
+}
+
+.control-sidebar > * {
+  position: relative;
+  z-index: 1;
+}
+
+.control-sidebar-brand {
+  display: grid;
+  gap: 8px;
+  padding: 10px 10px 12px;
+  border: 1px solid rgba(232, 181, 71, .24);
+  border-radius: 14px;
+  background: rgba(255,255,255,.06);
+}
+
+.control-sidebar-brand span {
+  color: rgba(255,255,255,.64);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.control-sidebar-brand strong {
+  color: #fff;
+  font-size: 17px;
+  line-height: 1.35;
+  font-weight: 900;
+}
+
+.control-sidebar-brand small {
+  color: var(--ps-gold-light);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.control-sidebar-nav {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.control-sidebar-link,
+.control-sidebar-logout {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 12px;
+  background: rgba(255,255,255,.065);
+  color: rgba(255,255,255,.84);
+  font-family: "Tajawal", "Cairo", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease, color .18s ease;
+}
+
+.control-sidebar-link::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: rgba(232, 181, 71, .64);
+  box-shadow: 0 0 0 4px rgba(232, 181, 71, .10);
+}
+
+.control-sidebar-link:hover,
+.control-sidebar-link.active {
+  transform: translateX(-3px);
+  border-color: rgba(232, 181, 71, .52);
+  background: linear-gradient(135deg, rgba(201, 162, 39, .96), rgba(232, 181, 71, .96));
+  color: var(--ps-plum-dark);
+}
+
+.control-sidebar-link.active::before,
+.control-sidebar-link:hover::before {
+  background: var(--ps-plum);
+  box-shadow: 0 0 0 4px rgba(42, 27, 71, .13);
+}
+
+.control-sidebar-logout {
+  justify-content: center;
+  border-color: rgba(232, 181, 71, .42);
+  color: var(--ps-gold-light);
+  background: rgba(26, 15, 46, .44);
+}
+
+.control-sidebar-logout:hover {
+  background: rgba(232, 181, 71, .14);
+  color: #fff;
+}
+
+body.has-control-sidebar .portal-home-link,
+body.has-control-sidebar .back-link {
+  display: none !important;
+}
+
+@media (max-width: 980px) {
+  body.has-control-sidebar {
+    padding-right: 86px !important;
+  }
+
+  .control-sidebar {
+    width: 66px;
+    padding: 10px 8px;
+  }
+
+  .control-sidebar-brand strong,
+  .control-sidebar-brand small,
+  .control-sidebar-brand span,
+  .control-sidebar-link span,
+  .control-sidebar-logout span {
+    display: none;
+  }
+
+  .control-sidebar-link,
+  .control-sidebar-logout {
+    min-height: 46px;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .control-sidebar-link::before {
+    width: 11px;
+    height: 11px;
+  }
+}
+
+@media (max-width: 620px) {
+  body.has-control-sidebar {
+    padding-right: 0 !important;
+    padding-bottom: 78px !important;
+  }
+
+  .control-sidebar {
+    top: auto;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    width: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    padding: 8px;
+  }
+
+  .control-sidebar-brand,
+  .control-sidebar-logout {
+    display: none;
+  }
+
+  .control-sidebar-nav {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 6px;
+  }
+}

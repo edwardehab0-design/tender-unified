@@ -257,6 +257,24 @@ h2 {
   font-weight: 900;
 }
 
+.kpi-signed {
+  background: linear-gradient(135deg, #2d1f6e 0%, #3d2a8a 100%);
+  border-color: #c9a84c;
+}
+.kpi-signed::before {
+  background: linear-gradient(90deg, #c9a84c, #f0d080, #c9a84c);
+}
+.kpi-signed::after {
+  background: rgba(201, 168, 76, 0.1);
+}
+.kpi-signed span,
+.kpi-signed small {
+  color: rgba(255, 255, 255, 0.7);
+}
+.kpi-signed strong {
+  color: #f0c040;
+}
+
 .workspace {
   display: grid;
   grid-template-columns: 310px minmax(0, 1fr);

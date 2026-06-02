@@ -7,7 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=welcome-export-1">
+  <link rel="stylesheet" href="./styles.css?v=welcome-sage-premium-2">
+  <link rel="stylesheet" href="./shared-visual.css?v=4">
+  <link rel="stylesheet" href="./landing-official.css?v=7">
   <script src="./config.js"></script>
 </head>
 <body class="intro-active">
@@ -28,11 +30,64 @@
 
       <div class="welcome-content">
         <div class="welcome-copy" id="intro-panel">
+          <main class="official-landing" aria-label="الصفحة الرئيسية">
+            <header class="official-header">
+              <a class="official-brand" href="./index.html" aria-label="الرواف للمقاولات">
+                <img src="./portfolio/assets/alrawaf-logo.png" alt="الرواف للمقاولات">
+                <span>
+                  <strong>الرواف للمقاولات</strong>
+                  <small>الإدارة العامة للمناقصات</small>
+                </span>
+              </a>
+            </header>
+
+            <section class="official-hero">
+              <div class="official-visual" aria-hidden="true">
+                <img src="./_preview/assets/alrawaf-building-night.png" alt="">
+              </div>
+              <div class="official-copy">
+                <p class="official-kicker">شركة الرواف للمقاولات</p>
+                <h1>الإدارة العامة <span>للمناقصات</span></h1>
+                <p class="official-lead">
+                  بوابتك المتكاملة لإدارة دورة المناقصات بكفاءة وشفافية، من الرصد والدراسة إلى التقديم والترسية ضمن منظومة عمل واحدة موحدة.
+                </p>
+                <div class="official-actions">
+                  <button class="official-primary" id="show-login" type="button">الدخول إلى البوابة</button>
+                </div>
+              </div>
+            </section>
+
+            <section class="official-about" aria-label="من نحن">
+              <div class="official-section-title">
+                <span></span>
+                <h2>من نحن</h2>
+                <span></span>
+              </div>
+              <div class="official-about-grid">
+                <article>
+                  <strong>إدارة متكاملة للمناقصات</strong>
+                  <p>نقود دورة المنافسة من الرصد والتحليل حتى الترسية بمنهجية دقيقة تضبط الوقت وترفع جودة القرار.</p>
+                </article>
+                <article>
+                  <strong>حوكمة وشفافية</strong>
+                  <p>نعمل وفق إجراءات واضحة وتوثيق منظم يضمن عدالة المتابعة وسهولة الرجوع لكل مرحلة.</p>
+                </article>
+                <article>
+                  <strong>تنسيق احترافي</strong>
+                  <p>نوحد جهود الفرق الفنية والمالية والتعاقدية لإعداد عروض مكتملة ومنافسة في الوقت المناسب.</p>
+                </article>
+                <article>
+                  <strong>رؤية تدعم النمو</strong>
+                  <p>نحول بيانات المناقصات إلى مؤشرات عملية تساعد الإدارة على التخطيط واختيار الفرص الواعدة.</p>
+                </article>
+              </div>
+            </section>
+          </main>
           <p class="welcome-eyebrow">إدارة المناقصات</p>
           <h1>بوابة المناقصات الموحدة</h1>
           <p class="welcome-lead">منصة الإدارة العامة للمناقصات بشركة الرواف.</p>
           <div class="welcome-actions">
-            <button class="enter-portal-btn" id="show-login" type="button">الدخول إلى البوابة</button>
+            <button class="enter-portal-btn" id="show-login-legacy" type="button">الدخول إلى البوابة</button>
           </div>
         </div>
 
@@ -88,34 +143,64 @@
       <button class="portal-logout-btn" id="portal-logout" type="button">خروج</button>
     </nav>
     <main class="portal">
+      <section class="ops-hero" aria-label="مركز عمليات المناقصات">
+        <div class="ops-hero-copy">
+          <p class="ops-kicker">مركز عمليات المناقصات</p>
+          <h1>اختر مساحة العمل المناسبة</h1>
+          <p>
+            لوحة موحدة للوصول إلى المحفظة، المنافسات الجارية، العملاء، التحليلات، وتقارير الإدارة العليا ضمن تجربة أكثر تركيزًا واحترافية.
+          </p>
+        </div>
+        <div class="ops-identity" aria-label="بيانات الدخول">
+          <img src="./portfolio/assets/alrawaf-logo.png" alt="الرواف للمقاولات">
+          <div>
+            <span>جلسة العمل الحالية</span>
+            <strong id="ops-user-name">بوابة المناقصات</strong>
+            <small id="ops-user-access">وصول مخصص حسب الصلاحية</small>
+          </div>
+        </div>
+      </section>
+
       <section class="cards" aria-label="أقسام البوابة">
         <a class="card primary" data-role-scope="executive" href="./portfolio/">
           <span class="tag">2025/2026</span>
           <h2>محفظة المناقصات</h2>
-          <strong>فتح الداشبورد</strong>
+          <p>متابعة قيمة المحفظة ونموها وتوزيعها حسب العملاء والحالات.</p>
+          <strong>فتح لوحة المحفظة</strong>
         </a>
 
         <a class="card" data-role-scope="all" href="./tenders/">
           <span class="tag">Live Tender</span>
           <h2>المناقصات الجارية</h2>
-          <strong>فتح المناقصات الجارية</strong>
+          <p>استعراض المنافسات النشطة ومراحلها والبيانات التشغيلية المرتبطة بها.</p>
+          <strong>متابعة المناقصات</strong>
+        </a>
+
+        <a class="card" data-role-scope="all" href="./coordination/">
+          <span class="tag">Command Center</span>
+          <h2>إدارة العمليات</h2>
+          <p>متابعة مهام الإدارات الأربع، المهندسين المعينين، الملفات، وحالة الاعتماد النهائي لكل منافسة.</p>
+          <strong>فتح مركز التنسيق</strong>
         </a>
 
         <a class="card" data-role-scope="all" href="./clients/">
           <span class="tag">Clients</span>
           <h2>أهم العملاء</h2>
-          <strong>فتح أهم العملاء</strong>
+          <p>قراءة تركيز العملاء وحجم الفرص المرتبطة بكل جهة.</p>
+          <strong>استعراض العملاء</strong>
         </a>
 
         <a class="card" data-role-scope="all" href="./analytics/">
           <span class="tag">Analytics</span>
           <h2>التحليلات</h2>
+          <p>مؤشرات ورسوم تساعد على قراءة الاتجاهات واتخاذ القرار بسرعة.</p>
           <strong>فتح التحليلات</strong>
         </a>
 
         <a class="card" data-role-scope="executive" href="./executive-report/">
           <span class="tag">Management</span>
           <h2>تقارير الإدارة العليا</h2>
+          <p>ملخصات تنفيذية مصممة للعرض والمتابعة على مستوى الإدارة.</p>
           <strong>فتح التقرير التنفيذي</strong>
         </a>
       </section>
@@ -210,6 +295,10 @@
       document.getElementById("role-name").textContent = user.name;
       document.getElementById("role-message").textContent = user.message;
       document.getElementById("role-sub").textContent = user.sub;
+      document.getElementById("ops-user-name").textContent = user.name;
+      document.getElementById("ops-user-access").textContent = user.access === "executive"
+        ? "صلاحية تنفيذية تشمل التقارير والمحفظة"
+        : "صلاحية تشغيلية للمناقصات والعملاء والتحليلات";
       const avatarClass = user.key === "general" ? "role-logo-img" : "";
       document.getElementById("role-avatar").innerHTML = user.avatar
         ? `<img class="${avatarClass}" src="${user.avatar}" alt="${user.name}">`
@@ -233,11 +322,7 @@
     const openPortal = () => {
       if (!currentUser) return;
       saveUserSession();
-      document.body.classList.remove("intro-active");
-      document.body.classList.add("welcome-entered");
-      portalDashboard?.removeAttribute("aria-hidden");
-      welcomeScreen?.setAttribute("aria-hidden", "true");
-      applyAccess();
+      window.location.href = "./tenders/?login=1";
     };
     const closePortal = () => {
       document.body.classList.add("intro-active");
@@ -256,7 +341,6 @@
       const savedUser = getSavedUser();
       if (savedUser) {
         showRoleWelcome(savedUser);
-        openPortal();
       } else {
         showLogin();
       }

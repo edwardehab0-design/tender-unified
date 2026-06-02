@@ -7,7 +7,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>شركة الرواف — التحليلات</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="../config.js"></script>
 <style>
 :root {
@@ -596,7 +596,7 @@ body::before {
   display:flex; align-items:center; gap:14px;
   box-shadow:0 4px 20px rgba(30,42,94,0.1);
   border:1.5px solid rgba(255,255,255,0.6);
-  position:relative; overflow:hidden; transition:transform 0.2s;
+  position:relative; overflow:visible; transition:transform 0.2s;
   cursor:default;
 }
 .an-kpi:hover { transform:translateY(-3px); }
@@ -628,7 +628,8 @@ body::before {
 .an-card {
   background:var(--bg-card); border-radius:20px;
   border:1.5px solid var(--border); box-shadow:0 2px 12px rgba(30,42,94,0.08);
-  overflow:hidden; transition:box-shadow 0.2s;
+  overflow:visible; transition:box-shadow 0.2s;
+  position:relative;
 }
 .an-card:hover { box-shadow:0 6px 24px rgba(30,42,94,0.14); }
 .an-card-head {
@@ -639,6 +640,96 @@ body::before {
 .an-card-title { font-size:13px; font-weight:800; color:var(--text); display:flex; align-items:center; gap:8px; }
 .an-card-badge { font-size:11px; padding:3px 10px; border-radius:20px; font-weight:800; }
 .an-card-body { padding:18px 20px; }
+
+.an-menu-wrap {
+  position:relative;
+  z-index:30;
+  margin-inline-start:auto;
+}
+.an-kpi .an-menu-wrap {
+  position:absolute;
+  top:12px;
+  left:12px;
+}
+.an-menu-trigger {
+  width:32px;
+  height:32px;
+  border-radius:10px;
+  border:1px solid rgba(114,141,100,.22);
+  background:rgba(255,255,255,.78);
+  color:#294331;
+  font-family:'Cairo',sans-serif;
+  font-size:16px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(26,31,60,.12);
+  transition:transform .16s ease, background .16s ease, border-color .16s ease;
+}
+.an-kpi.k-total .an-menu-trigger,
+.an-card[style*="#1a1f3c"] .an-menu-trigger {
+  background:rgba(240,192,64,.14);
+  border-color:rgba(240,192,64,.35);
+  color:#f0c040;
+}
+.an-menu-trigger:hover,
+.an-menu-trigger.active {
+  transform:translateY(-1px);
+  border-color:rgba(212,160,23,.55);
+  background:#fff8e6;
+}
+.an-action-menu {
+  position:absolute;
+  top:calc(100% + 8px);
+  left:0;
+  width:238px;
+  display:none;
+  padding:8px;
+  border-radius:14px;
+  border:1px solid rgba(114,141,100,.2);
+  background:rgba(255,255,255,.98);
+  box-shadow:0 22px 52px rgba(26,31,60,.18);
+  backdrop-filter:blur(10px);
+}
+.an-action-menu.open { display:block; animation:menuDrop .16s ease; }
+.an-action-item {
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:9px 10px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:var(--text);
+  font-family:'Cairo',sans-serif;
+  font-size:12px;
+  font-weight:800;
+  text-align:right;
+  cursor:pointer;
+}
+.an-action-item:hover {
+  background:linear-gradient(90deg,rgba(114,141,100,.12),rgba(212,160,23,.1));
+  color:#1f3b2a;
+}
+.an-action-item small {
+  margin-inline-start:auto;
+  color:var(--text-muted);
+  font-size:10px;
+}
+.an-card-menu-chip {
+  margin-inline-start:auto;
+  font-size:10px;
+  padding:4px 9px;
+  border-radius:999px;
+  border:1px solid rgba(212,160,23,.24);
+  color:#9a6c18;
+  background:rgba(212,160,23,.1);
+  font-weight:800;
+}
+@keyframes menuDrop {
+  from { opacity:0; transform:translateY(-6px); }
+  to { opacity:1; transform:translateY(0); }
+}
 
 /* Gauge */
 .gauge-wrap { display:flex; flex-direction:column; align-items:center; gap:8px; padding:10px 0; }
@@ -1091,6 +1182,269 @@ body {
 body .header { padding-top: 58px !important; height: 130px !important; }
 .tab-panel .export-wrap { display: none !important; }
 </style>
+<link rel="stylesheet" href="../shared-visual.css?v=4">
+<link rel="stylesheet" href="../internal-unified.css?v=15">
+<link rel="stylesheet" href="../portal-sidebar.css?v=1">
+<style>
+/* Analytics polish: calmer cards, no card icons or dropdown arrows */
+body {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(201, 162, 39, .12), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(91, 58, 140, .15), transparent 30%),
+    linear-gradient(135deg, #f6f3fb 0%, #fbfaf4 44%, #f4f8f1 100%) !important;
+}
+#tab-analytics .analytics-wrap { gap: 22px; }
+#tab-analytics .an-kpi-strip {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+#tab-analytics .an-kpi,
+#tab-analytics .an-card,
+#tab-analytics .compare-card {
+  border: 1px solid rgba(201, 162, 39, .48) !important;
+  box-shadow: 0 18px 44px rgba(42, 27, 71, .10), inset 0 1px 0 rgba(255, 255, 255, .72) !important;
+}
+#tab-analytics .an-kpi {
+  min-height: 132px;
+  padding: 24px;
+  align-items: flex-end;
+  background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(250,246,232,.84)) !important;
+  color: #2a1b47 !important;
+  cursor: pointer;
+}
+#tab-analytics .an-kpi.k-total {
+  background: linear-gradient(135deg, #1a0f2e 0%, #2a1b47 54%, #315143 100%) !important;
+  color: #f3c45d !important;
+}
+#tab-analytics .an-kpi::before { display: none; }
+#tab-analytics .an-kpi::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 18px;
+  inset-block-start: 18px;
+  width: 54px;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #c9a227, rgba(201,162,39,0));
+}
+#tab-analytics .an-kpi-icon,
+#tab-analytics .stat-icon-wrap,
+#tab-analytics .an-menu-wrap,
+#tab-analytics .an-action-menu,
+#tab-analytics .an-menu-trigger {
+  display: none !important;
+}
+#tab-analytics .an-kpi-info { width: 100%; }
+#tab-analytics .an-kpi-num {
+  font-size: clamp(34px, 4vw, 54px);
+  color: inherit !important;
+}
+#tab-analytics .an-kpi-lbl {
+  color: rgba(42, 27, 71, .68) !important;
+  font-size: 13px;
+}
+#tab-analytics .an-kpi.k-total .an-kpi-lbl {
+  color: rgba(255,255,255,.74) !important;
+}
+#tab-analytics .an-card {
+  overflow: hidden;
+  border-radius: 22px;
+  cursor: pointer;
+  background:
+    linear-gradient(140deg, rgba(255,255,255,.97), rgba(250,246,232,.82)),
+    radial-gradient(circle at 10% 0%, rgba(91,58,140,.08), transparent 30%) !important;
+}
+#tab-analytics .an-kpi:hover,
+#tab-analytics .an-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(232,181,71,.82) !important;
+  box-shadow: 0 24px 58px rgba(42, 27, 71, .16), inset 0 1px 0 rgba(255,255,255,.78) !important;
+}
+#tab-analytics .an-kpi:focus-visible,
+#tab-analytics .an-card:focus-visible,
+#tab-analytics .top3-item:focus-visible,
+#tab-analytics .an-progress-item:focus-visible,
+#tab-analytics .an-stat-row:focus-visible {
+  outline: 3px solid rgba(232, 181, 71, .55);
+  outline-offset: 3px;
+}
+#tab-analytics .an-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(201,162,39,.10), transparent),
+    linear-gradient(180deg, rgba(42,27,71,.035), transparent 36%);
+}
+#tab-analytics .an-card > * { position: relative; }
+#tab-analytics .an-card-head {
+  padding: 18px 22px 14px;
+  background: rgba(255,255,255,.52) !important;
+  border-bottom: 1px solid rgba(201,162,39,.20) !important;
+}
+#tab-analytics .an-card-title {
+  position: relative;
+  gap: 0;
+  color: #2a1b47 !important;
+  font-size: 14px;
+  letter-spacing: 0;
+}
+#tab-analytics .an-card-title::before {
+  content: "";
+  width: 26px;
+  height: 3px;
+  border-radius: 999px;
+  margin-inline-end: 10px;
+  background: linear-gradient(90deg, #c9a227, #e8b547);
+}
+#tab-analytics .an-row .an-card[style*="#1a1f3c"] {
+  background: linear-gradient(135deg, #140f22 0%, #2a1b47 48%, #243f36 100%) !important;
+}
+#tab-analytics .top3-medal {
+  border-radius: 12px;
+  background: rgba(42, 27, 71, .08) !important;
+  color: #2a1b47 !important;
+  border: 1px solid rgba(201, 162, 39, .45);
+  font-size: 13px;
+}
+#tab-analytics .top3-item,
+#tab-analytics .an-stat-row,
+#tab-analytics .an-progress-item {
+  border-color: rgba(201,162,39,.28) !important;
+  background: rgba(255,255,255,.62) !important;
+  cursor: pointer;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+#tab-analytics .top3-item:hover,
+#tab-analytics .an-stat-row:hover,
+#tab-analytics .an-progress-item:hover {
+  transform: translateX(-4px);
+  border-color: rgba(201,162,39,.62) !important;
+  background: rgba(255,255,255,.88) !important;
+}
+#tab-analytics .analytics-click-hint {
+  display: inline-flex;
+  margin-top: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(201,162,39,.34);
+  color: #7c5a16;
+  background: rgba(250,246,232,.62);
+  font-size: 11px;
+  font-weight: 800;
+}
+#tab-analytics .an-kpi.k-total .analytics-click-hint {
+  color: #f6d889;
+  background: rgba(255,255,255,.08);
+}
+#tab-analytics .analytics-command-panel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+#tab-analytics .analytics-command {
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(201,162,39,.42);
+  background: linear-gradient(135deg, rgba(42,27,71,.96), rgba(49,81,67,.92));
+  color: #fff;
+  box-shadow: 0 18px 38px rgba(42,27,71,.16);
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+#tab-analytics .analytics-command:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 54px rgba(42,27,71,.22);
+}
+#tab-analytics .analytics-command small {
+  display: block;
+  color: rgba(255,255,255,.58);
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 7px;
+}
+#tab-analytics .analytics-command strong {
+  display: block;
+  color: #f3c45d;
+  font-size: 18px;
+  line-height: 1.55;
+}
+#tab-analytics .analytics-command span {
+  display: block;
+  margin-top: 4px;
+  color: rgba(255,255,255,.76);
+  font-size: 12px;
+  font-weight: 700;
+}
+.analytics-detail-list {
+  display: grid;
+  gap: 10px;
+}
+.analytics-detail-item {
+  padding: 14px 16px;
+  border-radius: 15px;
+  border: 1px solid rgba(201,162,39,.26);
+  background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(250,246,232,.62));
+}
+.analytics-detail-title {
+  font-size: 13px;
+  font-weight: 900;
+  color: #2a1b47;
+  line-height: 1.65;
+}
+.analytics-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 9px;
+}
+.analytics-detail-meta span {
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(42,27,71,.06);
+  color: rgba(42,27,71,.72);
+  font-size: 11px;
+  font-weight: 800;
+}
+.analytics-aggregate-row {
+  display: grid;
+  grid-template-columns: 64px 1fr minmax(160px, 34%);
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(201,162,39,.24);
+  background: rgba(255,255,255,.68);
+  cursor: pointer;
+}
+.analytics-aggregate-name {
+  font-size: 12px;
+  font-weight: 900;
+  color: #2a1b47;
+}
+.analytics-aggregate-count {
+  color: #c9a227;
+  font-size: 18px;
+  font-weight: 900;
+}
+.analytics-aggregate-track {
+  height: 7px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(42,27,71,.08);
+}
+.analytics-aggregate-fill {
+  height: 100%;
+  border-radius: inherit;
+}
+#tab-analytics .compare-btn {
+  background: linear-gradient(135deg, #2a1b47, #5b3a8c) !important;
+  border: 1px solid rgba(201,162,39,.55) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 24px rgba(42,27,71,.20);
+}
+</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
@@ -1379,43 +1733,45 @@ body .header { padding-top: 58px !important; height: 130px !important; }
 
   <!-- KPI Strip -->
   <div class="an-kpi-strip" id="an-kpi-strip">
-    <div class="an-kpi k-total">
-      <div class="an-kpi-icon">📊</div>
+    <div class="an-kpi k-total" data-analytics-action="detail:total" role="button" tabindex="0">
       <div class="an-kpi-info">
         <div class="an-kpi-num" id="an-kpi-total">—</div>
         <div class="an-kpi-lbl">إجمالي مناقصات 2026</div>
+        <div class="analytics-click-hint">استعراض السجلات</div>
       </div>
     </div>
-    <div class="an-kpi k-jariya">
-      <div class="an-kpi-icon">🟢</div>
+    <div class="an-kpi k-jariya" data-analytics-action="detail:jariya" role="button" tabindex="0">
       <div class="an-kpi-info">
         <div class="an-kpi-num" id="an-kpi-jariya">—</div>
         <div class="an-kpi-lbl">مناقصات جارية</div>
+        <div class="analytics-click-hint">فتح الجارية</div>
       </div>
     </div>
 
-    <div class="an-kpi k-sub">
-      <div class="an-kpi-icon">✅</div>
+    <div class="an-kpi k-sub" data-analytics-action="detail:submitted" role="button" tabindex="0">
       <div class="an-kpi-info">
         <div class="an-kpi-num" id="an-kpi-sub">—</div>
         <div class="an-kpi-lbl">تم التقديم</div>
+        <div class="analytics-click-hint">عرض المقدمة</div>
       </div>
     </div>
   </div>
 
+  <div class="analytics-command-panel" id="analytics-command-panel"></div>
+
   <!-- Row 1: Owners bar + Donut + Gauge -->
   <div class="an-row an-row-3">
-    <div class="an-card">
+    <div class="an-card" data-analytics-action="aggregate:owners-active" role="button" tabindex="0">
       <div class="an-card-head">
-        <div class="an-card-title">🏛️ توزيع الجهات المالكة — الجارية</div>
+        <div class="an-card-title">توزيع الجهات المالكة — الجارية</div>
       </div>
       <div class="an-card-body">
         <canvas id="an-owners-chart" height="180"></canvas>
       </div>
     </div>
-    <div class="an-card">
+    <div class="an-card" data-analytics-action="detail:urgent" role="button" tabindex="0">
       <div class="an-card-head">
-        <div class="an-card-title">⏰ توزيع الأولويات</div>
+        <div class="an-card-title">توزيع الأولويات</div>
       </div>
       <div class="an-card-body">
         <div class="an-donut-wrap" style="position:relative;height:180px;">
@@ -1427,9 +1783,9 @@ body .header { padding-top: 58px !important; height: 130px !important; }
         </div>
       </div>
     </div>
-    <div class="an-card">
+    <div class="an-card" data-analytics-action="detail:submitted" role="button" tabindex="0">
       <div class="an-card-head">
-        <div class="an-card-title">🎯 نسبة الإنجاز</div>
+        <div class="an-card-title">نسبة الإنجاز</div>
       </div>
       <div class="an-card-body">
         <div class="gauge-wrap">
@@ -1451,17 +1807,17 @@ body .header { padding-top: 58px !important; height: 130px !important; }
 
   <!-- Row 2: Work types + Top owners -->
   <div class="an-row an-row-2">
-    <div class="an-card">
+    <div class="an-card" data-analytics-action="aggregate:worktypes" role="button" tabindex="0">
       <div class="an-card-head">
-        <div class="an-card-title">⚙️ أنواع الأعمال — الجارية</div>
+        <div class="an-card-title">أنواع الأعمال — الجارية</div>
       </div>
       <div class="an-card-body">
         <canvas id="an-works-chart" height="160"></canvas>
       </div>
     </div>
-    <div class="an-card">
+    <div class="an-card" data-analytics-action="aggregate:owners" role="button" tabindex="0">
       <div class="an-card-head">
-        <div class="an-card-title">🏆 أبرز 5 عملاء 2026</div>
+        <div class="an-card-title">أبرز 5 عملاء 2026</div>
         <span class="an-card-badge" style="background:#fffbeb;color:#b8860b;">جارية + مقدمة</span>
       </div>
       <div class="an-card-body">
@@ -1472,9 +1828,9 @@ body .header { padding-top: 58px !important; height: 130px !important; }
 
   <!-- Row 3: Timeline -->
   <div class="an-row an-row-full">
-    <div class="an-card" style="background:linear-gradient(135deg,#1a1f3c 0%,#2d3561 60%,#0f2744 100%);border-color:rgba(212,160,23,0.3);">
+    <div class="an-card" data-analytics-action="timeline:months" role="button" tabindex="0" style="background:linear-gradient(135deg,#1a1f3c 0%,#2d3561 60%,#0f2744 100%);border-color:rgba(212,160,23,0.3);">
       <div class="an-card-head" style="background:transparent;border-bottom-color:rgba(255,255,255,0.1);">
-        <div class="an-card-title" style="color:#f0c040;">📅 الخط الزمني — توزيع المناقصات على أشهر 2026</div>
+        <div class="an-card-title" style="color:#f0c040;">الخط الزمني — توزيع المناقصات على أشهر 2026</div>
         <div style="display:flex;gap:16px;align-items:center;">
           <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,0.7);">
             <div style="width:12px;height:12px;border-radius:50%;background:#16a34a;"></div> تم التقديم
@@ -1509,15 +1865,15 @@ body .header { padding-top: 58px !important; height: 130px !important; }
 
   <!-- Row 4: Sectors progress + Stats -->
   <div class="an-row an-row-2">
-    <div class="an-card">
+    <div class="an-card" data-analytics-action="aggregate:sectors" role="button" tabindex="0">
       <div class="an-card-head">
-        <div class="an-card-title">📂 توزيع القطاعات 2026</div>
+        <div class="an-card-title">توزيع القطاعات 2026</div>
       </div>
       <div class="an-card-body" id="an-sectors-prog"></div>
     </div>
-    <div class="an-card">
+    <div class="an-card" data-analytics-action="detail:week" role="button" tabindex="0">
       <div class="an-card-head">
-        <div class="an-card-title">📈 إحصاءات سريعة</div>
+        <div class="an-card-title">إحصاءات سريعة</div>
       </div>
       <div class="an-card-body" id="an-quick-stats"></div>
     </div>
@@ -1526,9 +1882,9 @@ body .header { padding-top: 58px !important; height: 130px !important; }
 
   <!-- Row 5: Comparison -->
   <div class="an-row an-row-full">
-    <div class="an-card">
+    <div class="an-card" data-analytics-action="compare:start" role="group">
       <div class="an-card-head">
-        <div class="an-card-title">⚖️ مقارنة الجهات المالكة</div>
+        <div class="an-card-title">مقارنة الجهات المالكة</div>
       </div>
       <div class="an-card-body">
         <div class="compare-wrap" style="padding:0;">
@@ -1536,7 +1892,7 @@ body .header { padding-top: 58px !important; height: 130px !important; }
             <select class="compare-select" id="compare-a"><option value="">اختر الجهة الأولى</option></select>
             <span style="font-size:20px;color:var(--text-muted);font-weight:900;">VS</span>
             <select class="compare-select" id="compare-b"><option value="">اختر الجهة الثانية</option></select>
-            <button class="compare-btn" onclick="runComparison()">مقارنة ↗</button>
+            <button class="compare-btn" onclick="runComparison()">مقارنة</button>
           </div>
           <div class="compare-result" id="compare-result">
             <div class="compare-card" id="compare-card-a">
@@ -2102,6 +2458,30 @@ function _buildAnalytics() {
   animateNum(document.getElementById('an-kpi-jariya'), jarC);
   animateNum(document.getElementById('an-kpi-sub'),    subC);
 
+  const commandPanel = document.getElementById('analytics-command-panel');
+  const soonest = [...allTenders].sort((a,b)=>getUrgency(a.submitDate).diff - getUrgency(b.submitDate).diff)[0];
+  const ownerPulse = Object.entries(combined.reduce((acc,t)=>{ if(t.owner) acc[t.owner]=(acc[t.owner]||0)+1; return acc; },{})).sort((a,b)=>b[1]-a[1])[0];
+  const sectorPulse = Object.entries(combined.reduce((acc,t)=>{ if(t.sector && t.sector !== '—') acc[t.sector]=(acc[t.sector]||0)+1; return acc; },{})).sort((a,b)=>b[1]-a[1])[0];
+  if (commandPanel) {
+    commandPanel.innerHTML = `
+      <div class="analytics-command" data-analytics-action="detail:week" role="button" tabindex="0">
+        <small>أولوية المتابعة</small>
+        <strong>${soonest ? analyticsSafe(soonest.title || 'أقرب مناقصة') : 'لا توجد بيانات'}</strong>
+        <span>${soonest ? analyticsSafe((soonest.owner || '—') + ' · ' + (soonest.submitDate ? String(soonest.submitDate).slice(0,10) : '—')) : 'اضغط لاستعراض القريبة'}</span>
+      </div>
+      <div class="analytics-command" data-owner="${ownerPulse ? analyticsSafe(ownerPulse[0]) : ''}" role="button" tabindex="0">
+        <small>أقوى جهة نشاطاً</small>
+        <strong>${ownerPulse ? analyticsSafe(ownerPulse[0]) : '—'}</strong>
+        <span>${ownerPulse ? ownerPulse[1] + ' سجل في 2026' : 'اضغط لاستعراض الجهات'}</span>
+      </div>
+      <div class="analytics-command" data-sector="${sectorPulse ? analyticsSafe(sectorPulse[0]) : ''}" role="button" tabindex="0">
+        <small>أبرز قطاع</small>
+        <strong>${sectorPulse ? analyticsSafe(sectorPulse[0]) : '—'}</strong>
+        <span>${sectorPulse ? sectorPulse[1] + ' سجل ضمن المحفظة' : 'اضغط لاستعراض القطاعات'}</span>
+      </div>
+    `;
+  }
+
   // ── Gauge ──────────────────────────────────────
   const pct = totalC ? Math.round(subC/totalC*100) : 0;
   document.getElementById('gauge-pct').textContent = pct + '%';
@@ -2128,6 +2508,11 @@ function _buildAnalytics() {
     },
     options:{
       responsive:true, maintainAspectRatio:false,
+      onClick:(evt, elements)=>{
+        if(!elements.length) return;
+        const owner = ownerEntries[elements[0].index]?.[0];
+        if(owner) showAnalyticsOwner(owner, 'جارية');
+      },
       plugins:{
         legend:{display:false},
         tooltip:{callbacks:{label:ctx=>` ${ctx.raw} مناقصة`},backgroundColor:'rgba(26,31,60,0.9)',titleFont:{family:'Cairo'},bodyFont:{family:'Cairo'}}
@@ -2140,21 +2525,25 @@ function _buildAnalytics() {
   });
 
   // ── Urgency donut ──────────────────────────────
-  const urg={
-    'اليوم🔥':  allTenders.filter(t=>getUrgency(t.submitDate).level==='today').length,
-    '3 أيام⏰': allTenders.filter(t=>getUrgency(t.submitDate).level==='3days').length,
-    'أسبوع📅':  allTenders.filter(t=>getUrgency(t.submitDate).level==='week').length,
-    'نشطة🟢':   allTenders.filter(t=>getUrgency(t.submitDate).level==='active').length,
-    'منتهية🚨':  allTenders.filter(t=>getUrgency(t.submitDate).level==='urgent').length,
-  };
+  const urgencyItems=[
+    {label:'تنتهي اليوم', kind:'today', count:allTenders.filter(t=>getUrgency(t.submitDate).level==='today').length},
+    {label:'خلال 3 أيام', kind:'urgent', count:allTenders.filter(t=>getUrgency(t.submitDate).level==='3days').length},
+    {label:'خلال أسبوع', kind:'week', count:allTenders.filter(t=>getUrgency(t.submitDate).level==='week').length},
+    {label:'نشطة', kind:'jariya', count:allTenders.filter(t=>getUrgency(t.submitDate).level==='active').length},
+    {label:'منتهية', kind:'urgent', count:allTenders.filter(t=>getUrgency(t.submitDate).level==='urgent').length},
+  ];
   document.getElementById('an-donut-total').textContent = allTenders.length;
   if(anUrgencyChart) anUrgencyChart.destroy();
   anUrgencyChart=new Chart(document.getElementById('an-urgency-chart'),{
     type:'doughnut',
-    data:{labels:Object.keys(urg),datasets:[{data:Object.values(urg),
+    data:{labels:urgencyItems.map(item=>item.label),datasets:[{data:urgencyItems.map(item=>item.count),
       backgroundColor:['#a84b54','#b86b37','#af7d26','#2f7d62','#665a92'],
       borderWidth:3, borderColor:'#fff', hoverOffset:8}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
+      onClick:(evt, elements)=>{
+        if(!elements.length) return;
+        showAnalyticsDetail(urgencyItems[elements[0].index]?.kind || 'total');
+      },
       plugins:{legend:{position:'bottom',labels:{color:'#1a2332',font:{family:'Cairo',size:10},boxWidth:10,padding:6}},
                tooltip:{callbacks:{label:ctx=>` ${ctx.raw} مناقصة`},backgroundColor:'rgba(26,31,60,0.9)',titleFont:{family:'Cairo'},bodyFont:{family:'Cairo'}}}}
   });
@@ -2171,6 +2560,11 @@ function _buildAnalytics() {
       datasets:[{data:wtE.map(([,c])=>c),backgroundColor:AC,borderRadius:8,borderSkipped:false}]
     },
     options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      onClick:(evt, elements)=>{
+        if(!elements.length) return;
+        const type = wtE[elements[0].index]?.[0];
+        if(type) showAnalyticsField('type', type, 'جارية');
+      },
       plugins:{legend:{display:false},
                tooltip:{callbacks:{label:ctx=>` ${ctx.raw} مناقصة`},backgroundColor:'rgba(26,31,60,0.9)',titleFont:{family:'Cairo'},bodyFont:{family:'Cairo'}}},
       scales:{
@@ -2186,8 +2580,8 @@ function _buildAnalytics() {
   const maxO=top5[0]?.[1]||1;
   const medals=['g','s','b','',''];
   document.getElementById('an-top5').innerHTML = top5.map(([n,c],i)=>`
-    <div class="top3-item">
-      <div class="top3-medal ${medals[i]}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
+    <div class="top3-item" data-owner="${String(n).replace(/"/g,'&quot;')}" role="button" tabindex="0" title="استعراض تفاصيل ${String(n).replace(/"/g,'&quot;')}">
+      <div class="top3-medal ${medals[i]}">${i+1}</div>
       <div class="top3-info">
         <div class="top3-name">${n}</div>
         <div class="top3-bar-bg"><div class="top3-bar" style="width:0%;background:${AC[i%AC.length]}" data-w="${c/maxO*100}"></div></div>
@@ -2205,7 +2599,7 @@ function _buildAnalytics() {
   const sectors=Object.entries(sc).sort((a,b)=>b[1]-a[1]);
   const maxS=sectors[0]?.[1]||1;
   document.getElementById('an-sectors-prog').innerHTML = sectors.map(([n,c],i)=>`
-    <div class="an-progress-item">
+    <div class="an-progress-item" data-sector="${String(n).replace(/"/g,'&quot;')}" role="button" tabindex="0" title="استعراض قطاع ${String(n).replace(/"/g,'&quot;')}">
       <div class="an-progress-label"><span>${n}</span><span class="an-progress-pct">${c} (${Math.round(c/totalC*100)}%)</span></div>
       <div class="an-progress-bg"><div class="an-progress-fill" style="width:0%;background:${AC[i%AC.length]}" data-w="${c/maxS*100}"></div></div>
     </div>`).join('');
@@ -2218,14 +2612,14 @@ function _buildAnalytics() {
   const guaCount     = allTenders.filter(t=>isGuaranteeToday(t.guarantee)).length;
   const successRate  = totalC ? Math.round(subC/totalC*100) : 0;
   document.getElementById('an-quick-stats').innerHTML = [
-    {l:'إجمالي الجهات المالكة', v: uniqueOwners + ' جهة'},
-    {l:'أنواع الأعمال المختلفة', v: uniqueTypes + ' نوع'},
-    {l:'مناقصات حرجة (3 أيام)', v: urgentCount},
-    {l:'ضمانات مستحقة اليوم', v: guaCount},
-    {l:'نسبة التقديم من الإجمالي', v: successRate + '%'},
-    {l:'متوسط المناقصات شهرياً', v: Math.round(subC/5) + ' مناقصة'},
-  ].map(({l,v})=>`
-    <div class="an-stat-row">
+    {l:'إجمالي الجهات المالكة', v: uniqueOwners + ' جهة', action:'aggregate:owners'},
+    {l:'أنواع الأعمال المختلفة', v: uniqueTypes + ' نوع', action:'aggregate:worktypes'},
+    {l:'مناقصات حرجة (3 أيام)', v: urgentCount, action:'detail:urgent'},
+    {l:'ضمانات مستحقة اليوم', v: guaCount, action:'detail:guarantee'},
+    {l:'نسبة التقديم من الإجمالي', v: successRate + '%', action:'detail:submitted'},
+    {l:'متوسط المناقصات شهرياً', v: Math.round(subC/5) + ' مناقصة', action:'timeline:months'},
+  ].map(({l,v,action})=>`
+    <div class="an-stat-row" data-analytics-action="${action}">
       <span class="an-stat-label">${l}</span>
       <span class="an-stat-val">${v}</span>
     </div>`).join('');
@@ -2240,7 +2634,8 @@ function _buildAnalytics() {
   });
   const maxM=Math.max(...mData,1);
   const hmLevel = n => n===0?0:n<=maxM*0.25?1:n<=maxM*0.5?2:n<=maxM*0.75?3:4;
-  document.getElementById('an-heatmap').innerHTML = `
+  const heatmapEl = document.getElementById('an-heatmap');
+  if (heatmapEl) heatmapEl.innerHTML = `
     <div class="heatmap-grid">
       <div class="heatmap-row">
         <div class="heatmap-label"></div>
@@ -2273,6 +2668,389 @@ function _buildAnalytics() {
       </div>
     </div>`;
 }
+
+function getAnalyticsDataset() {
+  return [
+    ...allTenders.map(t=>({
+      owner:t.owner,
+      type:t.workType,
+      sector:t.sector,
+      date:t.submitDate,
+      status:'جارية',
+      name:t.title,
+      guarantee:t.guarantee
+    })),
+    ...allSubmitted.filter(t=> {
+      const d = new Date(t.date || '');
+      return d.getFullYear() === 2026;
+    }).map(t=>({
+      owner:t.owner,
+      type:t.type,
+      sector:t.sector,
+      date:t.date,
+      status:'تم التقديم',
+      name:t.name,
+      guarantee:t.guarantee
+    }))
+  ];
+}
+
+function analyticsAggregate(items, key) {
+  const out = {};
+  items.forEach(item => {
+    const name = item[key];
+    if (!name || name === '—') return;
+    out[name] = (out[name] || 0) + 1;
+  });
+  return Object.entries(out).sort((a,b)=>b[1]-a[1]);
+}
+
+function analyticsItems(kind) {
+  const combined = getAnalyticsDataset();
+  const submitted = combined.filter(t=>t.status === 'تم التقديم');
+  const jariya = combined.filter(t=>t.status === 'جارية');
+  const urgent = allTenders
+    .filter(t=>['today','3days'].includes(getUrgency(t.submitDate).level))
+    .map(t=>({owner:t.owner,type:t.workType,sector:t.sector,date:t.submitDate,status:'حرجة',name:t.title,guarantee:t.guarantee}));
+  const week = allTenders
+    .filter(t=>['today','3days','week'].includes(getUrgency(t.submitDate).level))
+    .map(t=>({owner:t.owner,type:t.workType,sector:t.sector,date:t.submitDate,status:'خلال أسبوع',name:t.title,guarantee:t.guarantee}));
+  const today = allTenders
+    .filter(t=>getUrgency(t.submitDate).level === 'today')
+    .map(t=>({owner:t.owner,type:t.workType,sector:t.sector,date:t.submitDate,status:'اليوم',name:t.title,guarantee:t.guarantee}));
+  const guarantee = allTenders
+    .filter(t=>isGuaranteeToday(t.guarantee))
+    .map(t=>({owner:t.owner,type:t.workType,sector:t.sector,date:t.submitDate,status:'ضمان اليوم',name:t.title,guarantee:t.guarantee}));
+
+  if (kind === 'jariya') return jariya;
+  if (kind === 'submitted') return submitted;
+  if (kind === 'urgent') return urgent;
+  if (kind === 'week') return week;
+  if (kind === 'today') return today;
+  if (kind === 'guarantee') return guarantee;
+  return combined;
+}
+
+function analyticsTitle(kind) {
+  return {
+    total: 'إجمالي مناقصات 2026',
+    jariya: 'المناقصات الجارية',
+    submitted: 'المناقصات التي تم تقديمها',
+    urgent: 'المناقصات الحرجة',
+    week: 'المناقصات خلال أسبوع',
+    today: 'تنتهي اليوم',
+    guarantee: 'ضمانات مستحقة اليوم'
+  }[kind] || 'تفاصيل التحليلات';
+}
+
+function analyticsSafe(value) {
+  return String(value ?? '—')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function openAnalyticsModal(title, subtitle, bodyHtml) {
+  document.getElementById('owner-modal-title').textContent = title;
+  document.getElementById('owner-modal-count').textContent = subtitle;
+  document.getElementById('owner-modal-body').innerHTML = bodyHtml || '<div class="empty">لا توجد بيانات مطابقة</div>';
+  document.getElementById('owner-modal-overlay').classList.add('open');
+}
+
+function renderAnalyticsRows(rows) {
+  return rows.length ? `<div class="analytics-detail-list">${rows.slice(0, 80).map(t=>`
+    <div class="analytics-detail-item">
+      <div class="analytics-detail-title">${analyticsSafe(t.name)}</div>
+      <div class="analytics-detail-meta">
+        <span>${analyticsSafe(t.owner)}</span>
+        <span>${analyticsSafe(t.type)}</span>
+        <span>${analyticsSafe(t.sector)}</span>
+        <span>${analyticsSafe(t.date ? String(t.date).slice(0,10) : '—')}</span>
+        <span>${analyticsSafe(t.status)}</span>
+      </div>
+    </div>
+  `).join('')}</div>` : '<div class="empty">لا توجد سجلات مطابقة</div>';
+}
+
+function showAnalyticsDetail(kind) {
+  const rows = analyticsItems(kind);
+  openAnalyticsModal(analyticsTitle(kind), `عدد السجلات: ${rows.length}`, renderAnalyticsRows(rows));
+}
+
+function showAnalyticsField(field, value, status) {
+  const rows = getAnalyticsDataset().filter(item =>
+    item[field] === value && (!status || item.status === status)
+  );
+  const label = field === 'owner' ? 'الجهة المالكة' : field === 'type' ? 'نوع الأعمال' : 'القطاع';
+  openAnalyticsModal(`${label}: ${value}`, `عدد السجلات: ${rows.length}`, renderAnalyticsRows(rows));
+}
+
+function showAnalyticsOwner(owner, status) {
+  showAnalyticsField('owner', owner, status);
+}
+
+function showAnalyticsMonth(monthIndex, status) {
+  const monthNames = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  const rows = getAnalyticsDataset().filter(item => {
+    const d = new Date(item.date || '');
+    return d.getFullYear() === 2026 && d.getMonth() === monthIndex && (!status || item.status === status);
+  });
+  openAnalyticsModal(`${monthNames[monthIndex]} 2026 — ${status || 'كل الحالات'}`, `عدد السجلات: ${rows.length}`, renderAnalyticsRows(rows));
+}
+
+function showAnalyticsAggregate(kind) {
+  const combined = getAnalyticsDataset();
+  const source = kind === 'owners-active' ? combined.filter(t=>t.status === 'جارية') : combined;
+  const map = {
+    owners: ['owner','🏛️ توزيع الجهات المالكة'],
+    'owners-active': ['owner','🏛️ الجهات المالكة - الجارية'],
+    worktypes: ['type','⚙️ توزيع أنواع الأعمال'],
+    sectors: ['sector','📂 توزيع القطاعات']
+  };
+  const [key, title] = map[kind] || map.owners;
+  const rows = analyticsAggregate(source, key);
+  const max = rows[0]?.[1] || 1;
+  const field = key;
+  const status = kind === 'owners-active' ? 'جارية' : '';
+  openAnalyticsModal(title.replace(/[🏛️⚙️📂]/g, '').trim(), `عدد البنود: ${rows.length}`, rows.map(([name,count], i)=>`
+    <div class="analytics-aggregate-row" data-agg-field="${field}" data-agg-name="${analyticsSafe(name)}" data-agg-status="${analyticsSafe(status)}" role="button" tabindex="0">
+      <div class="analytics-aggregate-count">${count}</div>
+      <div class="analytics-aggregate-name">${analyticsSafe(name)}</div>
+      <div class="analytics-aggregate-track"><div class="analytics-aggregate-fill" style="width:${count/max*100}%;background:${ownerColors[i%ownerColors.length]}"></div></div>
+    </div>
+  `).join(''));
+}
+
+function showAnalyticsTimeline() {
+  const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  const counts = Array(12).fill(0);
+  getAnalyticsDataset().forEach(t=>{
+    const d = new Date(t.date || '');
+    if (d.getFullYear() === 2026) counts[d.getMonth()]++;
+  });
+  const max = Math.max(...counts, 1);
+  openAnalyticsModal('الخط الزمني للمناقصات', `إجمالي 2026: ${counts.reduce((a,b)=>a+b,0)}`, months.map((month,i)=>`
+    <div class="analytics-aggregate-row" data-month-index="${i}" role="button" tabindex="0">
+      <div class="analytics-aggregate-count">${counts[i]}</div>
+      <div class="analytics-aggregate-name">${month}</div>
+      <div class="analytics-aggregate-track"><div class="analytics-aggregate-fill" style="width:${counts[i]/max*100}%;background:${ownerColors[i%ownerColors.length]}"></div></div>
+    </div>
+  `).join(''));
+}
+
+function goAnalyticsFilter(kind) {
+  if (kind === 'submitted') {
+    switchTab('clients', document.getElementById('nav-btn-clients'));
+    setTimeout(()=>openClientListModal('تم التقديم'), 250);
+    return;
+  }
+  switchTab('tenders', document.getElementById('nav-btn-tenders'));
+  setTimeout(()=>filterBy(kind === 'jariya' ? 'active' : kind), 250);
+}
+
+function runAnalyticsDirectAction(action) {
+  const [type, value] = String(action || '').split(':');
+  if (!type) return;
+  if (type === 'detail') showAnalyticsDetail(value || 'total');
+  else if (type === 'aggregate') showAnalyticsAggregate(value || 'owners');
+  else if (type === 'timeline') showAnalyticsTimeline();
+  else if (type === 'compare') document.getElementById('compare-a')?.focus();
+}
+
+function handleAnalyticsInteraction(event) {
+  const keyMode = event.type === 'keydown';
+  if (keyMode && !['Enter', ' '].includes(event.key)) return;
+  const target = event.target;
+  if (!target.closest('#tab-analytics') && !target.closest('#owner-modal-overlay')) return;
+  if (target.closest('button, select, option, input, textarea, a') && !target.closest('[data-analytics-action], .top3-item, .an-progress-item, .an-stat-row, .analytics-aggregate-row')) return;
+
+  const aggregateRow = target.closest('.analytics-aggregate-row');
+  if (aggregateRow) {
+    event.preventDefault();
+    event.stopPropagation();
+    const monthIndex = aggregateRow.dataset.monthIndex;
+    if (monthIndex !== undefined) {
+      showAnalyticsMonth(Number(monthIndex));
+      return;
+    }
+    showAnalyticsField(aggregateRow.dataset.aggField, aggregateRow.dataset.aggName, aggregateRow.dataset.aggStatus || '');
+    return;
+  }
+
+  const topOwner = target.closest('#tab-analytics .top3-item[data-owner], #tab-analytics .analytics-command[data-owner]');
+  if (topOwner) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!topOwner.dataset.owner) return;
+    showAnalyticsOwner(topOwner.dataset.owner);
+    return;
+  }
+
+  const sector = target.closest('#tab-analytics .an-progress-item[data-sector], #tab-analytics .analytics-command[data-sector]');
+  if (sector) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!sector.dataset.sector) return;
+    showAnalyticsField('sector', sector.dataset.sector);
+    return;
+  }
+
+  const statAction = target.closest('#tab-analytics .an-stat-row[data-analytics-action]');
+  if (statAction) {
+    event.preventDefault();
+    event.stopPropagation();
+    runAnalyticsDirectAction(statAction.dataset.analyticsAction);
+    return;
+  }
+
+  if (target.closest('#tab-analytics canvas')) return;
+  const actionEl = target.closest('#tab-analytics [data-analytics-action]');
+  if (actionEl) {
+    event.preventDefault();
+    runAnalyticsDirectAction(actionEl.dataset.analyticsAction);
+  }
+}
+
+document.addEventListener('click', handleAnalyticsInteraction);
+document.addEventListener('keydown', handleAnalyticsInteraction);
+
+function copyAnalyticsSummary() {
+  const total = document.getElementById('an-kpi-total')?.textContent || '—';
+  const jariya = document.getElementById('an-kpi-jariya')?.textContent || '—';
+  const submitted = document.getElementById('an-kpi-sub')?.textContent || '—';
+  const text = `ملخص التحليلات 2026\nالإجمالي: ${total}\nالجارية: ${jariya}\nتم التقديم: ${submitted}`;
+  navigator.clipboard?.writeText(text);
+  showToast('✅ تم نسخ ملخص التحليلات');
+}
+
+function runAnalyticsAction(action) {
+  const [type, value] = action.split(':');
+  closeAnalyticsMenus();
+  if (type === 'list') showAnalyticsDetail(value);
+  else if (type === 'agg') showAnalyticsAggregate(value);
+  else if (type === 'timeline') showAnalyticsTimeline();
+  else if (type === 'go') goAnalyticsFilter(value);
+  else if (type === 'export') {
+    if (value === 'client-submitted') exportClientReport('submitted');
+    else if (value === 'client-summary') exportClientReport('by_client');
+    else exportReport(value);
+  } else if (type === 'copy') copyAnalyticsSummary();
+  else if (type === 'compare') document.getElementById('compare-a')?.focus();
+}
+
+function closeAnalyticsMenus() {
+  document.querySelectorAll('.an-action-menu.open').forEach(menu=>menu.classList.remove('open'));
+  document.querySelectorAll('.an-menu-trigger.active').forEach(btn=>btn.classList.remove('active'));
+}
+
+function attachAnalyticsMenu(target, items, isKpi=false) {
+  if (!target || target.querySelector(':scope > .an-menu-wrap') || (!isKpi && target.querySelector('.an-card-head > .an-menu-wrap'))) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'an-menu-wrap';
+  wrap.innerHTML = `
+    <button class="an-menu-trigger" type="button" aria-label="خيارات التحليل">▾</button>
+    <div class="an-action-menu">
+      ${items.map(item=>`
+        <button class="an-action-item" type="button" data-action="${item.action}">
+          <span>${item.icon}</span><span>${item.label}</span>${item.hint ? `<small>${item.hint}</small>` : ''}
+        </button>
+      `).join('')}
+    </div>
+  `;
+  const host = isKpi ? target : (target.querySelector('.an-card-head') || target);
+  host.appendChild(wrap);
+}
+
+function setupAnalyticsMenus() {
+  return;
+  const kpis = [
+    ['.an-kpi.k-total', [
+      {icon:'📋',label:'عرض كل سجلات 2026',hint:'تفاصيل',action:'list:total'},
+      {icon:'🏛️',label:'توزيع الجهات',hint:'تحليل',action:'agg:owners'},
+      {icon:'🏆',label:'تصدير التقرير الشامل',hint:'Excel',action:'export:full'}
+    ]],
+    ['.an-kpi.k-jariya', [
+      {icon:'🟢',label:'عرض المناقصات الجارية',hint:'جدول',action:'list:jariya'},
+      {icon:'↗',label:'فتحها في صفحة المناقصات',hint:'انتقال',action:'go:jariya'},
+      {icon:'📤',label:'تصدير الجارية',hint:'Excel',action:'export:active'}
+    ]],
+    ['.an-kpi.k-sub', [
+      {icon:'✅',label:'عرض التي تم تقديمها',hint:'تفاصيل',action:'list:submitted'},
+      {icon:'↗',label:'فتحها في صفحة العملاء',hint:'انتقال',action:'go:submitted'},
+      {icon:'📤',label:'تصدير المقدمة',hint:'Excel',action:'export:client-submitted'}
+    ]]
+  ];
+  kpis.forEach(([selector, items])=>attachAnalyticsMenu(document.querySelector(selector), items, true));
+
+  const cardItems = [
+    [
+      {icon:'🏛️',label:'عرض الجهات الجارية',hint:'قائمة',action:'agg:owners-active'},
+      {icon:'📤',label:'تصدير توزيع الجهات',hint:'Excel',action:'export:by_owner'}
+    ],
+    [
+      {icon:'🚨',label:'المناقصات الحرجة',hint:'تفاصيل',action:'list:urgent'},
+      {icon:'📅',label:'خلال أسبوع',hint:'متابعة',action:'list:week'},
+      {icon:'📤',label:'تصدير الحرجة',hint:'Excel',action:'export:critical'}
+    ],
+    [
+      {icon:'✅',label:'عرض المقدمة',hint:'نسبة',action:'list:submitted'},
+      {icon:'🟢',label:'عرض الجارية',hint:'مقارنة',action:'list:jariya'},
+      {icon:'📋',label:'نسخ ملخص التحليلات',hint:'نص',action:'copy:summary'}
+    ],
+    [
+      {icon:'⚙️',label:'عرض أنواع الأعمال',hint:'تحليل',action:'agg:worktypes'},
+      {icon:'📤',label:'تصدير أنواع الأعمال',hint:'Excel',action:'export:by_worktype'}
+    ],
+    [
+      {icon:'🏆',label:'عرض أهم العملاء',hint:'قائمة',action:'agg:owners'},
+      {icon:'↗',label:'فتح صفحة العملاء',hint:'انتقال',action:'go:submitted'},
+      {icon:'📤',label:'تصدير ملخص العملاء',hint:'Excel',action:'export:client-summary'}
+    ],
+    [
+      {icon:'📅',label:'عرض توزيع الأشهر',hint:'زمني',action:'timeline:months'},
+      {icon:'📈',label:'تصدير الملخص الإحصائي',hint:'Excel',action:'export:monthly'}
+    ],
+    [
+      {icon:'📂',label:'عرض القطاعات',hint:'قائمة',action:'agg:sectors'},
+      {icon:'🏛️',label:'عرض الجهات',hint:'تحليل',action:'agg:owners'}
+    ],
+    [
+      {icon:'📋',label:'نسخ ملخص التحليلات',hint:'نص',action:'copy:summary'},
+      {icon:'📊',label:'عرض كل السجلات',hint:'تفاصيل',action:'list:total'}
+    ],
+    [
+      {icon:'⚖️',label:'اختيار جهة للمقارنة',hint:'تركيز',action:'compare:start'},
+      {icon:'🏛️',label:'عرض الجهات المتاحة',hint:'قائمة',action:'agg:owners'}
+    ]
+  ];
+  document.querySelectorAll('#tab-analytics .an-card').forEach((card, index)=>{
+    attachAnalyticsMenu(card, cardItems[index] || cardItems[7], false);
+  });
+}
+
+document.addEventListener('click', (event) => {
+  const trigger = event.target.closest('.an-menu-trigger');
+  if (trigger) {
+    event.stopPropagation();
+    const menu = trigger.parentElement.querySelector('.an-action-menu');
+    const wasOpen = menu.classList.contains('open');
+    closeAnalyticsMenus();
+    if (!wasOpen) {
+      menu.classList.add('open');
+      trigger.classList.add('active');
+    }
+    return;
+  }
+  const action = event.target.closest('.an-action-item');
+  if (action) {
+    event.stopPropagation();
+    runAnalyticsAction(action.dataset.action);
+    return;
+  }
+  if (!event.target.closest('.an-action-menu')) closeAnalyticsMenus();
+});
 
 
 
@@ -2746,9 +3524,10 @@ function renderTimeline() {
     else months[key].submitted++;
   });
 
-  const labels = Object.keys(months).sort((a,b)=>a-b).map(m=>monthNames[m]);
-  const jariyaData = Object.keys(months).sort((a,b)=>a-b).map(m=>months[m].jariya);
-  const subData = Object.keys(months).sort((a,b)=>a-b).map(m=>months[m].submitted);
+  const monthKeys = Object.keys(months).sort((a,b)=>a-b);
+  const labels = monthKeys.map(m=>monthNames[m]);
+  const jariyaData = monthKeys.map(m=>months[m].jariya);
+  const subData = monthKeys.map(m=>months[m].submitted);
 
   if(anTimelineChart) anTimelineChart.destroy();
   const ctx = document.getElementById('an-timeline-chart');
@@ -2764,6 +3543,13 @@ function renderTimeline() {
     },
     options: {
       responsive:true, maintainAspectRatio:true,
+      onClick:(evt, elements)=>{
+        if(!elements.length) return;
+        const item = elements[0];
+        const monthIndex = Number(monthKeys[item.index]);
+        const status = item.datasetIndex === 0 ? 'جارية' : 'تم التقديم';
+        showAnalyticsMonth(monthIndex, status);
+      },
       plugins:{ legend:{ labels:{ color:'var(--text)', font:{family:'Cairo',size:11} } } },
       scales:{
         x:{ ticks:{color:'var(--text-muted)',font:{family:'Cairo',size:11}}, grid:{color:'rgba(0,0,0,0.05)'} },
@@ -3536,6 +4322,8 @@ window.addEventListener('load', function () {
   });
 })();
 </script>
+<script src="../internal-interactions.js?v=10"></script>
+<script src="../portal-sidebar.js?v=4"></script>
 </body>
 </html>
 
