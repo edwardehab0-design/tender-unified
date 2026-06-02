@@ -72,6 +72,8 @@ let selectedDepartment = "all";
 let selectedFilter = "all";
 let searchTerm = "";
 let selectedContext = null;
+let selectedView = "board";
+let calendarRef = new Date();
 let savedState = readState();
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
@@ -482,10 +484,10 @@ function visibleTenders() {
   return tenders.filter((tender) => {
     const visibleByRole = isExecutive() || selectedDepartment === "all" || selectedDepartment === currentDepartmentKey();
     const matchesDepartment = selectedDepartment === "all" || departmentRows(tender).some((row) => row.key === selectedDepartment);
-    const rows = departmentRows(tender);
+    const column = boardColumn(tender);
     const matchesFilter = selectedFilter === "all"
-      || tenderState(tender) === selectedFilter
-      || (selectedFilter === "new" && rows.some((row) => !row.engineers.length || row.status === "in-progress"));
+      || column === selectedFilter
+      || (selectedFilter === "ready" && column === "approved");
     const matchesSearch = !term || `${tender.title} ${tender.client} ${tender.sector}`.toLowerCase().includes(term);
     return visibleByRole && matchesDepartment && matchesFilter && matchesSearch;
   });
@@ -612,15 +614,50 @@ function renderRole() {
   if (!executive && selectedDepartment === "all") selectedDepartment = currentDepartmentKey();
 }
 
+function boardColumn(tender) {
+  const approval = savedState[tender.id]?.approval;
+  if (approval === "approved") return "approved";
+  const state = tenderState(tender);
+  if (state === "late") return "late";
+  if (state === "ready") return "ready";
+  const rows = departmentRows(tender);
+  const anyCompleted = rows.some((row) => row.status === "completed");
+  const anyUnassigned = rows.some((row) => !row.engineers.length);
+  if (!anyCompleted && anyUnassigned) return "new";
+  return "active";
+}
+
 function renderKpis() {
   const source = tenders;
   const ready = source.filter((tender) => tenderState(tender) === "ready").length;
   const late = source.filter((tender) => tenderState(tender) === "late").length;
+  const unassigned = source.reduce((sum, tender) => sum + departmentRows(tender).filter((row) => !row.engineers.length).length, 0);
   const files = source.reduce((sum, tender) => sum + departmentRows(tender).reduce((inner, dept) => inner + dept.files, 0), 0);
-  qs("kpi-active").textContent = source.length;
-  qs("kpi-ready").textContent = ready;
-  qs("kpi-attention").textContent = source.length - ready;
-  qs("kpi-files").textContent = files;
+  setText("kpi-active", source.length);
+  setText("kpi-ready", ready);
+  setText("kpi-late", late);
+  setText("kpi-attention", source.length - ready);
+  setText("kpi-unassigned", unassigned);
+  setText("kpi-files", files);
+}
+
+function setText(id, value) {
+  const el = qs(id);
+  if (el) el.textContent = value;
+}
+
+function renderFilterCounts() {
+  const cols = { all: tenders.length, new: 0, active: 0, late: 0, ready: 0 };
+  tenders.forEach((tender) => {
+    const col = boardColumn(tender);
+    if (col === "approved") { cols.ready += 0; }
+    if (cols[col] !== undefined && col !== "all") cols[col] += 1;
+  });
+  setText("count-all", cols.all);
+  setText("count-new", cols.new);
+  setText("count-active", cols.active);
+  setText("count-late", cols.late);
+  setText("count-ready", cols.ready + tenders.filter((t) => boardColumn(t) === "approved").length);
 }
 
 function employeeMetrics() {
@@ -761,12 +798,15 @@ function renderDepartments() {
         load: tenders.length ? Math.round((tenders.filter((tender) => tenderState(tender) !== "ready").length / tenders.length) * 100) : 0
       }
       : departmentStats(dept);
-    const status = stats.late ? "خطر" : stats.load > 70 ? "مزدحم" : "هادئ";
+    const flag = stats.late ? "risk" : stats.load > 70 ? "busy" : "calm";
+    const status = flag === "risk" ? "خطر" : flag === "busy" ? "مزدحم" : "هادئ";
     return `
       <button class="department-button ${selectedDepartment === dept.key ? "active" : ""}" type="button" data-department="${dept.key}">
-        <span class="dept-code">${safe(dept.short)}</span>
+        <div class="dept-top">
+          <span class="dept-code">${safe(dept.short)}</span>
+          <span class="dept-flag ${flag}">${safe(status)}</span>
+        </div>
         <strong>${safe(dept.name)}</strong>
-        <em>${safe(status)}</em>
         <span class="department-load">
           <i><b style="width:${Math.min(stats.load, 100)}%"></b></i>
           <span>${stats.open} مفتوحة</span>
@@ -784,112 +824,158 @@ function renderDepartments() {
   qs("toolbar-title").textContent = active ? active.name : "كل الأقسام";
 }
 
-function renderBoard() {
-  const rows = visibleTenders();
-  qs("tender-board").innerHTML = rows.length ? rows.map(renderTender).join("") : `
-    <div class="empty-state">لا توجد منافسات مطابقة للتصفية الحالية.</div>
-  `;
+const KANBAN_COLUMNS = [
+  { key: "new", label: "مهام جديدة" },
+  { key: "active", label: "قيد العمل" },
+  { key: "late", label: "متأخرة" },
+  { key: "ready", label: "جاهزة للاعتماد" },
+  { key: "approved", label: "معتمدة" }
+];
+
+function columnLabel(col) {
+  return { new: "جديدة", active: "قيد العمل", late: "متأخرة", ready: "جاهزة", approved: "معتمدة" }[col] || col;
 }
 
-function renderTender(tender) {
+function isUrgentClose(label) {
+  return label === "اليوم" || label === "متأخر";
+}
+
+function renderKanban() {
+  const board = qs("kanban");
+  if (!board) return;
+  const list = visibleTenders();
+  let columns = KANBAN_COLUMNS;
+  if (selectedFilter !== "all") {
+    const allowed = selectedFilter === "ready" ? ["ready", "approved"] : [selectedFilter];
+    columns = KANBAN_COLUMNS.filter((col) => allowed.includes(col.key));
+  }
+  board.innerHTML = columns.map((col) => {
+    const cards = list.filter((tender) => boardColumn(tender) === col.key);
+    return `
+      <div class="kan-col" data-col="${col.key}">
+        <div class="kan-col-head">
+          <span class="kan-col-title"><i></i>${safe(col.label)}</span>
+          <span class="kan-col-count">${cards.length}</span>
+        </div>
+        <div class="kan-col-body">
+          ${cards.length ? cards.map(renderKanCard).join("") : `<div class="kan-empty">لا توجد ملفات هنا</div>`}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderKanCard(tender) {
   const rows = departmentRows(tender);
   const completed = rows.filter((row) => row.status === "completed").length;
   const late = rows.filter((row) => row.status === "late").length;
+  const unassigned = rows.filter((row) => !row.engineers.length).length;
+  const pct = Math.round((completed / departments.length) * 100);
+  const col = boardColumn(tender);
+  const close = daysTo(tender.submitDate);
+  const urgent = isUrgentClose(close);
   const ready = completed === departments.length;
-  const state = tenderState(tender);
-  const completionPct = Math.round((completed / departments.length) * 100);
-  const unassigned = rows.filter((row) => row.key === "TECH" && !row.engineers.length).length;
   const approval = savedState[tender.id]?.approval || "";
+  const deptChips = rows.map((row) => `
+    <button class="dept-chip ${rowStateClass(row.status, row)}" type="button" data-tender="${safe(tender.id)}" data-dept="${safe(row.key)}" title="${safe(row.name)} · ${safe(statusLabel(row.status))}">${safe(row.short)}</button>
+  `).join("");
   return `
-    <article class="tender-card compact-card state-${state}" data-tender="${safe(tender.id)}">
-      <div class="tender-head">
-        <div>
-          <div class="mission-signal">
-            <span>${safe(stateText(state))}</span>
-            <b>${completed}/${departments.length} مكتمل</b>
-            ${late ? `<em>${late} متأخر</em>` : ""}
-            ${unassigned ? `<em class="data-alert">${unassigned} غير مسند</em>` : ""}
-          </div>
-          <h2 class="tender-title">
-            <a class="tender-title-link" href="../tenders/?q=${encodeURIComponent(tender.title)}" title="عرض في صفحة المناقصات">${safe(tender.title)}</a>
-          </h2>
-          <div class="tender-meta">
-            <span class="pill">${safe(tender.id)}</span>
-            <span class="pill">${safe(tender.client)}</span>
-            <span class="pill">${safe(tender.sector)}</span>
-          </div>
-        </div>
-        <div class="tender-side">
-          <article class="compact-stat">
-            <span>الجاهزية</span>
-            <strong>${completionPct}%</strong>
-          </article>
-          <article class="compact-stat">
-            <span>الإغلاق</span>
-            <strong>${safe(daysTo(tender.submitDate))}</strong>
-          </article>
-        </div>
+    <article class="kan-card state-${col}" data-tender="${safe(tender.id)}">
+      <div class="kan-card-top">
+        <span class="kan-id">${safe(tender.id)}</span>
+        <span class="kan-close ${urgent ? "is-urgent" : ""}"><b>${safe(close)}</b><span>الإغلاق</span></span>
       </div>
-
-      <div class="compact-hint">
-        <span>اختر القسم لفتح التعيين، خط الزمن، الملفات، والملاحظات.</span>
+      <h3 class="kan-title"><a href="../tenders/?q=${encodeURIComponent(tender.title)}" title="عرض في صفحة المناقصات">${safe(tender.title)}</a></h3>
+      <div class="kan-client">${safe(tender.client)} · ${safe(tender.sector)}</div>
+      <div class="kan-progress">
+        <div class="kan-progress-bar"><i style="width:${pct}%"></i></div>
+        <div class="kan-progress-meta"><span>${completed}/${departments.length} أقسام</span><span>${pct}%</span></div>
       </div>
-
-      <div class="ops-timeline compact-timeline" aria-label="مسار الأقسام">
-        ${rows.map((row, index) => `
-          <button class="timeline-node ${rowStateClass(row.status, row)}" type="button" data-tender="${safe(tender.id)}" data-dept="${safe(row.key)}">
-            <span>${safe(row.short)}</span>
-            <strong>${safe(statusLabel(row.status))}</strong>
-            <small>${safe(row.engineers.map(personName).join("، ") || "غير مسند")}</small>
-          </button>
-        `).join("")}
-      </div>
-
-      <div class="approval-row">
-        <div class="approval-state">
-          ${approval ? `قرار المدير: ${statusLabel(approval)}` : ready ? "كل الأقسام اكتملت. المنافسة جاهزة لاعتماد المدير." : `اكتمل ${completed} من ${departments.length} أقسام.`}
+      <div class="kan-depts">${deptChips}</div>
+      <div class="kan-foot">
+        <div class="kan-tags">
+          ${late ? `<span class="kan-tag late">${late} متأخر</span>` : ""}
+          ${unassigned ? `<span class="kan-tag warn">${unassigned} غير مسند</span>` : ""}
+          ${!late && !unassigned ? `<span class="kan-tag">${safe(stateText(tenderState(tender)))}</span>` : ""}
         </div>
-        <div class="approval-actions">
-          <button type="button" data-approve="${safe(tender.id)}" ${ready && isExecutive() ? "" : "disabled"}>اعتماد</button>
-          <button class="reject" type="button" data-reject="${safe(tender.id)}" ${ready && isExecutive() ? "" : "disabled"}>رفض</button>
-        </div>
+        ${approval === "approved"
+          ? `<span class="kan-approved-badge">✓ معتمد</span>`
+          : `<div class="kan-approve">
+               <button type="button" data-approve="${safe(tender.id)}" ${ready && isExecutive() ? "" : "disabled"}>اعتماد</button>
+               <button class="reject" type="button" data-reject="${safe(tender.id)}" ${ready && isExecutive() ? "" : "disabled"}>رفض</button>
+             </div>`}
       </div>
     </article>
   `;
 }
 
-function renderLane(tender, row) {
-  const engineerAvatars = row.engineers.length
-    ? row.engineers.map((person) => `<span class="avatar">${safe(personName(person).slice(0, 1))}</span>`).join("")
-    : `<span class="unassigned-chip">غير مسند</span>`;
-  const engineerCountText = row.engineers.length ? `${row.engineers.length} مهندس` : "لا يوجد مهندس مطابق";
-  const timeline = timelineFor(tender, row.key, departments.findIndex((dept) => dept.key === row.key), row.status);
-  const quickPool = assignableEmployees(row);
-  return `
-    <article class="lane ${rowStateClass(row.status, row)}" tabindex="0" data-tender="${safe(tender.id)}" data-dept="${safe(row.key)}">
-      <span class="lane-beam"></span>
-      <div>
-        <span class="lane-status">${safe(statusLabel(row.status))}</span>
-        <h3>${safe(row.name)}</h3>
+function renderTable() {
+  const body = qs("table-body");
+  if (!body) return;
+  const list = visibleTenders();
+  body.innerHTML = list.length ? list.map((tender) => {
+    const rows = departmentRows(tender);
+    const completed = rows.filter((row) => row.status === "completed").length;
+    const pct = Math.round((completed / departments.length) * 100);
+    const col = boardColumn(tender);
+    const close = daysTo(tender.submitDate);
+    const urgent = isUrgentClose(close);
+    const approval = savedState[tender.id]?.approval || "";
+    return `
+      <tr data-tender="${safe(tender.id)}" data-dept="${safe(rows[0].key)}">
+        <td><div class="tbl-title">${safe(tender.title)}<small>${safe(tender.id)}</small></div></td>
+        <td>${safe(tender.client)}</td>
+        <td>${safe(tender.sector)}</td>
+        <td><div class="tbl-progress"><i><b style="width:${pct}%"></b></i><em>${pct}%</em></div></td>
+        <td class="tbl-deadline ${urgent ? "urgent" : ""}">${safe(close)}</td>
+        <td><span class="status-tag ${col}">${safe(columnLabel(col))}</span></td>
+        <td>${approval ? safe(statusLabel(approval)) : "—"}</td>
+      </tr>
+    `;
+  }).join("") : `<tr><td colspan="7"><div class="empty-state">لا توجد منافسات مطابقة للتصفية الحالية.</div></td></tr>`;
+}
+
+const CAL_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+
+function renderCalendar() {
+  const grid = qs("calendar-grid");
+  const title = qs("cal-title");
+  if (!grid || !title) return;
+  const year = calendarRef.getFullYear();
+  const month = calendarRef.getMonth();
+  title.textContent = `${CAL_MONTHS[month]} ${year}`;
+  const startDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
+  const byDay = {};
+  visibleTenders().forEach((tender) => {
+    const date = new Date(tender.submitDate);
+    if (Number.isNaN(date.getTime())) return;
+    if (date.getFullYear() === year && date.getMonth() === month) {
+      const day = date.getDate();
+      (byDay[day] = byDay[day] || []).push(tender);
+    }
+  });
+  let cells = "";
+  for (let i = 0; i < startDay; i += 1) cells += `<div class="cal-cell empty"></div>`;
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
+    const events = byDay[day] || [];
+    cells += `
+      <div class="cal-cell ${isToday ? "today" : ""}">
+        <div class="cal-date">${day}</div>
+        <div class="cal-events">
+          ${events.map((tender) => {
+            const col = boardColumn(tender);
+            const cls = col === "late" ? "late" : (col === "ready" || col === "approved") ? "ready" : "";
+            const rows = departmentRows(tender);
+            return `<button class="cal-event ${cls}" type="button" data-tender="${safe(tender.id)}" data-dept="${safe(rows[0].key)}" title="${safe(tender.title)}">${safe(tender.title)}</button>`;
+          }).join("")}
+        </div>
       </div>
-      <p>${safe(row.tasks.slice(0, 2).join(" · "))}</p>
-      <div class="avatar-row">
-        ${engineerAvatars}
-      </div>
-      <div class="lane-foot">
-        <span>${safe(engineerCountText)}</span>
-        <span>${formatHours(timeline.completedAt ? hoursBetween(timeline.assignedAt, timeline.completedAt) : hoursBetween(timeline.assignedAt, new Date()))}</span>
-        <span>${row.files} ملف</span>
-      </div>
-      <div class="quick-assign" data-stop-open>
-        <select data-quick-engineer="${safe(tender.id)}" data-quick-dept="${safe(row.key)}">
-          <option value="">تعيين سريع</option>
-          ${quickPool.map((person) => `<option value="${safe(personName(person))}">${safe(personName(person))} · ${safe(assignmentRoleLabel(person))} · ${personLoad(personName(person)).open} مفتوحة</option>`).join("")}
-        </select>
-        <button type="button" data-save-quick="${safe(tender.id)}" data-quick-dept="${safe(row.key)}">حفظ</button>
-      </div>
-    </article>
-  `;
+    `;
+  }
+  grid.innerHTML = cells;
 }
 
 function openDrawer(tenderId, departmentKey) {
@@ -1076,14 +1162,33 @@ function closeDrawer() {
   qs("detail-drawer").setAttribute("aria-hidden", "true");
 }
 
+function renderActiveView() {
+  if (selectedView === "board") {
+    renderKanban();
+  } else if (selectedView === "table") {
+    renderTable();
+  } else if (selectedView === "calendar") {
+    renderCalendar();
+  } else if (selectedView === "analytics") {
+    renderInsights();
+    renderSmartAlerts();
+    renderEmployeePerformance();
+  }
+}
+
+function switchView(view) {
+  selectedView = view;
+  document.querySelectorAll("#view-tabs button").forEach((button) => button.classList.toggle("active", button.dataset.view === view));
+  document.querySelectorAll(".ops-view").forEach((panel) => { panel.hidden = panel.dataset.view !== view; });
+  renderActiveView();
+}
+
 function render() {
   renderRole();
   renderKpis();
-  renderEmployeePerformance();
+  renderFilterCounts();
   renderDepartments();
-  renderInsights();
-  renderSmartAlerts();
-  renderBoard();
+  renderActiveView();
 }
 
 async function loadData() {
@@ -1117,31 +1222,25 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  const viewButton = event.target.closest("#view-tabs button[data-view]");
+  if (viewButton) {
+    switchView(viewButton.dataset.view);
+    return;
+  }
+
   const filterButton = event.target.closest("[data-filter]");
   if (filterButton) {
     selectedFilter = filterButton.dataset.filter;
     document.querySelectorAll("[data-filter]").forEach((button) => button.classList.toggle("active", button === filterButton));
-    renderBoard();
-    return;
-  }
-
-  const quickSave = event.target.closest("[data-save-quick]");
-  if (quickSave) {
-    const tenderId = quickSave.dataset.saveQuick;
-    const departmentKey = quickSave.dataset.quickDept;
-    const select = quickSave.closest(".quick-assign")?.querySelector("select");
-    if (select?.value) {
-      setAssignment(tenderId, departmentKey, [select.value]);
-      render();
-    }
+    renderActiveView();
     return;
   }
 
   if (event.target.closest("[data-stop-open]")) return;
 
-  const lane = event.target.closest(".lane[data-tender][data-dept], .timeline-node[data-tender][data-dept]");
-  if (lane) {
-    openDrawer(lane.dataset.tender, lane.dataset.dept);
+  const opener = event.target.closest(".dept-chip[data-tender][data-dept], tr[data-tender][data-dept], .cal-event[data-tender][data-dept]");
+  if (opener) {
+    openDrawer(opener.dataset.tender, opener.dataset.dept);
     return;
   }
 
@@ -1161,7 +1260,16 @@ document.addEventListener("click", (event) => {
 
 qs("search-input").addEventListener("input", (event) => {
   searchTerm = event.target.value;
-  renderBoard();
+  renderActiveView();
+});
+
+qs("cal-prev")?.addEventListener("click", () => {
+  calendarRef = new Date(calendarRef.getFullYear(), calendarRef.getMonth() - 1, 1);
+  renderCalendar();
+});
+qs("cal-next")?.addEventListener("click", () => {
+  calendarRef = new Date(calendarRef.getFullYear(), calendarRef.getMonth() + 1, 1);
+  renderCalendar();
 });
 
 qs("drawer-close").addEventListener("click", closeDrawer);
