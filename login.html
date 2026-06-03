@@ -151,7 +151,8 @@
       sessionStorage.setItem("alrawafPortalRole", profile?.role === "executive" ? "manager" : "department");
       if (profile?.department_key)
         sessionStorage.setItem("alrawafDepartmentKey", profile.department_key);
-      window.location.href = "/coordination/";
+      // العودة إلى لوحة البوابة (الصفحة الرئيسية) بعد الدخول
+      window.location.href = "/?return=portal";
     }
   </script>
 </body>

@@ -1,3 +1,3 @@
 # Cloudflare Pages redirect rules
-# المسار الجذري → صفحة التنسيق (الصفحة الرئيسية بعد الدخول)
-/   /coordination/   302
+# الجذر "/" يعرض صفحة الترحيب (index.html). الدخول للبوابة يتم عبر
+# زر "الدخول إلى البوابة" → /login.html (مصادقة Supabase) → /?return=portal

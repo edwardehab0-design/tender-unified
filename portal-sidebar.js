@@ -17,12 +17,22 @@
     }
   }
 
-  function logout() {
+  async function logout() {
     try {
       sessionStorage.removeItem(SESSION_KEY);
       sessionStorage.removeItem("alrawafDepartmentKey");
     } catch {}
-    window.location.href = "../index.html";
+    // خروج حقيقي من Supabase إن كانت مهيّأة
+    const cfg = window.APP_CONFIG || {};
+    const configured = cfg.supabaseUrl && cfg.supabaseKey
+      && !String(cfg.supabaseUrl).includes("__") && !String(cfg.supabaseKey).includes("__");
+    if (configured && window.supabase) {
+      try {
+        const sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseKey);
+        await sb.auth.signOut();
+      } catch {}
+    }
+    window.location.href = "/login.html";
   }
 
   function isActive(page) {
