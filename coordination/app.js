@@ -301,8 +301,12 @@ function setDepartmentStatus(tenderId, departmentKey, status) {
     savedState[tenderId].timing[departmentKey] = savedState[tenderId].timing[departmentKey] || {};
     savedState[tenderId].timing[departmentKey].completedAt = new Date().toISOString();
   }
-  writeState();
   const tender = tenders.find((t) => t.id === tenderId);
+  // عند اكتمال كل الأقسام نُزيل أي تجاوز يدوي للمرحلة كي تتدفق البطاقة تلقائيا إلى "جاهزة للاعتماد"
+  if (tender && departmentRows(tender).every((row) => row.status === "completed")) {
+    delete savedState[tenderId].stage;
+  }
+  writeState();
   const dept = departments.find((d) => d.key === departmentKey);
   if (tender && status === "completed") {
     addActivityEntry(tenderId, tender.title, "complete", `اعتماد إكمال ${dept?.name || departmentKey}`);
@@ -1496,6 +1500,25 @@ function renderCalendar() {
   grid.innerHTML = cells;
 }
 
+// شريط تنقل بين أقسام المنافسة داخل الدرج مع حالة إكمال كل قسم
+function renderDrawerDeptNav(tender, activeKey) {
+  const nav = qs("drawer-dept-nav");
+  if (!nav) return;
+  const rows = departmentRows(tender);
+  const doneCount = rows.filter((row) => row.status === "completed").length;
+  nav.innerHTML = `
+    ${rows.map((row) => {
+      const done = row.status === "completed";
+      const isActive = row.key === activeKey;
+      return `<button type="button" class="dept-chip-nav ${done ? "is-done" : ""} ${isActive ? "is-active" : ""}" data-dept-nav="${safe(row.key)}" title="${safe(row.name)}">
+        <span class="dcn-mark">${done ? "✓" : ""}</span>
+        <span class="dcn-code">${safe(row.short)}</span>
+      </button>`;
+    }).join("")}
+    <span class="dept-nav-progress">${doneCount}/${rows.length} مكتملة</span>
+  `;
+}
+
 function openDrawer(tenderId, departmentKey) {
   const tender = tenders.find((item) => item.id === tenderId);
   const row = tender && departmentRows(tender).find((dept) => dept.key === departmentKey);
@@ -1508,6 +1531,7 @@ function openDrawer(tenderId, departmentKey) {
   qs("drawer-status").textContent = statusLabel(row.status);
   qs("drawer-engineers-count").textContent = row.engineers.length;
   qs("drawer-files-count").textContent = row.files;
+  renderDrawerDeptNav(tender, departmentKey);
   const stepperEl = qs("drawer-wf-stepper");
   if (stepperEl) stepperEl.innerHTML = renderWorkflowStepper(tender);
   qs("drawer-tender-overview").innerHTML = `
@@ -1926,9 +1950,21 @@ qs("save-comment").addEventListener("click", () => {
 
 qs("complete-department").addEventListener("click", () => {
   if (!selectedContext) return;
-  setDepartmentStatus(selectedContext.tenderId, selectedContext.departmentKey, "completed");
-  closeDrawer();
+  const { tenderId, departmentKey } = selectedContext;
+  setDepartmentStatus(tenderId, departmentKey, "completed");
+  const tender = tenders.find((item) => item.id === tenderId);
+  const allDone = tender && departmentRows(tender).every((row) => row.status === "completed");
   render();
+  // إذا اكتملت كل الأقسام تُغلق وتنتقل البطاقة تلقائيا إلى "جاهزة للاعتماد"،
+  // وإلا نُبقي الدرج مفتوحا ليكمل المستخدم القسم التالي
+  if (allDone) closeDrawer();
+  else openDrawer(tenderId, departmentKey);
+});
+
+qs("drawer-dept-nav").addEventListener("click", (event) => {
+  const chip = event.target.closest("[data-dept-nav]");
+  if (!chip || !selectedContext) return;
+  openDrawer(selectedContext.tenderId, chip.dataset.deptNav);
 });
 
 qs("open-library").addEventListener("click", () => {
