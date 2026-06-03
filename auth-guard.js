@@ -3,7 +3,9 @@
 (async () => {
   const SUPABASE_URL = window.APP_CONFIG?.supabaseUrl;
   const SUPABASE_KEY = window.APP_CONFIG?.supabaseKey;
-  if (!SUPABASE_URL || SUPABASE_URL.includes("__REPLACE__")) return; // dev mode
+  // إن لم تُحقن المفاتيح بعد (placeholder ما زال يحوي "__") نتخطّى الحارس
+  // بأمان فيعمل الموقع على data.json دون كسر بدل محاولة استخدام رابط غير صالح
+  if (!SUPABASE_URL || SUPABASE_URL.includes("__")) return; // dev / not configured
 
   // نحتاج Supabase JS — انتظر تحميله إن لزم
   const waitForSupabase = () => new Promise((resolve) => {
