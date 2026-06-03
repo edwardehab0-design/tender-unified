@@ -288,7 +288,6 @@ function statusFor(tender, deptIndex) {
   const state = savedState[tender.id]?.departments?.[departments[deptIndex].key];
   if (state) return state;
   const seed = [...String(tender.id)].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) + deptIndex;
-  if (seed % 7 === 0) return "late";
   if (seed % 4 === 0) return "completed";
   return "in-progress";
 }
@@ -732,7 +731,6 @@ function progress(tender) {
 
 function tenderState(tender) {
   const rows = departmentRows(tender);
-  if (rows.some((row) => row.status === "late")) return "late";
   if (rows.every((row) => row.status === "completed")) return "ready";
   return "active";
 }
@@ -766,11 +764,14 @@ function hasActiveAdvanced() {
 }
 
 function departmentStats(dept) {
-  const rows = tenders.map((tender) => departmentRows(tender).find((row) => row.key === dept.key)).filter(Boolean);
-  const open = rows.filter((row) => row.status !== "completed").length;
-  const completed = rows.filter((row) => row.status === "completed").length;
-  const late = rows.filter((row) => row.status === "late").length;
-  const unassigned = rows.filter((row) => row.key === "TECH" && !row.engineers.length).length;
+  const pairs = tenders.map((tender) => {
+    const row = departmentRows(tender).find((r) => r.key === dept.key);
+    return row ? { row, tender } : null;
+  }).filter(Boolean);
+  const open = pairs.filter(({ row }) => row.status !== "completed").length;
+  const completed = pairs.filter(({ row }) => row.status === "completed").length;
+  const late = pairs.filter(({ row, tender }) => row.status !== "completed" && daysLeft(tender.submitDate) <= 3).length;
+  const unassigned = pairs.filter(({ row }) => row.key === "TECH" && !row.engineers.length).length;
   const load = tenders.length ? Math.round((open / tenders.length) * 100) : 0;
   return { open, completed, late, unassigned, load };
 }
@@ -824,7 +825,7 @@ function renderInsights() {
   bestNote.textContent = top ? `${top.department} · ${top.score} نقطة · ${top.open} مهام مفتوحة` : "لا توجد مهام محسوبة بعد";
 
   const ready = tenders.filter((tender) => tenderState(tender) === "ready").length;
-  const late = tenders.filter((tender) => tenderState(tender) === "late").length;
+  const late = tenders.filter((tender) => tenderStage(tender) === "late").length;
   const unassigned = tenders.reduce((sum, tender) => sum + departmentRows(tender).filter((row) => row.key === "TECH" && !row.engineers.length).length, 0);
   pulse.innerHTML = `
     <div><b>${ready}</b><span>ملفات تنتظر قرار المدير</span></div>
@@ -1037,8 +1038,9 @@ function boardColumn(tender) {
   const approval = savedState[tender.id]?.approval;
   if (approval === "approved") return "approved";
   const state = tenderState(tender);
-  if (state === "late") return "late";
   if (state === "ready") return "ready";
+  const left = daysLeft(tender.submitDate);
+  if (left <= 3) return "late";
   const rows = departmentRows(tender);
   const anyCompleted = rows.some((row) => row.status === "completed");
   const anyUnassigned = rows.some((row) => !row.engineers.length);
@@ -1091,7 +1093,7 @@ function completeAllDepartments(tenderId, options = {}) {
 function renderKpis() {
   const source = tenders;
   const ready = source.filter((tender) => tenderState(tender) === "ready").length;
-  const late = source.filter((tender) => tenderState(tender) === "late").length;
+  const late = source.filter((tender) => tenderStage(tender) === "late").length;
   const unassigned = source.reduce((sum, tender) => sum + departmentRows(tender).filter((row) => !row.engineers.length).length, 0);
   const files = source.reduce((sum, tender) => sum + departmentRows(tender).reduce((inner, dept) => inner + dept.files, 0), 0);
   setText("kpi-active", source.length);
@@ -1251,14 +1253,14 @@ function renderDepartments() {
   qs("department-list").innerHTML = departmentButtons.map((dept) => {
     const stats = dept.key === "all"
       ? {
-        open: tenders.filter((tender) => tenderState(tender) !== "ready").length,
+        open: tenders.filter((tender) => tenderStage(tender) !== "ready" && tenderStage(tender) !== "approved").length,
         completed: tenders.filter((tender) => tenderState(tender) === "ready").length,
-        late: tenders.filter((tender) => tenderState(tender) === "late").length,
+        late: tenders.filter((tender) => tenderStage(tender) === "late").length,
         unassigned: tenders.reduce((sum, tender) => sum + departmentRows(tender).filter((row) => row.key === "TECH" && !row.engineers.length).length, 0),
-        load: tenders.length ? Math.round((tenders.filter((tender) => tenderState(tender) !== "ready").length / tenders.length) * 100) : 0
+        load: tenders.length ? Math.round((tenders.filter((tender) => tenderStage(tender) !== "ready" && tenderStage(tender) !== "approved").length / tenders.length) * 100) : 0
       }
       : departmentStats(dept);
-    const flag = stats.late ? "risk" : stats.load > 70 ? "busy" : "calm";
+    const flag = stats.late >= 2 ? "risk" : stats.late === 1 ? "busy" : stats.load > 80 ? "busy" : "calm";
     const status = flag === "risk" ? "خطر" : flag === "busy" ? "مزدحم" : "هادئ";
     const meta = [
       `${stats.open} مفتوحة`,
