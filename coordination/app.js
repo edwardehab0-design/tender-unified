@@ -287,8 +287,7 @@ function normalizeTender(row, index) {
 function statusFor(tender, deptIndex) {
   const state = savedState[tender.id]?.departments?.[departments[deptIndex].key];
   if (state) return state;
-  const seed = [...String(tender.id)].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) + deptIndex;
-  if (seed % 4 === 0) return "completed";
+  // لا توجد حالة محفوظة: القسم قيد العمل حتى يُحدّثه شخص فعلياً
   return "in-progress";
 }
 
@@ -303,10 +302,16 @@ function setDepartmentStatus(tenderId, departmentKey, status) {
   }
   const tender = tenders.find((t) => t.id === tenderId);
   // عند اكتمال كل الأقسام نُزيل أي تجاوز يدوي للمرحلة كي تتدفق البطاقة تلقائيا إلى "جاهزة للاعتماد"
+  let clearedStage = false;
   if (tender && departmentRows(tender).every((row) => row.status === "completed")) {
     delete savedState[tenderId].stage;
+    clearedStage = true;
   }
   writeState();
+  if (window.SB?.enabled) {
+    window.SB.setDeptStatus(tenderId, departmentKey, status);
+    if (clearedStage) window.SB.setStageOverride(tenderId, null);
+  }
   const dept = departments.find((d) => d.key === departmentKey);
   if (tender && status === "completed") {
     addActivityEntry(tenderId, tender.title, "complete", `اعتماد إكمال ${dept?.name || departmentKey}`);
@@ -317,6 +322,7 @@ function setApproval(tenderId, status) {
   savedState[tenderId] = savedState[tenderId] || {};
   savedState[tenderId].approval = status;
   writeState();
+  if (window.SB?.enabled) window.SB.setApproval(tenderId, status);
   const tender = tenders.find((t) => t.id === tenderId);
   if (tender) {
     addActivityEntry(tenderId, tender.title, status === "approved" ? "approve" : "reject",
@@ -337,6 +343,7 @@ function setAssignment(tenderId, departmentKey, names) {
   savedState[tenderId].timing[departmentKey] = savedState[tenderId].timing[departmentKey] || {};
   savedState[tenderId].timing[departmentKey].assignedAt = new Date().toISOString();
   writeState();
+  if (window.SB?.enabled) window.SB.setAssignments(tenderId, departmentKey, names);
   const tender = tenders.find((t) => t.id === tenderId);
   const dept = departments.find((d) => d.key === departmentKey);
   if (tender && names.length) {
@@ -362,6 +369,7 @@ function addDepartmentComment(tenderId, departmentKey, text) {
     by: isExecutive() ? "مدير الإدارة" : "مدير القسم"
   });
   writeState();
+  if (window.SB?.enabled) window.SB.addComment(tenderId, departmentKey, value);
   const tender = tenders.find((t) => t.id === tenderId);
   const dept = departments.find((d) => d.key === departmentKey);
   if (tender) {
@@ -659,8 +667,10 @@ function assignedEngineers(tender, dept, index) {
 }
 
 function fileCount(tender, index) {
-  const seed = [...String(tender.id)].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
-  return (seed + index) % 5;
+  // عدد المرفقات الحقيقي لكل قسم؛ يبقى 0 حتى نربط جدول attachments باللوحة
+  const dept = departments[index];
+  const files = savedState[tender.id]?.files?.[dept?.key];
+  return Array.isArray(files) ? files.length : 0;
 }
 
 function techAssignmentNote(tender) {
@@ -1065,10 +1075,13 @@ function setTenderStage(tenderId, stage) {
   const tender = tenders.find((item) => item.id === tenderId);
   if (!tender) return;
   savedState[tenderId] = savedState[tenderId] || {};
+  let approvalChange;
   if (stage === "approved") {
     savedState[tenderId].approval = "approved";
+    approvalChange = "approved";
   } else if (savedState[tenderId].approval === "approved") {
     savedState[tenderId].approval = "";
+    approvalChange = "";
   }
   if (stage === "ready") completeAllDepartments(tenderId, { skipWrite: true });
   // إن طابقت المرحلة المحسوبة تلقائيا نمسح التجاوز ليبقى السجل نظيفا
@@ -1076,6 +1089,10 @@ function setTenderStage(tenderId, stage) {
   if (stage === autoAfter) delete savedState[tenderId].stage;
   else savedState[tenderId].stage = stage;
   writeState();
+  if (window.SB?.enabled) {
+    if (approvalChange !== undefined) window.SB.setApproval(tenderId, approvalChange);
+    window.SB.setStageOverride(tenderId, savedState[tenderId].stage || null);
+  }
   addActivityEntry(tenderId, tender.title, "stage", `نقل إلى: ${columnLabel(stage)}`);
 }
 
@@ -1090,6 +1107,7 @@ function completeAllDepartments(tenderId, options = {}) {
     if (!savedState[tenderId].timing[dept.key].completedAt) {
       savedState[tenderId].timing[dept.key].completedAt = new Date().toISOString();
     }
+    if (window.SB?.enabled) window.SB.setDeptStatus(tenderId, dept.key, "completed");
   });
   if (!options.skipWrite) writeState();
 }
@@ -1826,24 +1844,63 @@ async function loadData() {
   try {
     await loadEmployees();
     await loadTechOffers();
-    const sources = window.TENDER_PORTAL_CONFIG?.sources?.liveTenders || ["../data.json"];
-    let data = null;
-    for (const source of sources) {
+    let rows = null;
+    // المصدر الأساسي: قاعدة بيانات Supabase (إن كانت مهيّأة)
+    if (window.SB?.enabled) {
       try {
-        const response = await fetch(source, { cache: "no-store" });
-        if (response.ok) {
-          data = await response.json();
-          break;
+        const [dbTenders, dbState] = await Promise.all([
+          window.SB.fetchTenders(),
+          window.SB.fetchState()
+        ]);
+        if (Array.isArray(dbTenders) && dbTenders.length) {
+          rows = dbTenders;
+          if (dbState) savedState = dbState;
         }
-      } catch {}
+      } catch (err) {
+        console.warn("[loadData] Supabase fetch failed, falling back:", err);
+      }
     }
-    const rows = Array.isArray(data?.tenders) ? data.tenders : fallbackTenders;
+    // احتياطي: ملف data.json الثابت
+    if (!rows) {
+      const sources = window.TENDER_PORTAL_CONFIG?.sources?.liveTenders || ["../data.json"];
+      let data = null;
+      for (const source of sources) {
+        try {
+          const response = await fetch(source, { cache: "no-store" });
+          if (response.ok) {
+            data = await response.json();
+            break;
+          }
+        } catch {}
+      }
+      rows = Array.isArray(data?.tenders) ? data.tenders : fallbackTenders;
+    }
     tenders = rows.map(normalizeTender);
   } catch {
     tenders = fallbackTenders;
   }
   applySavedPrefs();
   render();
+  subscribeRealtime();
+}
+
+// يشترك في تحديثات قاعدة البيانات الفورية مرة واحدة فقط
+let _realtimeSubscribed = false;
+function subscribeRealtime() {
+  if (_realtimeSubscribed || !window.SB?.enabled) return;
+  _realtimeSubscribed = true;
+  let pending = false;
+  window.SB.subscribe(async () => {
+    if (pending) return;
+    pending = true;
+    setTimeout(async () => {
+      pending = false;
+      try {
+        const st = await window.SB.fetchState();
+        if (st) { savedState = st; render(); }
+      } catch {}
+    }, 400);
+  });
 }
 
 document.addEventListener("click", (event) => {
