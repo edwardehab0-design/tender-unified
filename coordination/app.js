@@ -833,6 +833,14 @@ function renderInsights() {
   `;
 }
 
+// اسم مختصر للـ BIC يظهر في chip الكارت
+function shortBicLabel(bic) {
+  if (!bic) return "";
+  if (bic.type === "manager") return "المدير";
+  if (bic.type === "unassigned") return "غير مسندة";
+  return bic.label.split("·")[0].trim().split(" ")[0]; // الاسم الأول فقط
+}
+
 // ── Ball-in-court: القسم/الشخص الذي يملك الكرة الآن ──
 function ballInCourt(tender) {
   const stage = tenderStage(tender);
@@ -900,25 +908,25 @@ function renderWorkloadList() {
     container.innerHTML = `<div class="activity-empty">لا توجد مهام نشطة حالياً.</div>`;
     return;
   }
-  const maxLoad = Math.max(...sorted.map((l) => l.active), 1);
   container.innerHTML = sorted.slice(0, 12).map((item) => {
-    const pct = Math.round((item.active / maxLoad) * 100);
     const isOverload = item.active >= 3;
     const hasLate = item.late > 0;
-    const barClass = hasLate ? "wl-danger" : isOverload ? "wl-warn" : "wl-ok";
-    const countClass = hasLate ? "wl-danger" : isOverload ? "wl-warn" : "";
-    const lateTag = item.late ? `<em>(${item.late} متأخرة)</em>` : "";
+    const avatarClass = hasLate ? "wl-danger" : isOverload ? "wl-warn" : "wl-ok";
+    const initials = item.name.split(" ").slice(0, 2).map((w) => w[0]).join("");
+    const lateTag = item.late ? `<span class="wl-late-tag">${item.late} متأخرة</span>` : "";
     return `
-      <div class="wl-row">
-        <div class="wl-person">
-          <span class="wl-avatar">${safe(item.name.slice(0, 1))}</span>
-          <div>
-            <strong>${safe(item.name)}</strong>
-            <small>${safe(item.dept)}${item.title ? ` · ${safe(item.title)}` : ""}</small>
+      <div class="wl-person-card">
+        <div class="wl-person-top">
+          <span class="wl-avatar ${avatarClass}">${safe(initials)}</span>
+          <div class="wl-person-info">
+            <strong class="wl-name">${safe(item.name)}</strong>
+            <small class="wl-dept">${safe(item.dept)}${item.title ? ` · ${safe(item.title)}` : ""}</small>
           </div>
         </div>
-        <div class="wl-bar"><i class="${barClass}" style="width:${Math.max(pct, 8)}%"></i></div>
-        <span class="wl-count ${countClass}">${item.active} مهمة${lateTag}</span>
+        <div class="wl-person-foot">
+          <span class="wl-task-count ${avatarClass}">${item.active} مهمة</span>
+          ${lateTag}
+        </div>
       </div>
     `;
   }).join("");
@@ -940,7 +948,7 @@ function renderStatusChart() {
     { key: "ready",    label: "جاهزة",            color: "var(--green)" },
     { key: "approved", label: "معتمدة",           color: "var(--navy)" }
   ];
-  container.innerHTML = rows.map((r) => {
+  container.innerHTML = rows.filter((r) => counts[r.key] > 0).map((r) => {
     const pct = Math.round((counts[r.key] / total) * 100);
     return `
       <div class="sdc-row">
@@ -1396,18 +1404,23 @@ function renderKanCard(tender) {
   const isSelected = selectedIds.has(tender.id);
   const stateTag = approval === "approved" ? "معتمد" : columnLabel(col);
   const bic = ballInCourt(tender);
+  const hasHeadEnd = risk.level === "high" || canManage;
+  const headEnd = hasHeadEnd ? `<div class="kan-head-end">
+    ${risk.level === "high" ? `<span class="kan-risk-dot" title="${safe(riskLabel(risk.level))}"></span>` : ""}
+    ${canManage ? `<label class="kan-select" data-stop-open title="تحديد للإجراء الجماعي"><input type="checkbox" data-select="${safe(tender.id)}" ${isSelected ? "checked" : ""}></label>` : ""}
+  </div>` : "";
+  const hasHead = bic || hasHeadEnd;
   return `
     <article class="kan-card state-${col} ${isSelected ? "is-selected" : ""}" data-tender="${safe(tender.id)}" data-dept="${safe(rows[0].key)}" ${canManage ? 'draggable="true"' : ""}>
-      <div class="kan-head">
-        ${risk.level === "high" ? `<span class="kan-risk-dot" title="${safe(riskLabel(risk.level))}"></span>` : ""}
-        ${canManage ? `<label class="kan-select" data-stop-open title="تحديد للإجراء الجماعي"><input type="checkbox" data-select="${safe(tender.id)}" ${isSelected ? "checked" : ""}></label>` : ""}
-      </div>
+      ${hasHead ? `<div class="kan-head">
+        ${bic ? `<span class="kan-bic-chip ${safe(bic.type)}" title="${safe(bic.label)}">${safe(shortBicLabel(bic))}</span>` : ""}
+        ${headEnd}
+      </div>` : ""}
       <h3 class="kan-title">${safe(tender.title)}</h3>
       <div class="kan-meta">
         <span class="kan-state-tag ${col}">${safe(stateTag)}</span>
         <span class="kan-close ${urgent ? "is-urgent" : ""}">${safe(close)}</span>
       </div>
-      ${bic ? `<div class="kan-bic"><span class="bic-dot bic-${safe(bic.type)}"></span><span class="kan-bic-label">${safe(bic.label)}</span></div>` : ""}
     </article>
   `;
 }
