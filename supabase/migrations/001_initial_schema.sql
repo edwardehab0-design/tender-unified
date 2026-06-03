@@ -15,10 +15,11 @@ CREATE TABLE IF NOT EXISTS profiles (
 
 -- Auto-create a profile row whenever a new user signs up
 CREATE OR REPLACE FUNCTION handle_new_user()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
 BEGIN
-  INSERT INTO profiles (id, full_name, role)
-  VALUES (NEW.id, COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.email), 'department');
+  INSERT INTO public.profiles (id, full_name, role)
+  VALUES (NEW.id, COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.email), 'department')
+  ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
 END;
 $$;
