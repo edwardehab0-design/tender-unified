@@ -1,0 +1,3 @@
+# Cloudflare Pages redirect rules
+# المسار الجذري → صفحة التنسيق (الصفحة الرئيسية بعد الدخول)
+/   /coordination/   302
