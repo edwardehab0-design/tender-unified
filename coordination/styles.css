@@ -3,7 +3,7 @@
    نموذج هجين: Procore + Monday بهوية الرواف
    ═══════════════════════════════════════════════ */
 :root {
-  /* الهوية الأساسية: بنفسجي راقٍ بلمسة ذهبية */
+  /* الهوية الأساسية: بنفسجي راقٍ بلمسة ذهبية — لوحة عاجية فخمة */
   --navy:      #5b3f93;
   --navy-700:  #4a3179;
   --navy-900:  #342255;
@@ -11,16 +11,16 @@
   --gold-700:  #ab8129;
   --gold-soft: #f5ead0;
 
-  --bg:        #f4f3fa;
+  --bg:        #faf8f3;
   --surface:   #ffffff;
-  --surface-2: #f8fafd;
-  --border:    #edf0f6;
-  --border-2:  #dde3ee;
+  --surface-2: #fbf9f3;
+  --border:    #efe9db;
+  --border-2:  #e4dcc9;
 
   --ink:    #16243d;
-  --text:   #45526b;
-  --muted:  #7b86a0;
-  --faint:  #a4adc0;
+  --text:   #4b5163;
+  --muted:  #8a8169;
+  --faint:  #b3aa94;
 
   --blue:   #6a4fc4;  --blue-bg:   #efeafb;
   --green:  #15924a;  --green-bg:  #e6f6ec;
@@ -45,10 +45,11 @@ body {
   overflow-x: clip;
   font-family: "Tajawal", Arial, sans-serif;
   color: var(--text);
+  /* يتجاوز خلفية الهوية الموحّدة لإعطاء لوحة العمليات قماشة عاجية فخمة (بنفسجي + ذهبي) */
   background:
-    radial-gradient(900px 480px at 100% -10%, rgba(91,63,147,.07), transparent 60%),
-    radial-gradient(820px 440px at 0% 0%, rgba(199,154,59,.06), transparent 55%),
-    var(--bg);
+    radial-gradient(1100px 560px at 100% -14%, rgba(91,63,147,.06), transparent 58%),
+    radial-gradient(960px 480px at 0% -6%, rgba(199,154,59,.07), transparent 55%),
+    var(--bg) !important;
 }
 
 .ops-app {
@@ -74,7 +75,7 @@ body {
   padding: 14px 20px;
   border: 1px solid var(--border);
   border-radius: var(--r-xl);
-  background: linear-gradient(180deg, rgba(255,255,255,.97), rgba(255,255,255,.93));
+  background: linear-gradient(180deg, rgba(255,255,255,.97), rgba(253,251,246,.94));
   backdrop-filter: blur(10px);
   box-shadow: var(--shadow-sm);
   margin-bottom: 20px;
@@ -162,7 +163,7 @@ body {
   border: 1px solid var(--border); border-radius: var(--r-lg);
   background: var(--surface); box-shadow: var(--shadow-xs); overflow: hidden;
 }
-.rail-head { padding: 15px 17px 13px; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+.rail-head { padding: 15px 17px 13px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #fdfbf6, #f7f2e8); }
 .rail-head span { display: block; color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; }
 .rail-head strong { display: block; margin-top: 4px; color: var(--ink); font-size: 15px; font-weight: 800; letter-spacing: -.1px; }
 
@@ -225,12 +226,19 @@ body {
 /* KPI Strip */
 .ops-kpis { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 14px; }
 .kpi {
+  position: relative; overflow: hidden;
   display: flex; align-items: center; gap: 13px;
-  padding: 18px 18px; border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 19px 18px 18px; border: 1px solid var(--border); border-radius: var(--r-lg);
   background: var(--surface); box-shadow: var(--shadow-xs);
   transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease;
 }
-.kpi:hover { box-shadow: var(--shadow-sm); transform: translateY(-3px); border-color: var(--border-2); }
+.kpi::after {
+  content: ""; position: absolute; top: 0; inset-inline-start: 0;
+  width: 100%; height: 3px; opacity: .85;
+  background: linear-gradient(90deg, var(--navy), var(--gold));
+}
+.kpi:hover { box-shadow: var(--shadow-sm); transform: translateY(-3px); border-color: var(--gold); }
+.kpi:hover::after { opacity: 1; }
 .kpi-ic {
   width: 40px; height: 40px; flex: 0 0 auto;
   display: grid; place-items: center; border-radius: 11px;
@@ -1059,7 +1067,7 @@ body.density-compact .kan-bic { display: none; }
   background:
     radial-gradient(900px 480px at 100% -10%, rgba(124,79,196,.20), transparent 60%),
     radial-gradient(800px 420px at 0% 0%, rgba(216,171,77,.09), transparent 55%),
-    var(--bg);
+    var(--bg) !important;
 }
 /* Components with hardcoded light backgrounds → dark overrides */
 :root[data-theme="dark"] .ops-topbar {
@@ -1072,8 +1080,17 @@ body.density-compact .kan-bic { display: none; }
 :root[data-theme="dark"] .department-button.active,
 :root[data-theme="dark"] .rank-card.is-top { background: linear-gradient(145deg, var(--surface), var(--blue-bg)); }
 :root[data-theme="dark"] .deadline-bar { background: linear-gradient(180deg, var(--surface), var(--surface-2)); }
+:root[data-theme="dark"] .rail-head { background: linear-gradient(180deg, var(--surface-2), var(--surface)); }
 :root[data-theme="dark"] .deadline-chip.over { background: var(--red-bg); }
 :root[data-theme="dark"] .performance-orbit { background: linear-gradient(145deg, var(--surface-2), var(--blue-bg)); }
 :root[data-theme="dark"] .timing-item.is-total { background: var(--navy-900); }
 :root[data-theme="dark"] .portal-home-link { color: var(--text); background: var(--surface); }
 :root[data-theme="dark"] .notif-count { box-shadow: 0 0 0 2px var(--surface); }
+/* تجاوز الهوية الموحّدة (light !important) على بطاقات KPI والجدول في الوضع الداكن */
+:root[data-theme="dark"] .kpi,
+:root[data-theme="dark"] .table-wrap {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow-xs) !important;
+}
+:root[data-theme="dark"] .kpi:hover { border-color: var(--gold) !important; box-shadow: var(--shadow-sm) !important; }
