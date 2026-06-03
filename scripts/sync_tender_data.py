@@ -253,12 +253,14 @@ def push_to_supabase(all_tenders):
         log.info("Supabase env not set — skipping database push (data.json only).")
         return
 
-    rows = []
+    # نزيل التكرار حسب id لأن PostgREST يرفض تحديث الصف نفسه مرتين
+    # في أمر upsert واحد؛ المناقصات ذات الاسم نفسه تنتج id متطابقاً.
+    by_id = {}
     for tender in all_tenders:
         tender_id = tender.get("tender_id") or tender.get("id")
         if not tender_id:
             continue
-        rows.append({
+        by_id[tender_id] = {
             "id": tender_id,
             "title": tender.get("اسم المناقصة") or "",
             "client": tender.get("المالك") or "",
@@ -268,8 +270,9 @@ def push_to_supabase(all_tenders):
             "guarantee_date": _safe_date(tender.get("تاريخ الضمان الابتدائي")),
             "external_status": tender.get("الحالة") or "",
             "fetched_at": tender.get("fetched_at"),
-        })
+        }
 
+    rows = list(by_id.values())
     if not rows:
         log.warning("No rows to push to Supabase.")
         return
