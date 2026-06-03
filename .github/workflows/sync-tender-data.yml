@@ -33,6 +33,8 @@ jobs:
           ALRAWAF_PASSWORD: ${{ secrets.ALRAWAF_PASSWORD }}
           ALRAWAF_CLIENT_ID: ${{ secrets.ALRAWAF_CLIENT_ID }}
           ALRAWAF_TENANT: ${{ secrets.ALRAWAF_TENANT }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: python scripts/sync_tender_data.py
 
       - name: Commit updated data

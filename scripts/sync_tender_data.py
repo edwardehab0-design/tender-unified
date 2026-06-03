@@ -29,6 +29,10 @@ ALRAWAF_CLIENT_ID = os.getenv("ALRAWAF_CLIENT_ID", "8e8af720-b54b-4f52-8858-9510
 ALRAWAF_TENANT = os.getenv("ALRAWAF_TENANT", "alrawaf.com.sa")
 OUTPUT_FILE = os.getenv("OUTPUT_FILE", "data.json")
 
+# Supabase (تُضبط كأسرار في GitHub Actions)
+SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")
+
 
 def request_with_retry(session, method, url, attempts=4, **kwargs):
     last_error = None
@@ -227,6 +231,66 @@ class AlrawafClient:
             return []
 
 
+def _safe_date(value):
+    """يحوّل نصاً إلى تاريخ ISO صالح (YYYY-MM-DD) أو None."""
+    if not value:
+        return None
+    text = str(value).strip()[:10]
+    try:
+        datetime.fromisoformat(text)
+        return text
+    except ValueError:
+        return None
+
+
+def push_to_supabase(all_tenders):
+    """يرفع/يحدّث المناقصات في جدول tenders عبر Supabase REST (upsert).
+
+    لا يحذف المناقصات المفقودة من المصدر كي نحافظ على المهام والتعيينات
+    والاعتمادات المرتبطة بها داخل لوحة العمليات.
+    """
+    if not SUPABASE_URL or not SUPABASE_SERVICE_KEY:
+        log.info("Supabase env not set — skipping database push (data.json only).")
+        return
+
+    rows = []
+    for tender in all_tenders:
+        tender_id = tender.get("tender_id") or tender.get("id")
+        if not tender_id:
+            continue
+        rows.append({
+            "id": tender_id,
+            "title": tender.get("اسم المناقصة") or "",
+            "client": tender.get("المالك") or "",
+            "sector": tender.get("القطاع") or "",
+            "work_type": tender.get("نوع الأعمال") or "",
+            "submit_date": _safe_date(tender.get("تاريخ التقديم")),
+            "guarantee_date": _safe_date(tender.get("تاريخ الضمان الابتدائي")),
+            "external_status": tender.get("الحالة") or "",
+            "fetched_at": tender.get("fetched_at"),
+        })
+
+    if not rows:
+        log.warning("No rows to push to Supabase.")
+        return
+
+    endpoint = f"{SUPABASE_URL}/rest/v1/tenders?on_conflict=id"
+    headers = {
+        "apikey": SUPABASE_SERVICE_KEY,
+        "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "resolution=merge-duplicates,return=minimal",
+    }
+    try:
+        response = requests.post(endpoint, headers=headers, data=json.dumps(rows), timeout=30)
+        if response.status_code in (200, 201, 204):
+            log.info("Pushed %s tenders to Supabase (upsert).", len(rows))
+        else:
+            log.error("Supabase push failed: %s %s", response.status_code, response.text[:300])
+    except requests.RequestException as exc:
+        log.error("Supabase push error: %s", exc)
+
+
 def main():
     missing = [name for name in ["ALRAWAF_USERNAME", "ALRAWAF_PASSWORD"] if not os.getenv(name)]
     if missing:
@@ -250,6 +314,9 @@ def main():
         handle.write("\n")
 
     log.info("Wrote %s with %s in-progress and %s submitted tenders", OUTPUT_FILE, len(in_progress), len(submitted))
+
+    # حافظ على تزامن قاعدة بيانات Supabase مع المصدر
+    push_to_supabase(in_progress + submitted)
 
 
 if __name__ == "__main__":
