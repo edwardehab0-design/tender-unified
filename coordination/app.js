@@ -287,8 +287,7 @@ function normalizeTender(row, index) {
 function statusFor(tender, deptIndex) {
   const state = savedState[tender.id]?.departments?.[departments[deptIndex].key];
   if (state) return state;
-  const seed = [...String(tender.id)].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) + deptIndex;
-  if (seed % 4 === 0) return "completed";
+  // لا توجد حالة محفوظة: القسم قيد العمل حتى يُحدّثه شخص فعلياً
   return "in-progress";
 }
 
@@ -668,8 +667,10 @@ function assignedEngineers(tender, dept, index) {
 }
 
 function fileCount(tender, index) {
-  const seed = [...String(tender.id)].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
-  return (seed + index) % 5;
+  // عدد المرفقات الحقيقي لكل قسم؛ يبقى 0 حتى نربط جدول attachments باللوحة
+  const dept = departments[index];
+  const files = savedState[tender.id]?.files?.[dept?.key];
+  return Array.isArray(files) ? files.length : 0;
 }
 
 function techAssignmentNote(tender) {
