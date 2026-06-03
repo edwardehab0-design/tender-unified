@@ -833,6 +833,97 @@ function renderInsights() {
   `;
 }
 
+// ── Ball-in-court: القسم/الشخص الذي يملك الكرة الآن ──
+function ballInCourt(tender) {
+  const stage = tenderStage(tender);
+  if (stage === "approved") return null;
+  const rows = departmentRows(tender);
+  if (rows.every((r) => r.status === "completed")) {
+    return { label: "المدير التنفيذي", type: "manager" };
+  }
+  const pending = rows.find((r) => r.status !== "completed");
+  if (!pending) return null;
+  if (!pending.engineers.length) {
+    return { label: `${pending.short} · غير مسندة`, type: "unassigned" };
+  }
+  const name = personName(pending.engineers[0]);
+  return { label: `${safe(name)} · ${pending.short}`, type: "engineer" };
+}
+
+// ── Workflow Stepper: مراحل مسار المنافسة (Oracle-style) ──
+const WF_STEPS = [
+  { key: "received",    label: "الاستلام" },
+  { key: "distributed", label: "التوزيع" },
+  { key: "preparing",   label: "الإعداد" },
+  { key: "review",      label: "المراجعة" },
+  { key: "approved",    label: "الاعتماد" }
+];
+const WF_STAGE_MAP = { new: 1, active: 2, late: 2, ready: 3, approved: 5 };
+
+function renderWorkflowStepper(tender) {
+  const stage = tenderStage(tender);
+  const activeStep = WF_STAGE_MAP[stage] ?? 1;
+  const isLate = stage === "late";
+  return `<div class="wf-track">${WF_STEPS.map((s, i) => {
+    const done = i < activeStep;
+    const current = i === activeStep;
+    const cls = done ? "done" : current ? (isLate ? "current-late" : "current") : "pending";
+    const icon = done ? "✓" : String(i + 1);
+    const conn = i < WF_STEPS.length - 1
+      ? `<div class="wf-conn ${i < activeStep ? "done" : ""}"></div>` : "";
+    return `<div class="wf-step ${cls}"><div class="wf-dot">${icon}</div><span class="wf-label">${safe(s.label)}</span></div>${conn}`;
+  }).join("")}</div>`;
+}
+
+// ── Workload View: أعباء العمل الحالية (Monday-style) ──
+function renderWorkloadList() {
+  const container = qs("workload-list");
+  if (!container) return;
+  const load = new Map();
+  tenders.forEach((tender) => {
+    departmentRows(tender).forEach((row) => {
+      if (row.status === "completed") return;
+      row.engineers.forEach((person) => {
+        const name = personName(person);
+        const key = `${name}|${row.short}`;
+        if (!load.has(key)) {
+          load.set(key, { name, dept: row.short, title: personTitle(person), active: 0, late: 0 });
+        }
+        const item = load.get(key);
+        item.active += 1;
+        if (row.status === "late") item.late += 1;
+      });
+    });
+  });
+  const sorted = [...load.values()].sort((a, b) => b.active - a.active || b.late - a.late);
+  if (!sorted.length) {
+    container.innerHTML = `<div class="activity-empty">لا توجد مهام نشطة حالياً.</div>`;
+    return;
+  }
+  const maxLoad = Math.max(...sorted.map((l) => l.active), 1);
+  container.innerHTML = sorted.slice(0, 12).map((item) => {
+    const pct = Math.round((item.active / maxLoad) * 100);
+    const isOverload = item.active >= 3;
+    const hasLate = item.late > 0;
+    const barClass = hasLate ? "wl-danger" : isOverload ? "wl-warn" : "wl-ok";
+    const countClass = hasLate ? "wl-danger" : isOverload ? "wl-warn" : "";
+    const lateTag = item.late ? `<em>(${item.late} متأخرة)</em>` : "";
+    return `
+      <div class="wl-row">
+        <div class="wl-person">
+          <span class="wl-avatar">${safe(item.name.slice(0, 1))}</span>
+          <div>
+            <strong>${safe(item.name)}</strong>
+            <small>${safe(item.dept)}${item.title ? ` · ${safe(item.title)}` : ""}</small>
+          </div>
+        </div>
+        <div class="wl-bar"><i class="${barClass}" style="width:${Math.max(pct, 8)}%"></i></div>
+        <span class="wl-count ${countClass}">${item.active} مهمة${lateTag}</span>
+      </div>
+    `;
+  }).join("");
+}
+
 function renderStatusChart() {
   const container = qs("status-dist-chart");
   if (!container) return;
@@ -1304,6 +1395,7 @@ function renderKanCard(tender) {
   const canManage = isExecutive();
   const isSelected = selectedIds.has(tender.id);
   const stateTag = approval === "approved" ? "معتمد" : columnLabel(col);
+  const bic = ballInCourt(tender);
   return `
     <article class="kan-card state-${col} ${isSelected ? "is-selected" : ""}" data-tender="${safe(tender.id)}" data-dept="${safe(rows[0].key)}" ${canManage ? 'draggable="true"' : ""}>
       <div class="kan-head">
@@ -1315,6 +1407,7 @@ function renderKanCard(tender) {
         <span class="kan-state-tag ${col}">${safe(stateTag)}</span>
         <span class="kan-close ${urgent ? "is-urgent" : ""}">${safe(close)}</span>
       </div>
+      ${bic ? `<div class="kan-bic"><span class="bic-dot bic-${safe(bic.type)}"></span><span class="kan-bic-label">${safe(bic.label)}</span></div>` : ""}
     </article>
   `;
 }
@@ -1400,6 +1493,8 @@ function openDrawer(tenderId, departmentKey) {
   qs("drawer-status").textContent = statusLabel(row.status);
   qs("drawer-engineers-count").textContent = row.engineers.length;
   qs("drawer-files-count").textContent = row.files;
+  const stepperEl = qs("drawer-wf-stepper");
+  if (stepperEl) stepperEl.innerHTML = renderWorkflowStepper(tender);
   qs("drawer-tender-overview").innerHTML = `
     <div><span>العميل</span><strong>${safe(tender.client)}</strong></div>
     <div><span>القطاع</span><strong>${safe(tender.sector)}</strong></div>
@@ -1599,6 +1694,7 @@ function renderActiveView() {
   } else if (selectedView === "analytics") {
     renderStatusChart();
     renderDeptChart();
+    renderWorkloadList();
     renderInsights();
     renderSmartAlerts();
     renderEmployeePerformance();

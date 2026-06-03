@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared-visual.css?v=4">
   <link rel="stylesheet" href="../portal-sidebar.css?v=4">
-  <link rel="stylesheet" href="./styles.css?v=28">
+  <link rel="stylesheet" href="./styles.css?v=29">
   <script src="../config.js"></script>
 </head>
 <body>
@@ -221,6 +221,13 @@
             </article>
           </div>
 
+          <!-- Workload View -->
+          <article class="chart-card wl-card">
+            <div class="insight-head"><span>Workload View</span><strong>أعباء العمل الحالية</strong></div>
+            <p class="wl-note">عدد المهام النشطة لكل مهندس الآن — الأزرق عادي، الأصفر مرتفع، الأحمر خطر.</p>
+            <div id="workload-list" class="workload-list"></div>
+          </article>
+
           <section class="employee-performance" aria-label="مؤشرات أداء الموظفين">
             <div class="performance-head">
               <div>
@@ -263,6 +270,11 @@
         <article><span>الحالة</span><strong id="drawer-status">-</strong></article>
         <article><span>المهندسون</span><strong id="drawer-engineers-count">0</strong></article>
         <article><span>الملفات</span><strong id="drawer-files-count">0</strong></article>
+      </div>
+
+      <div class="drawer-section wf-section">
+        <h3>مسار المنافسة</h3>
+        <div id="drawer-wf-stepper"></div>
       </div>
 
       <div class="drawer-section tender-overview-section">
@@ -336,7 +348,7 @@
     </div>
   </div>
 
-  <script src="./app.js?v=28"></script>
+  <script src="./app.js?v=29"></script>
   <script src="../portal-sidebar.js?v=4"></script>
 </body>
 </html>
