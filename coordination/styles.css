@@ -341,6 +341,12 @@ body {
 .kan-col[data-col="approved"] .kan-col-title i { background: var(--navy); }
 .kan-col-body { display: grid; gap: 10px; }
 .kan-empty { padding: 22px 10px; text-align: center; color: var(--faint); font-size: 12px; font-weight: 700; border: 1px dashed var(--border-2); border-radius: var(--r); }
+/* عند التصفية لحالة واحدة: اعرض البطاقات كشبكة متجاوبة بدل عمود عريض مهدر */
+.kan-col:only-child .kan-col-body {
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 12px;
+}
+.kan-col:only-child .kan-empty { grid-column: 1 / -1; }
 
 /* Kanban card */
 .kan-card {
