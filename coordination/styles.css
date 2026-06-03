@@ -887,6 +887,57 @@ body.density-compact .kan-card-top { gap: 7px; }
 body.density-compact .kan-col-body { gap: 7px; }
 body.density-compact .kan-foot { padding-top: 7px; }
 
+/* ═══ Clickable KPI Cards ═══ */
+.kpi[data-kpi-filter] { cursor: pointer; }
+.kpi[data-kpi-filter]:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  border-color: var(--navy);
+}
+.kpi[data-kpi-filter]:focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; }
+
+/* ═══ Analytics Charts ═══ */
+.analytics-charts {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 4px;
+}
+@media (max-width: 900px) { .analytics-charts { grid-template-columns: 1fr; } }
+
+.chart-card {
+  padding: 18px 20px;
+  border: 1px solid var(--border); border-radius: var(--r-lg);
+  background: var(--surface); box-shadow: var(--shadow-xs);
+}
+
+/* Status distribution chart */
+.status-dist-chart { display: grid; gap: 12px; margin-top: 10px; }
+.sdc-row { display: grid; grid-template-columns: 96px minmax(0,1fr) 30px; gap: 11px; align-items: center; }
+.sdc-label { color: var(--text); font-size: 12px; font-weight: 800; }
+.sdc-track { height: 10px; border-radius: 999px; background: var(--border); overflow: hidden; }
+.sdc-track i {
+  display: block; height: 100%; border-radius: inherit;
+  transform-origin: right;
+  animation: fillBar .55s cubic-bezier(.25,.46,.45,.94) both;
+}
+.sdc-val { color: var(--muted); font-size: 12px; font-weight: 900; text-align: left; }
+
+/* Department completion chart */
+.dept-comp-chart { display: grid; gap: 11px; margin-top: 10px; }
+.dcc-row { display: grid; grid-template-columns: 76px minmax(0,1fr) 42px; gap: 11px; align-items: center; }
+.dcc-code { display: inline-flex; padding: 3px 9px; border-radius: 7px; background: var(--blue-bg); color: var(--navy); font-size: 11px; font-weight: 800; }
+.dcc-track { height: 10px; border-radius: 999px; background: var(--border); overflow: hidden; }
+.dcc-track i {
+  display: block; height: 100%; border-radius: inherit;
+  transform-origin: right;
+  animation: fillBar .55s cubic-bezier(.25,.46,.45,.94) both;
+}
+.dcc-track .bar-ok     { background: linear-gradient(90deg, var(--navy), var(--blue)); }
+.dcc-track .bar-good   { background: linear-gradient(90deg, var(--green), #22c55e); }
+.dcc-track .bar-warn   { background: linear-gradient(90deg, var(--amber), #fbbf24); }
+.dcc-track .bar-danger { background: linear-gradient(90deg, var(--red), #f87171); }
+.dcc-pct { color: var(--muted); font-size: 12px; font-weight: 900; text-align: left; min-width: 38px; }
+
+@keyframes fillBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
 /* ═══ Dark Mode ═══ */
 :root[data-theme="dark"] {
   --navy:      #9779dc;

@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared-visual.css?v=4">
   <link rel="stylesheet" href="../portal-sidebar.css?v=4">
-  <link rel="stylesheet" href="./styles.css?v=27">
+  <link rel="stylesheet" href="./styles.css?v=28">
   <script src="../config.js"></script>
 </head>
 <body>
@@ -99,19 +99,19 @@
       <main class="ops-main">
         <!-- KPI Strip -->
         <section class="ops-kpis" aria-label="مؤشرات غرفة العمليات">
-          <article class="kpi kpi-blue">
+          <article class="kpi kpi-blue" data-kpi-filter="all" role="button" tabindex="0" title="عرض كل المنافسات على اللوحة">
             <span class="kpi-ic">◆</span>
             <div><b id="kpi-active">0</b><span>منافسات نشطة</span></div>
           </article>
-          <article class="kpi kpi-green">
+          <article class="kpi kpi-green" data-kpi-filter="ready" role="button" tabindex="0" title="عرض الملفات الجاهزة للاعتماد">
             <span class="kpi-ic">✓</span>
             <div><b id="kpi-ready">0</b><span>جاهزة للاعتماد</span></div>
           </article>
-          <article class="kpi kpi-red">
+          <article class="kpi kpi-red" data-kpi-filter="late" role="button" tabindex="0" title="عرض الملفات المتأخرة">
             <span class="kpi-ic">!</span>
             <div><b id="kpi-late">0</b><span>متأخرة</span></div>
           </article>
-          <article class="kpi kpi-amber">
+          <article class="kpi kpi-amber" data-kpi-filter="active" role="button" tabindex="0" title="عرض الملفات قيد المتابعة">
             <span class="kpi-ic">◷</span>
             <div><b id="kpi-attention">0</b><span>تحتاج متابعة</span></div>
           </article>
@@ -207,6 +207,18 @@
                 <div id="ops-pulse-list" class="ops-pulse-list"></div>
               </article>
             </div>
+          </div>
+
+          <!-- Visual Charts -->
+          <div class="analytics-charts">
+            <article class="chart-card">
+              <div class="insight-head"><span>Status Overview</span><strong>توزيع حالات المنافسات</strong></div>
+              <div id="status-dist-chart" class="status-dist-chart"></div>
+            </article>
+            <article class="chart-card">
+              <div class="insight-head"><span>Department Completion</span><strong>تقدم إنجاز الأقسام</strong></div>
+              <div id="dept-comp-chart" class="dept-comp-chart"></div>
+            </article>
           </div>
 
           <section class="employee-performance" aria-label="مؤشرات أداء الموظفين">
@@ -324,7 +336,7 @@
     </div>
   </div>
 
-  <script src="./app.js?v=27"></script>
+  <script src="./app.js?v=28"></script>
   <script src="../portal-sidebar.js?v=4"></script>
 </body>
 </html>

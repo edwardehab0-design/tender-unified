@@ -833,6 +833,54 @@ function renderInsights() {
   `;
 }
 
+function renderStatusChart() {
+  const container = qs("status-dist-chart");
+  if (!container) return;
+  const counts = { new: 0, active: 0, late: 0, ready: 0, approved: 0 };
+  tenders.forEach((tender) => {
+    const s = tenderStage(tender);
+    if (s in counts) counts[s] += 1;
+  });
+  const total = tenders.length || 1;
+  const rows = [
+    { key: "new",      label: "مهام جديدة",      color: "var(--blue)" },
+    { key: "active",   label: "قيد العمل",        color: "var(--amber)" },
+    { key: "late",     label: "متأخرة",           color: "var(--red)" },
+    { key: "ready",    label: "جاهزة",            color: "var(--green)" },
+    { key: "approved", label: "معتمدة",           color: "var(--navy)" }
+  ];
+  container.innerHTML = rows.map((r) => {
+    const pct = Math.round((counts[r.key] / total) * 100);
+    return `
+      <div class="sdc-row">
+        <span class="sdc-label">${safe(r.label)}</span>
+        <div class="sdc-track"><i style="width:${pct}%;background:${r.color}"></i></div>
+        <span class="sdc-val">${counts[r.key]}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderDeptChart() {
+  const container = qs("dept-comp-chart");
+  if (!container) return;
+  container.innerHTML = departments.map((dept) => {
+    const rows = tenders.map((tender) => departmentRows(tender).find((r) => r.key === dept.key)).filter(Boolean);
+    const total = rows.length || 1;
+    const completed = rows.filter((r) => r.status === "completed").length;
+    const hasLate = rows.some((r) => r.status === "late");
+    const pct = Math.round((completed / total) * 100);
+    const barClass = hasLate ? "bar-danger" : pct >= 75 ? "bar-good" : pct >= 40 ? "bar-ok" : "bar-warn";
+    return `
+      <div class="dcc-row">
+        <span class="dcc-code">${safe(dept.short)}</span>
+        <div class="dcc-track"><i class="${barClass}" style="width:${Math.max(pct, 4)}%"></i></div>
+        <span class="dcc-pct">${pct}%</span>
+      </div>
+    `;
+  }).join("");
+}
+
 function smartAlerts() {
   const alerts = [];
   const now = new Date();
@@ -1549,6 +1597,8 @@ function renderActiveView() {
   } else if (selectedView === "calendar") {
     renderCalendar();
   } else if (selectedView === "analytics") {
+    renderStatusChart();
+    renderDeptChart();
     renderInsights();
     renderSmartAlerts();
     renderEmployeePerformance();
@@ -1662,6 +1712,16 @@ async function loadData() {
 }
 
 document.addEventListener("click", (event) => {
+  const kpiCard = event.target.closest(".kpi[data-kpi-filter]");
+  if (kpiCard) {
+    selectedFilter = kpiCard.dataset.kpiFilter;
+    prefs.filter = selectedFilter;
+    writePrefs();
+    document.querySelectorAll("[data-filter]").forEach((btn) => btn.classList.toggle("active", btn.dataset.filter === selectedFilter));
+    switchView("board");
+    return;
+  }
+
   const deptButton = event.target.closest("[data-department]");
   if (deptButton) {
     selectedDepartment = deptButton.dataset.department;
@@ -1722,6 +1782,13 @@ document.addEventListener("click", (event) => {
 qs("search-input").addEventListener("input", (event) => {
   searchTerm = event.target.value;
   renderActiveView();
+});
+
+document.addEventListener("keydown", (event) => {
+  if ((event.key === "Enter" || event.key === " ") && event.target.closest(".kpi[data-kpi-filter]")) {
+    event.preventDefault();
+    event.target.closest(".kpi[data-kpi-filter]").click();
+  }
 });
 
 qs("cal-prev")?.addEventListener("click", () => {
