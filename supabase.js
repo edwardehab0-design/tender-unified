@@ -186,6 +186,127 @@ export async function fetchActivityLog(tenderId) {
   return data;
 }
 
+// ── Employees ────────────────────────────────────────────────
+
+export async function fetchEmployees(deptKey) {
+  const q = _sb.from("employees").select("*").eq("is_active", true).order("full_name");
+  if (deptKey) q.eq("department_key", deptKey);
+  const { data, error } = await q;
+  if (error) throw error;
+  return data;
+}
+
+export async function upsertEmployee(employee) {
+  const { error } = await _sb.from("employees").upsert(employee);
+  if (error) throw error;
+}
+
+// ── Clients ──────────────────────────────────────────────────
+
+export async function fetchClients() {
+  const { data, error } = await _sb.from("clients").select("*").order("name");
+  if (error) throw error;
+  return data;
+}
+
+export async function upsertClient(client) {
+  const { error } = await _sb.from("clients").upsert(client);
+  if (error) throw error;
+}
+
+// ── Attachments (Supabase Storage + metadata) ────────────────
+
+const FILES_BUCKET = "tender-files";
+
+export async function uploadAttachment(tenderId, deptKey, file) {
+  const session = await getSession();
+  const path = `${tenderId}/${deptKey || "general"}/${Date.now()}-${file.name}`;
+  const { error: upErr } = await _sb.storage.from(FILES_BUCKET).upload(path, file);
+  if (upErr) throw upErr;
+  const { error } = await _sb.from("attachments").insert({
+    tender_id: tenderId, dept_key: deptKey,
+    file_name: file.name, storage_path: path,
+    file_size: file.size, mime_type: file.type,
+    uploaded_by: session?.user?.id
+  });
+  if (error) throw error;
+}
+
+export async function fetchAttachments(tenderId) {
+  const { data, error } = await _sb.from("attachments")
+    .select("*").eq("tender_id", tenderId).order("uploaded_at", { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
+export async function getAttachmentUrl(storagePath) {
+  // رابط مؤقت موقّع صالح لساعة واحدة
+  const { data, error } = await _sb.storage.from(FILES_BUCKET).createSignedUrl(storagePath, 3600);
+  if (error) throw error;
+  return data.signedUrl;
+}
+
+export async function deleteAttachment(id, storagePath) {
+  await _sb.storage.from(FILES_BUCKET).remove([storagePath]);
+  const { error } = await _sb.from("attachments").delete().eq("id", id);
+  if (error) throw error;
+}
+
+// ── Contracts & Invoices ─────────────────────────────────────
+
+export async function fetchContracts() {
+  const { data, error } = await _sb.from("contracts").select("*").order("award_date", { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
+export async function upsertContract(contract) {
+  const { error } = await _sb.from("contracts").upsert(contract);
+  if (error) throw error;
+}
+
+export async function fetchInvoices(contractId) {
+  const q = _sb.from("invoices").select("*").order("issue_date", { ascending: false });
+  if (contractId) q.eq("contract_id", contractId);
+  const { data, error } = await q;
+  if (error) throw error;
+  return data;
+}
+
+export async function upsertInvoice(invoice) {
+  const { error } = await _sb.from("invoices").upsert(invoice);
+  if (error) throw error;
+}
+
+// ── Notifications ────────────────────────────────────────────
+
+export async function fetchNotifications() {
+  const { data, error } = await _sb.from("notifications")
+    .select("*").order("created_at", { ascending: false }).limit(30);
+  if (error) throw error;
+  return data;
+}
+
+export async function markNotificationRead(id) {
+  const { error } = await _sb.from("notifications").update({ is_read: true }).eq("id", id);
+  if (error) throw error;
+}
+
+export async function createNotification(userId, title, body, type = "info", tenderId = null) {
+  const { error } = await _sb.from("notifications").insert({
+    user_id: userId, title, body, type, tender_id: tenderId
+  });
+  if (error) throw error;
+}
+
+export function subscribeToNotifications(userId, onNew) {
+  return _sb.channel("notif-" + userId)
+    .on("postgres_changes",
+      { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${userId}` },
+      onNew)
+    .subscribe();
+}
+
 // ── Real-time subscription ────────────────────────────────────
 // استدعِ هذه الدالة مرة واحدة لتلقي التحديثات الفورية على الـ board
 export function subscribeToChanges(onUpdate) {
