@@ -38,6 +38,9 @@ jobs:
           OUTPUT_FILE: tenders/data.json
         run: python scripts/sync_tender_data.py
 
+      - name: Pull latest before commit
+        run: git pull --rebase origin main
+
       - name: Commit updated data
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
