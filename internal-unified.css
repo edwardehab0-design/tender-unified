@@ -1723,3 +1723,27 @@ body .content-grid   { gap: 14px !important; }
 body .alert-banner   { padding: 10px 18px !important; margin-bottom: 14px !important; }
 body .alert-title    { font-size: 13px !important; }
 body .alert-sub      { font-size: 11px !important; }
+
+/* ── صفحة المناقصات الجارية: خلفية صافية بلون واحد دون ظل سيلفر ──── */
+body.page-tenders {
+  background: #f3f5f0 !important;
+}
+/* إزالة الهالة الشعاعية خلف الكروت والجدول */
+body.page-tenders .table-section::before,
+body.page-tenders .side-card::before,
+body.page-tenders .table-panel::before,
+body.page-tenders .panel::before {
+  display: none !important;
+}
+/* الجدول والبطاقات الجانبية: خلفية بيضاء صافية دون ظل */
+body.page-tenders .table-section,
+body.page-tenders .side-card,
+body.page-tenders .table-panel,
+body.page-tenders .filters {
+  box-shadow: none !important;
+  background: #ffffff !important;
+}
+/* كروت الإحصائيات: إزالة الظل فقط مع الإبقاء على ألوانها */
+body.page-tenders .stat-card {
+  box-shadow: none !important;
+}
