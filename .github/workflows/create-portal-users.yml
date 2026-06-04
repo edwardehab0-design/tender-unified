@@ -1,0 +1,55 @@
+name: Create Portal Users
+
+# زر تشغيل يدوي لإنشاء حسابات الموظفين الـ 58 في Supabase.
+# يستخدم نفس أسرار المستودع المضبوطة مسبقاً (SUPABASE_URL, SUPABASE_SERVICE_KEY).
+# يسحب دائماً كود السجل والسكربت من فرع التطوير لضمان أحدث نسخة.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "معاينة فقط (بدون إنشاء فعلي)؟ اتركها true أول مرة للتأكد"
+        type: boolean
+        default: true
+
+jobs:
+  create-users:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout roster branch
+        uses: actions/checkout@v4
+        with:
+          ref: claude/vigilant-newton-T54hs
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run user creation
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            echo "::notice::وضع المعاينة (dry-run) — لن يُنشأ أي حساب"
+            python scripts/create_portal_users.py \
+              --supabase-url "$SUPABASE_URL" \
+              --service-key  "$SUPABASE_SERVICE_KEY" \
+              --dry-run
+          else
+            echo "::warning::التنفيذ الفعلي — سيتم إنشاء الحسابات"
+            python scripts/create_portal_users.py \
+              --supabase-url "$SUPABASE_URL" \
+              --service-key  "$SUPABASE_SERVICE_KEY"
+          fi
+
+      - name: Upload credentials CSV
+        if: ${{ inputs.dry_run == false }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: users-created-credentials
+          path: users_created.csv
+          retention-days: 7
