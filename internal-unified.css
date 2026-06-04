@@ -1724,9 +1724,10 @@ body .alert-banner   { padding: 10px 18px !important; margin-bottom: 14px !impor
 body .alert-title    { font-size: 13px !important; }
 body .alert-sub      { font-size: 11px !important; }
 
-/* ── صفحة المناقصات الجارية: خلفية صافية بلون واحد دون ظل سيلفر ──── */
+/* ── صفحة المناقصات الجارية: خلفية بيضاء صافية موحّدة دون تدرّج ──── */
 body.page-tenders {
-  background: #f3f5f0 !important;
+  background: #ffffff !important;
+  background-image: none !important;
 }
 /* إزالة الهالة الشعاعية خلف الكروت والجدول */
 body.page-tenders .table-section::before,
