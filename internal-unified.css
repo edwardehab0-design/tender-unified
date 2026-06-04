@@ -1740,7 +1740,8 @@ body.page-tenders .panel::before {
 body.page-tenders .table-section,
 body.page-tenders .side-card,
 body.page-tenders .table-panel,
-body.page-tenders .filters {
+body.page-tenders .filters,
+body.page-tenders .sidebar {
   box-shadow: none !important;
   background: #ffffff !important;
 }
