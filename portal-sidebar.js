@@ -32,7 +32,7 @@
         await sb.auth.signOut();
       } catch {}
     }
-    window.location.href = "/login.html";
+    window.location.href = "/";
   }
 
   function isActive(page) {
