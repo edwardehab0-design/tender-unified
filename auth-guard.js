@@ -1,6 +1,17 @@
 // auth-guard.js — أضِف هذا السكريبت في <head> كل صفحة محمية
 // يُعيد توجيه المستخدم لـ /login.html إن لم يكن مسجّل دخوله
 (async () => {
+  const cfg = window.APP_CONFIG || {};
+  const isLocalHost = ["127.0.0.1", "localhost", "::1"].includes(window.location.hostname);
+  if (cfg.localAuthBypass && isLocalHost) {
+    const localUser = cfg.localUser || {};
+    try {
+      sessionStorage.setItem("alrawafPortalRole", localUser.role === "executive" ? "manager" : "department");
+      sessionStorage.setItem("alrawafDepartmentKey", localUser.departmentKey || "BS");
+    } catch {}
+    return;
+  }
+
   const SUPABASE_URL = window.APP_CONFIG?.supabaseUrl;
   const SUPABASE_KEY = window.APP_CONFIG?.supabaseKey;
   // إن لم تُحقن المفاتيح بعد (placeholder ما زال يحوي "__") نتخطّى الحارس

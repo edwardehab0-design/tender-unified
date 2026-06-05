@@ -5,7 +5,10 @@
 // تلقائياً على data.json + localStorage كما كان.
 (function () {
   const cfg = window.APP_CONFIG || {};
+  const isLocalHost = ["127.0.0.1", "localhost", "::1"].includes(window.location.hostname);
+  const localAuthBypass = !!(cfg.localAuthBypass && isLocalHost);
   const configured = !!(
+    !localAuthBypass &&
     cfg.supabaseUrl && cfg.supabaseKey &&
     !cfg.supabaseUrl.includes("__") && !cfg.supabaseKey.includes("__")
   );

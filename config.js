@@ -5,6 +5,12 @@
 window.APP_CONFIG = {
   supabaseUrl:  "__SUPABASE_URL__",
   supabaseKey:  "__SUPABASE_ANON_KEY__",
+  localAuthBypass: false,
+  localUser: {
+    fullName: "Local Developer",
+    role: "executive",
+    departmentKey: "BS"
+  },
   refreshMs: 60 * 1000,
 };
 

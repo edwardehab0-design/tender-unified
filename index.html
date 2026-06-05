@@ -221,7 +221,9 @@
     (function () {
       const SESSION_KEY = "alrawafPortalRole";
       const cfg = window.APP_CONFIG || {};
-      const configured = !!(cfg.supabaseUrl && cfg.supabaseKey
+      const isLocalHost = ["127.0.0.1", "localhost", "::1"].includes(window.location.hostname);
+      const localAuthBypass = !!(cfg.localAuthBypass && isLocalHost);
+      const configured = !!(!localAuthBypass && cfg.supabaseUrl && cfg.supabaseKey
         && !cfg.supabaseUrl.includes("__") && !cfg.supabaseKey.includes("__"));
       const sb = (configured && window.supabase)
         ? window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseKey,
@@ -232,7 +234,25 @@
       const portalDashboard = document.getElementById("portal-dashboard");
       const logoutButton    = document.getElementById("portal-logout");
 
-      const goLogin = () => { window.location.href = "/login.html"; };
+      function activateLocalProfile() {
+        const localUser = cfg.localUser || {};
+        const profile = {
+          full_name: localUser.fullName || "Local Developer",
+          role: localUser.role || "executive",
+          department_key: localUser.departmentKey || "BS"
+        };
+        sessionStorage.setItem(SESSION_KEY, profile.role === "executive" ? "manager" : "department");
+        sessionStorage.setItem("alrawafDepartmentKey", profile.department_key);
+        return profile;
+      }
+
+      const goLogin = () => {
+        if (localAuthBypass) {
+          revealPortal(activateLocalProfile());
+          return;
+        }
+        window.location.href = "/login.html";
+      };
 
       function applyAccess(role) {
         const isExecutive = role === "executive";
@@ -256,6 +276,7 @@
       }
 
       async function loadSessionProfile() {
+        if (localAuthBypass) return activateLocalProfile();
         if (!sb) return null;
         const { data } = await sb.auth.getSession();
         if (!data?.session) return null;

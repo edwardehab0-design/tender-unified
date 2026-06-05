@@ -14,14 +14,13 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="../auth-guard.js"></script>
 </head>
-<body>
+<body class="ops-rail-collapsed">
   <a class="portal-home-link" href="../index.html?return=portal">رجوع</a>
 
   <div class="ops-app">
     <!-- ░░ Top App Bar ░░ -->
     <header class="ops-topbar">
       <div class="topbar-identity">
-        <span class="topbar-mark">ع</span>
         <div class="topbar-titles">
           <span class="topbar-kicker">مركز قيادة العمليات</span>
           <strong class="topbar-name">إدارة العمليات</strong>
@@ -60,6 +59,7 @@
           <span class="live-dot"></span>
           <em>مباشر</em>
         </button>
+        <button class="topbar-tool rail-toggle" id="rail-toggle" type="button" aria-pressed="false" title="إظهار الفلاتر وضغط الفريق">الفلاتر</button>
       </div>
     </header>
 
@@ -99,8 +99,47 @@
 
       <!-- ░░ Main Workspace ░░ -->
       <main class="ops-main">
+        <section class="ops-command-center" aria-label="ملخص اليوم">
+          <div class="ops-command-copy">
+            <span>ملخص اليوم</span>
+            <h1>الأولوية التشغيلية</h1>
+            <p id="ops-command-note">يعرض أهم إشارات العمل فقط. استخدم الفلاتر عند الحاجة للتفصيل.</p>
+          </div>
+          <div class="ops-command-kpis" aria-label="مؤشرات القيادة">
+            <article class="ops-command-kpi" data-kpi-filter="all" role="button" tabindex="0">
+              <span>ملفات نشطة</span>
+              <strong id="ops-command-active">0</strong>
+              <small id="ops-command-visible">0 ظاهرة الآن</small>
+            </article>
+            <article class="ops-command-kpi watch" data-kpi-filter="late" role="button" tabindex="0">
+              <span>تحتاج تدخل</span>
+              <strong id="ops-command-risk">0</strong>
+              <small>متأخرة أو غير مسندة</small>
+            </article>
+            <article class="ops-command-kpi success" data-kpi-filter="ready" role="button" tabindex="0">
+              <span>جاهزية الاعتماد</span>
+              <strong id="ops-command-ready-pct">0%</strong>
+              <small id="ops-command-ready-count">0 ملف جاهز</small>
+            </article>
+            <article class="ops-command-kpi neutral" data-kpi-filter="active" role="button" tabindex="0">
+              <span>ضغط الفريق</span>
+              <strong id="ops-command-load">0</strong>
+              <small>مهام مفتوحة</small>
+            </article>
+          </div>
+        </section>
+
+        <section class="ops-flow-strip" aria-label="مسار تشغيل المناقصات" hidden>
+          <div class="ops-flow-head">
+            <span>Workflow Health</span>
+            <strong>تدفق الملفات عبر مراحل التنسيق</strong>
+            <small id="ops-flow-summary">جاري احتساب حالة التشغيل...</small>
+          </div>
+          <div class="ops-flow-board" id="ops-flow-board"></div>
+        </section>
+
         <!-- KPI Strip -->
-        <section class="ops-kpis" aria-label="مؤشرات غرفة العمليات">
+        <section class="ops-kpis" aria-label="مؤشرات غرفة العمليات" hidden>
           <article class="kpi kpi-blue" data-kpi-filter="all" role="button" tabindex="0" title="عرض كل المنافسات على اللوحة">
             <span class="kpi-ic">◆</span>
             <div><b id="kpi-active">0</b><span>منافسات نشطة</span></div>

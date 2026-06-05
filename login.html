@@ -104,6 +104,22 @@
   <script src="./config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
+    const cfg = window.APP_CONFIG || {};
+    const isLocalHost = ["127.0.0.1", "localhost", "::1"].includes(window.location.hostname);
+    const localAuthBypass = !!(cfg.localAuthBypass && isLocalHost);
+
+    if (localAuthBypass) {
+      const localUser = cfg.localUser || {};
+      document.getElementById("email").value = "local.dev@alrawaf.local";
+      document.getElementById("password").value = "local-preview";
+      document.getElementById("login-btn").textContent = "دخول محلي";
+      document.getElementById("login-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        sessionStorage.setItem("alrawafPortalRole", localUser.role === "executive" ? "manager" : "department");
+        sessionStorage.setItem("alrawafDepartmentKey", localUser.departmentKey || "BS");
+        window.location.href = "/tenders/";
+      });
+    } else {
     const SUPABASE_URL = window.APP_CONFIG?.supabaseUrl;
     const SUPABASE_KEY = window.APP_CONFIG?.supabaseKey;
     // إن لم تُحقن المفاتيح بعد (متغيرات البيئة غير مضبوطة في Cloudflare)
@@ -153,6 +169,7 @@
         sessionStorage.setItem("alrawafDepartmentKey", profile.department_key);
       // توجيه مباشر إلى صفحة المناقصات الجارية بعد الدخول
       window.location.href = "/tenders/";
+    }
     }
   </script>
 </body>

@@ -99,6 +99,7 @@ let searchTerm = "";
 let selectedContext = null;
 let selectedIds = new Set();
 let selectedView = ["board", "table", "calendar", "analytics"].includes(prefs.view) ? prefs.view : "board";
+let railOpen = prefs.railOpen === true;
 let advFilters = { sector: "", client: "", from: "", to: "" };
 let calendarRef = new Date();
 let savedState = readState();
@@ -505,6 +506,22 @@ function toggleDensity() {
   prefs.density = prefs.density === "compact" ? "comfortable" : "compact";
   writePrefs();
   applyDensity();
+}
+
+function applyRailState() {
+  document.body.classList.toggle("ops-rail-collapsed", !railOpen);
+  const btn = qs("rail-toggle");
+  if (!btn) return;
+  btn.setAttribute("aria-pressed", railOpen ? "true" : "false");
+  btn.textContent = railOpen ? "إخفاء الفلاتر" : "الفلاتر";
+  btn.title = railOpen ? "إخفاء الفلاتر وضغط الفريق" : "إظهار الفلاتر وضغط الفريق";
+}
+
+function toggleRail() {
+  railOpen = !railOpen;
+  prefs.railOpen = railOpen;
+  writePrefs();
+  applyRailState();
 }
 
 // ── الإشعارات ──
@@ -1124,6 +1141,50 @@ function renderKpis() {
   setText("kpi-attention", source.length - ready);
   setText("kpi-unassigned", unassigned);
   setText("kpi-files", files);
+}
+
+function renderCommandCenter() {
+  const source = tenders;
+  const visible = visibleTenders();
+  const ready = source.filter((tender) => tenderStage(tender) === "ready").length;
+  const approved = source.filter((tender) => tenderStage(tender) === "approved").length;
+  const late = source.filter((tender) => tenderStage(tender) === "late").length;
+  const unassigned = source.reduce((sum, tender) => (
+    sum + departmentRows(tender).filter((row) => !row.engineers.length).length
+  ), 0);
+  const metrics = employeeMetrics();
+  const openTasks = metrics.reduce((sum, item) => sum + item.open, 0);
+  const risky = late + unassigned;
+  const readyTotal = ready + approved;
+  const readyPct = source.length ? Math.round((readyTotal / source.length) * 100) : 0;
+
+  setText("ops-command-active", source.length);
+  setText("ops-command-visible", `${visible.length} ظاهرة الآن`);
+  setText("ops-command-risk", risky);
+  setText("ops-command-ready-pct", `${readyPct}%`);
+  setText("ops-command-ready-count", `${readyTotal} ملف جاهز أو معتمد`);
+  setText("ops-command-load", openTasks);
+  setText("ops-command-note", risky
+    ? `${late} متأخرة و ${unassigned} مهمة غير مسندة. ابدأ بالعناصر الحرجة.`
+    : "الوضع مستقر. ركز على دفع الملفات المفتوحة نحو الاعتماد."
+  );
+  setText("ops-flow-summary", `${visible.length} معروضة · ${late} متأخرة · ${readyTotal} جاهزة للاعتماد`);
+
+  const flow = qs("ops-flow-board");
+  if (!flow) return;
+  const counts = { new: 0, active: 0, late: 0, ready: 0, approved: 0 };
+  source.forEach((tender) => {
+    const stage = tenderStage(tender);
+    if (counts[stage] !== undefined) counts[stage] += 1;
+  });
+  flow.innerHTML = KANBAN_COLUMNS.map((stage, index) => `
+    <article class="ops-flow-card" data-stage="${safe(stage.key)}">
+      <i></i>
+      <span>${safe(stage.label)}</span>
+      <strong>${counts[stage.key] || 0}</strong>
+      <small>مرحلة ${index + 1} من ${KANBAN_COLUMNS.length}</small>
+    </article>
+  `).join("");
 }
 
 function setText(id, value) {
@@ -1770,6 +1831,7 @@ function switchView(view) {
 function render() {
   renderRole();
   renderKpis();
+  renderCommandCenter();
   renderFilterCounts();
   renderDeadlineBar();
   renderDepartments();
@@ -1835,6 +1897,7 @@ function runBulkAction(action) {
 function applySavedPrefs() {
   applyTheme();
   applyDensity();
+  applyRailState();
   document.querySelectorAll("#view-tabs button").forEach((button) => button.classList.toggle("active", button.dataset.view === selectedView));
   document.querySelectorAll(".ops-view").forEach((panel) => { panel.hidden = panel.dataset.view !== selectedView; });
   document.querySelectorAll("[data-filter]").forEach((button) => button.classList.toggle("active", button.dataset.filter === selectedFilter));
@@ -1904,7 +1967,7 @@ function subscribeRealtime() {
 }
 
 document.addEventListener("click", (event) => {
-  const kpiCard = event.target.closest(".kpi[data-kpi-filter]");
+  const kpiCard = event.target.closest(".kpi[data-kpi-filter], .ops-command-kpi[data-kpi-filter]");
   if (kpiCard) {
     selectedFilter = kpiCard.dataset.kpiFilter;
     prefs.filter = selectedFilter;
@@ -2049,6 +2112,7 @@ qs("export-btn")?.addEventListener("click", exportCSV);
 // ── Theme + density toggles ──
 qs("theme-toggle")?.addEventListener("click", toggleTheme);
 qs("density-toggle")?.addEventListener("click", toggleDensity);
+qs("rail-toggle")?.addEventListener("click", toggleRail);
 
 // ── SharePoint modal ──
 qs("sp-save")?.addEventListener("click", () => {
