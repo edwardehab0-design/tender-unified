@@ -9,8 +9,6 @@
 <title>شركة الرواف — المناقصات</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="../config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="../auth-guard.js"></script>
 <style>
 :root {
   --primary: #1b3a6b;
@@ -1171,44 +1169,6 @@ body {
 #welcome-screen {
   display: none !important;
 }
-
-/* ── ضبط الكثافة: تقليل الفراغات لمظهر احترافي مضغوط ───────────────── */
-.header { height: 60px !important; padding: 0 24px !important; }
-.logo-text { font-size: 18px !important; }
-.logo-sub  { font-size: 10px !important; }
-
-.main { padding: 14px 20px !important; }
-
-.stats-grid { gap: 12px !important; margin-bottom: 14px !important; }
-.stat-card  { padding: 14px 16px !important; border-radius: 14px !important; }
-.stat-num   { font-size: 28px !important; margin-bottom: 2px !important; }
-.stat-label { font-size: 12px !important; }
-.stat-sub   { font-size: 10px !important; margin-top: 2px !important; }
-
-.alert-banner { padding: 10px 18px !important; margin-bottom: 14px !important; }
-.alert-title  { font-size: 13px !important; }
-.alert-sub    { font-size: 11px !important; }
-.alert-icon   { font-size: 18px !important; }
-
-.countdown-banner { padding: 12px 22px !important; margin-bottom: 14px !important; border-radius: 14px !important; }
-.countdown-unit   { padding: 7px 12px !important; min-width: 50px !important; }
-.countdown-num    { font-size: 22px !important; }
-.countdown-label  { font-size: 9px !important; }
-.countdown-sep    { font-size: 18px !important; }
-.countdown-name   { font-size: 14px !important; }
-.countdown-owner  { font-size: 11px !important; }
-.countdown-icon   { font-size: 24px !important; }
-
-.content-grid   { gap: 14px !important; }
-.section-header { padding: 11px 18px !important; }
-.section-title  { font-size: 14px !important; }
-
-thead th { padding: 8px 12px !important; font-size: 10px !important; }
-tbody td { padding: 9px 12px !important; font-size: 12px !important; }
-
-.filters    { padding: 9px 18px !important; gap: 6px !important; }
-.filter-btn { padding: 5px 11px !important; font-size: 11px !important; }
-.search-box { padding: 6px 12px !important; }
 </style>
 <link rel="stylesheet" href="../shared-visual.css?v=4">
 <link rel="stylesheet" href="../internal-unified.css?v=15">
@@ -1217,7 +1177,7 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
 </head>
-<body class="page-tenders">
+<body>
 <a class="portal-home-link" href="../index.html?return=portal" onclick="window.location.href='../index.html?return=portal'; return false;">رجوع</a>
 <header class="header" style="display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:72px;position:sticky;top:0;z-index:100;width:100%;background:linear-gradient(105deg,var(--primary-3,#1a2e54) 0%,var(--primary,#1b3a6b) 55%,var(--primary-2,#254d8f) 100%);border-bottom:2px solid var(--gold-light,#d4a017);box-shadow:0 2px 12px rgba(27,58,107,0.22);">
   <div style="display:flex;align-items:center;gap:14px;">
@@ -1322,27 +1282,27 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
     <div class="stat-card c-blue" onclick="filterBy('active')">
       <div class="stat-num" id="stat-active">—</div>
       <div class="stat-label">المناقصات الجارية</div>
-      <div class="stat-sub">اضغط للعرض</div>
+      <div class="stat-sub">إجمالي النشطة</div>
     </div>
     <div class="stat-card c-yellow" onclick="filterBy('3days')">
       <div class="stat-num" id="stat-3days">—</div>
       <div class="stat-label">الباقي 3 أيام</div>
-      <div class="stat-sub">اضغط للعرض</div>
+      <div class="stat-sub">تحتاج متابعة عاجلة</div>
     </div>
     <div class="stat-card c-orange" onclick="filterBy('today')">
       <div class="stat-num" id="stat-today">—</div>
       <div class="stat-label">تنتهي اليوم</div>
-      <div class="stat-sub">اضغط للعرض</div>
+      <div class="stat-sub">آخر موعد للتقديم</div>
     </div>
     <div class="stat-card c-teal" onclick="filterBy('guarantee')">
       <div class="stat-num" id="stat-guarantee">—</div>
       <div class="stat-label">ضمان مستحق اليوم</div>
-      <div class="stat-sub">اضغط للعرض</div>
+      <div class="stat-sub">تاريخ الضمان الابتدائي</div>
     </div>
     <div class="stat-card c-urgent" onclick="filterBy('urgent')">
       <div class="stat-num" id="stat-urgent">—</div>
       <div class="stat-label">الحرجة</div>
-      <div class="stat-sub">اضغط للعرض</div>
+      <div class="stat-sub">منتهية أو متأخرة</div>
     </div>
   </div>
   <div class="countdown-banner fade-in" id="countdown-banner">
@@ -1366,23 +1326,11 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
   </div>
   <div class="content-grid">
     <div class="table-section fade-in">
-      <div class="section-header command-table-header">
-        <div class="section-title">قائمة المناقصات <span class="section-count" id="table-count">0</span></div>
-        <div class="table-actions">
-          <label class="sort-box">
-            <span>ترتيب</span>
-            <select id="sort-select" onchange="applyFilters()">
-              <option value="urgency">حسب الأولوية</option>
-              <option value="date">أقرب موعد تقديم</option>
-              <option value="guarantee">أقرب ضمان</option>
-              <option value="owner">الجهة المالكة</option>
-              <option value="name">اسم المناقصة</option>
-            </select>
-          </label>
-          <div class="search-box">
-            <span>بحث</span>
-            <input type="text" id="search-input" placeholder="اسم المناقصة، المالك، أو نوع الأعمال" oninput="applyFilters()">
-          </div>
+      <div class="section-header">
+        <div class="section-title">📊 قائمة المناقصات <span class="section-count" id="table-count">0</span></div>
+        <div class="search-box">
+          <span>🔍</span>
+          <input type="text" id="search-input" placeholder="بحث في المناقصات..." oninput="applyFilters()">
         </div>
       </div>
       <div class="filters">
@@ -1398,30 +1346,21 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
         <table id="tenders-table" style="display:none">
           <colgroup>
             <col style="width:40px">
-            <col style="width:30%">
-            <col style="width:13%">
+            <col style="width:33%">
+            <col style="width:14%">
             <col style="width:11%">
-            <col style="width:12%">
             <col style="width:10%">
             <col style="width:10%">
             <col style="width:9%">
             <col style="width:48px">
           </colgroup>
-          <thead><tr><th>#</th><th>اسم المناقصة</th><th>المالك</th><th>نوع الأعمال</th><th>المسار</th><th>تاريخ التقديم</th><th>الضمان</th><th>الأولوية</th><th>ملفات</th></tr></thead>
+          <thead><tr><th>#</th><th>اسم المناقصة</th><th>المالك</th><th>نوع الأعمال</th><th>تاريخ التقديم</th><th>الضمان</th><th>الأولوية</th><th>📁</th></tr></thead>
           <tbody id="tenders-tbody"></tbody>
         </table>
       </div>
       <div class="empty" id="empty" style="display:none">لا توجد مناقصات مطابقة</div>
     </div>
-    <div class="sidebar tender-insights">
-      <div class="side-card fade-in">
-        <div class="section-header"><div class="section-title">مركز المتابعة</div></div>
-        <div class="insight-list" id="tender-alerts-list"></div>
-      </div>
-      <div class="side-card fade-in">
-        <div class="section-header"><div class="section-title">صحة مسار العمل</div></div>
-        <div class="insight-list" id="workflow-health-list"></div>
-      </div>
+    <div class="sidebar">
       <div class="side-card fade-in">
         <div class="section-header"><div class="section-title">🏛️ توزيع الجهات المالكة</div></div>
         <div id="owners-list"><div class="loading"><div class="spinner"></div></div></div>
@@ -1706,20 +1645,6 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
   </div>
 </div>
 
-<aside class="tender-detail-drawer" id="tender-detail-drawer" aria-live="polite" aria-label="تفاصيل المناقصة">
-  <div class="drawer-head">
-    <div>
-      <span class="drawer-kicker">ملف المناقصة</span>
-      <h3 id="drawer-title">اختر مناقصة</h3>
-    </div>
-    <button class="drawer-close-btn" type="button" onclick="closeTenderDrawer()" aria-label="إغلاق">✕</button>
-  </div>
-  <div class="drawer-body" id="drawer-body">
-    <div class="drawer-empty">اضغط على أي صف في الجدول لعرض تفاصيل المناقصة ومسار تجهيزها.</div>
-  </div>
-</aside>
-<div class="drawer-scrim" id="drawer-scrim" onclick="closeTenderDrawer()"></div>
-
 <script>
 const PORTAL_CONFIG = window.TENDER_PORTAL_CONFIG || {};
 const TENDERS_DATA_SOURCES = PORTAL_CONFIG.sources?.liveTenders || ['./data.json'];
@@ -1755,163 +1680,6 @@ function isGuaranteeToday(guarantee) {
 function getCurrentTenders() {
   const current = allTenders.filter(t => (t.status || 'جارية').trim() !== 'تم التقديم');
   return current.length ? current : allTenders;
-}
-
-function escapeHtml(value) {
-  return String(value ?? '').replace(/[&<>"']/g, ch => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
-  }[ch]));
-}
-
-function formatDate(value) {
-  if (!value) return '—';
-  return String(value).split('T')[0] || '—';
-}
-
-const TENDER_WORKFLOW = [
-  { key: 'received', label: 'استلام', hint: 'توثيق الفرصة' },
-  { key: 'study', label: 'دراسة', hint: 'فحص النطاق' },
-  { key: 'pricing', label: 'تسعير', hint: 'إعداد العرض' },
-  { key: 'guarantee', label: 'ضمان', hint: 'متابعة الضمان' },
-  { key: 'approval', label: 'اعتماد', hint: 'قرار التقديم' },
-  { key: 'submission', label: 'تقديم', hint: 'إرسال الملف' }
-];
-
-function inferTenderStage(tender) {
-  const urgency = getUrgency(tender.submitDate);
-  if (urgency.level === 'urgent' || urgency.level === 'today') return 'approval';
-  if (isGuaranteeToday(tender.guarantee)) return 'guarantee';
-  if (urgency.level === '3days' || urgency.level === 'week') return 'pricing';
-  if (urgency.diff > 30) return 'received';
-  return 'study';
-}
-
-function workflowMeta(stageKey) {
-  return TENDER_WORKFLOW.find(stage => stage.key === stageKey) || TENDER_WORKFLOW[0];
-}
-
-function workflowIndex(stageKey) {
-  return Math.max(0, TENDER_WORKFLOW.findIndex(stage => stage.key === stageKey));
-}
-
-function renderWorkflowPills(tender) {
-  const currentIndex = workflowIndex(inferTenderStage(tender));
-  return TENDER_WORKFLOW.map((stage, index) => {
-    const state = index < currentIndex ? 'done' : index === currentIndex ? 'current' : 'pending';
-    return `<span class="workflow-pill ${state}">${escapeHtml(stage.label)}</span>`;
-  }).join('');
-}
-
-function countTenderState(source = allTenders) {
-  const counts = { active: 0, week: 0, '3days': 0, today: 0, urgent: 0, guarantee: 0 };
-  source.forEach(t => {
-    const u = getUrgency(t.submitDate);
-    if (u.level === 'urgent') counts.urgent++;
-    else if (u.level === 'today') { counts.today++; counts.active++; }
-    else if (u.level === '3days') { counts['3days']++; counts.active++; }
-    else if (u.level === 'week') { counts.week++; counts.active++; }
-    else if (u.level === 'active') counts.active++;
-    if (isGuaranteeToday(t.guarantee)) counts.guarantee++;
-  });
-  return counts;
-}
-
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = value;
-}
-
-function renderTenderCommandCenter(currentList = allTenders) {
-  const allCounts = countTenderState(allTenders);
-  const attention = allCounts.week + allCounts['3days'] + allCounts.today;
-  const risk = allCounts.urgent + allCounts.today;
-  setText('command-active', allCounts.active);
-  setText('command-attention', attention);
-  setText('command-risk', risk);
-  setText('command-compliance', allCounts.guarantee);
-  setText('view-all-count', allTenders.length);
-  setText('view-today-count', allCounts.today);
-  setText('view-3days-count', allCounts['3days']);
-  setText('view-guarantee-count', allCounts.guarantee);
-
-  document.querySelectorAll('.saved-view').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.filter === currentFilter);
-  });
-
-  const stageCounts = Object.fromEntries(TENDER_WORKFLOW.map(stage => [stage.key, 0]));
-  allTenders.forEach(t => { stageCounts[inferTenderStage(t)]++; });
-  const submitted2026 = allSubmitted.filter(t => {
-    const d = new Date(t.date || '');
-    return d.getFullYear() === 2026;
-  }).length;
-  stageCounts.submission = submitted2026;
-
-  const workflow = document.getElementById('workflow-board');
-  if (workflow) {
-    workflow.innerHTML = TENDER_WORKFLOW.map((stage, index) => `
-      <div class="workflow-step-card ${stageCounts[stage.key] ? 'has-work' : ''}">
-        <span class="workflow-step-index">${String(index + 1).padStart(2, '0')}</span>
-        <strong>${escapeHtml(stage.label)}</strong>
-        <small>${escapeHtml(stage.hint)}</small>
-        <b>${stageCounts[stage.key] || 0}</b>
-      </div>
-    `).join('');
-  }
-
-  const summaryParts = [
-    `${currentList.length} معروضة الآن`,
-    `${attention} تحتاج متابعة`,
-    `${stageCounts.submission} مقدمة في 2026`
-  ];
-  setText('workflow-summary', summaryParts.join(' · '));
-  renderTenderAlertCenter(currentList);
-}
-
-function renderTenderAlertCenter(currentList = allTenders) {
-  const today = allTenders.filter(t => getUrgency(t.submitDate).level === 'today');
-  const threeDays = allTenders.filter(t => getUrgency(t.submitDate).level === '3days');
-  const overdue = allTenders.filter(t => getUrgency(t.submitDate).level === 'urgent');
-  const guarantee = allTenders.filter(t => isGuaranteeToday(t.guarantee));
-  const missingOwner = allTenders.filter(t => !t.owner);
-  const alerts = [
-    { label: 'إغلاق اليوم', count: today.length, tone: 'risk', filter: 'today' },
-    { label: 'خلال 3 أيام', count: threeDays.length, tone: 'watch', filter: '3days' },
-    { label: 'متأخرة', count: overdue.length, tone: 'risk', filter: 'urgent' },
-    { label: 'ضمان اليوم', count: guarantee.length, tone: 'compliance', filter: 'guarantee' },
-    { label: 'بدون جهة مالكة', count: missingOwner.length, tone: 'neutral', filter: 'all' }
-  ];
-
-  const alertList = document.getElementById('tender-alerts-list');
-  if (alertList) {
-    alertList.innerHTML = alerts.map(item => `
-      <button class="insight-row ${item.tone}" type="button" onclick="filterBy('${item.filter}')">
-        <span>${escapeHtml(item.label)}</span>
-        <strong>${item.count}</strong>
-      </button>
-    `).join('');
-  }
-
-  const stageCounts = {};
-  currentList.forEach(t => {
-    const meta = workflowMeta(inferTenderStage(t));
-    stageCounts[meta.label] = (stageCounts[meta.label] || 0) + 1;
-  });
-  const health = document.getElementById('workflow-health-list');
-  if (health) {
-    const entries = Object.entries(stageCounts).sort((a,b) => b[1] - a[1]);
-    health.innerHTML = entries.length
-      ? entries.map(([label, count]) => `
-        <div class="insight-row">
-          <span>${escapeHtml(label)}</span>
-          <strong>${count}</strong>
-        </div>
-      `).join('')
-      : '<div class="drawer-empty">لا توجد بيانات في العرض الحالي</div>';
-  }
 }
 
 // ── المناقصات المقدمة 2026 (بيانات ثابتة من Excel) ──────
@@ -2040,7 +1808,7 @@ function filterBy(f) {
 }
 
 function applyFilters() {
-  const search = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const search = document.getElementById('search-input').value.toLowerCase();
   let filtered = allTenders.filter(t => {
     const u = getUrgency(t.submitDate);
     let ok = currentFilter==='all' ||
@@ -2049,14 +1817,7 @@ function applyFilters() {
       u.level === currentFilter;
     return ok && (!search || t.title.toLowerCase().includes(search) || t.owner.toLowerCase().includes(search) || t.workType.toLowerCase().includes(search));
   });
-  const sortBy = document.getElementById('sort-select')?.value || 'urgency';
-  filtered.sort((a,b) => {
-    if (sortBy === 'date') return new Date(a.submitDate || '2999-12-31') - new Date(b.submitDate || '2999-12-31');
-    if (sortBy === 'guarantee') return new Date(a.guarantee || '2999-12-31') - new Date(b.guarantee || '2999-12-31');
-    if (sortBy === 'owner') return String(a.owner || '').localeCompare(String(b.owner || ''), 'ar');
-    if (sortBy === 'name') return String(a.title || '').localeCompare(String(b.title || ''), 'ar');
-    return getUrgency(a.submitDate).diff - getUrgency(b.submitDate).diff;
-  });
+  filtered.sort((a,b) => getUrgency(a.submitDate).diff - getUrgency(b.submitDate).diff);
   renderTable(filtered);
 }
 
@@ -2065,7 +1826,6 @@ function renderTable(tenders) {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('table-count').textContent = tenders.length;
   renderTenderSidebar(visibleTenders);
-  renderTenderCommandCenter(visibleTenders);
   const table = document.getElementById('tenders-table');
   const empty = document.getElementById('empty');
   if (!tenders.length) { table.style.display='none'; empty.style.display='block'; return; }
@@ -2074,87 +1834,15 @@ function renderTable(tenders) {
     const u = getUrgency(t.submitDate);
     const gToday = isGuaranteeToday(t.guarantee);
     const spLink = getSharePointTenderFolderLink(t.title);
-    const stage = workflowMeta(inferTenderStage(t));
-    return `<tr class="tender-row" tabindex="0" title="اضغط لعرض التفاصيل"
-    data-title="${escapeHtml(t.title)}"
-    data-owner="${escapeHtml(t.owner || '—')}"
-    data-worktype="${escapeHtml(t.workType || '—')}"
-    data-sector="${escapeHtml(t.sector || '—')}"
-    data-submit="${formatDate(t.submitDate)}"
-    data-guarantee="${formatDate(t.guarantee)}"
-    data-urgency-label="${escapeHtml(u.label)}"
-    data-urgency-cls="${escapeHtml(u.cls)}"
-    data-stage="${escapeHtml(stage.label)}"
-    data-filter="${escapeHtml(u.level === 'week' ? 'active' : u.level)}"
-    data-folder="${escapeHtml(spLink)}"
-    data-action="${escapeHtml(getRecommendedAction(t))}">
-    <td class="row-index">${i+1}</td>
-    <td><span class="title-text" title="${escapeHtml(t.title)}">${escapeHtml(t.title)}</span><span class="owner-text">${escapeHtml(t.sector || t.workType || '—')}</span></td>
-    <td><span class="owner-text owner-cell">${escapeHtml(t.owner || '—')}</span></td>
-    <td class="worktype-cell">${escapeHtml(t.workType || '—')}</td>
-    <td><span class="stage-badge">${escapeHtml(stage.label)}</span></td>
-    <td class="date-text">${formatDate(t.submitDate)}</td>
-    <td class="date-text ${gToday?'is-guarantee-today':''}">${formatDate(t.guarantee)}${gToday?' 🔐':''}</td>
-    <td><span class="urgency-badge ${u.cls}">${escapeHtml(u.label)}</span></td>
-    <td style="text-align:center;"><a href="${escapeHtml(spLink)}" target="_blank" title="فتح فولدر المناقصة في SharePoint" class="folder-link">فتح</a></td></tr>`;
+    return `<tr><td style="color:var(--text-muted);font-size:12px;font-weight:600">${i+1}</td>
+    <td><span class="title-text" title="${t.title}">${t.title}</span><span class="owner-text">${t.workType}</span></td>
+    <td><span class="owner-text" style="max-width:140px">${t.owner}</span></td>
+    <td style="font-size:12px">${t.workType||'—'}</td>
+    <td class="date-text">${t.submitDate?t.submitDate.split('T')[0]:'—'}</td>
+    <td class="date-text" style="${gToday?'color:var(--teal);font-weight:800;':''}">${t.guarantee?t.guarantee.split('T')[0]:'—'}${gToday?' 🔐':''}</td>
+    <td><span class="urgency-badge ${u.cls}">${u.label}</span></td>
+    <td style="text-align:center;"><a href="${spLink}" target="_blank" title="فتح فولدر المناقصة في SharePoint" style="text-decoration:none;font-size:18px;opacity:0.7;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">📁</a></td></tr>`;
   }).join('');
-}
-
-function openTenderDrawer(index) {
-  const tender = visibleTenders[index];
-  if (!tender) return;
-  document.querySelectorAll('.tender-row').forEach((row, i) => row.classList.toggle('is-selected', i === index));
-  const urgency = getUrgency(tender.submitDate);
-  const stage = workflowMeta(inferTenderStage(tender));
-  const spLink = getSharePointTenderFolderLink(tender.title);
-  const drawer = document.getElementById('tender-detail-drawer');
-  const body = document.getElementById('drawer-body');
-  const title = document.getElementById('drawer-title');
-  if (!drawer || !body || !title) return;
-  title.textContent = tender.title || 'تفاصيل المناقصة';
-  body.innerHTML = `
-    <div class="drawer-status-line">
-      <span class="urgency-badge ${urgency.cls}">${escapeHtml(urgency.label)}</span>
-      <span class="stage-badge">${escapeHtml(stage.label)}</span>
-    </div>
-    <dl class="drawer-facts">
-      <div><dt>الجهة المالكة</dt><dd>${escapeHtml(tender.owner || '—')}</dd></div>
-      <div><dt>نوع الأعمال</dt><dd>${escapeHtml(tender.workType || '—')}</dd></div>
-      <div><dt>القطاع</dt><dd>${escapeHtml(tender.sector || '—')}</dd></div>
-      <div><dt>تاريخ التقديم</dt><dd>${formatDate(tender.submitDate)}</dd></div>
-      <div><dt>تاريخ الضمان</dt><dd>${formatDate(tender.guarantee)}</dd></div>
-    </dl>
-    <div class="drawer-section">
-      <h4>مسار تجهيز الملف</h4>
-      <div class="drawer-workflow">${renderWorkflowPills(tender)}</div>
-    </div>
-    <div class="drawer-section">
-      <h4>الإجراء المقترح</h4>
-      <p>${escapeHtml(getRecommendedAction(tender))}</p>
-    </div>
-    <div class="drawer-actions">
-      <a href="${spLink}" target="_blank">فتح مجلد SharePoint</a>
-      <button type="button" onclick="filterBy('${urgency.level === 'week' ? 'active' : urgency.level}')">عرض نفس الحالة</button>
-    </div>
-  `;
-  drawer.classList.add('open');
-  document.getElementById('drawer-scrim')?.classList.add('open');
-}
-
-function closeTenderDrawer() {
-  document.getElementById('tender-detail-drawer')?.classList.remove('open');
-  document.getElementById('drawer-scrim')?.classList.remove('open');
-  document.querySelectorAll('.tender-row').forEach(row => row.classList.remove('is-selected'));
-}
-
-function getRecommendedAction(tender) {
-  const urgency = getUrgency(tender.submitDate);
-  if (urgency.level === 'urgent') return 'الموعد متأخر أو انتهى. راجع قرار التقديم أو الإغلاق فورًا.';
-  if (urgency.level === 'today') return 'أولوية قصوى: اعتماد نهائي، فحص الضمان، وتجهيز الرفع قبل نهاية اليوم.';
-  if (isGuaranteeToday(tender.guarantee)) return 'راجع الضمان الابتدائي وتأكد من جاهزية خطاب الضمان قبل متابعة العرض.';
-  if (urgency.level === '3days') return 'أغلق التسعير والمرفقات، وحدد مالك قرار الاعتماد خلال 24 ساعة.';
-  if (urgency.level === 'week') return 'ثبت خطة التسعير ومراجعة المخاطر الفنية والمالية.';
-  return 'تابع الدراسة الفنية وجاهزية المستندات حسب خطة القسم.';
 }
 
 const ownerColors = ['#315b8f','#2f7d62','#a8792a','#b86b37','#665a92','#2a7f86','#a84b54','#7b6a4a'];
@@ -3336,16 +3024,6 @@ function printFull() {
   }, 1000);
 }
 
-Object.assign(window, {
-  filterBy,
-  applyFilters,
-  openTenderDrawer,
-  closeTenderDrawer,
-  toggleExport,
-  exportReport,
-  switchTab
-});
-
 // Initialize: تحميل البيانات الحية من ملف data.json الذي يحدثه سكربت Tender
 allSubmitted = [];
 renderAll();
@@ -3931,114 +3609,8 @@ window.addEventListener('hashchange', handleExecutiveReportHash);
   });
 })();
 </script>
-<script>
-(() => {
-  const workflowLabels = ['استلام', 'دراسة', 'تسعير', 'ضمان', 'اعتماد', 'تقديم'];
-
-  function esc(value) {
-    return String(value || '').replace(/[&<>"']/g, (ch) => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;'
-    }[ch]));
-  }
-
-  function safeClass(value) {
-    return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '');
-  }
-
-  function workflowPills(stageLabel) {
-    const currentIndex = Math.max(0, workflowLabels.indexOf(stageLabel || 'استلام'));
-    return workflowLabels.map((label, index) => {
-      const state = index < currentIndex ? 'done' : index === currentIndex ? 'current' : 'pending';
-      return `<span class="workflow-pill ${state}">${esc(label)}</span>`;
-    }).join('');
-  }
-
-  function openDrawerFromRow(row) {
-    const drawer = document.getElementById('tender-detail-drawer');
-    const body = document.getElementById('drawer-body');
-    const title = document.getElementById('drawer-title');
-    if (!drawer || !body || !title) return;
-
-    const data = row.dataset;
-    document.querySelectorAll('.tender-row').forEach((item) => {
-      item.classList.toggle('is-selected', item === row);
-    });
-
-    title.textContent = data.title || 'تفاصيل المناقصة';
-    body.innerHTML = `
-      <div class="drawer-status-line">
-        <span class="urgency-badge ${safeClass(data.urgencyCls)}">${esc(data.urgencyLabel || '—')}</span>
-        <span class="stage-badge">${esc(data.stage || 'استلام')}</span>
-      </div>
-      <dl class="drawer-facts">
-        <div><dt>الجهة المالكة</dt><dd>${esc(data.owner || '—')}</dd></div>
-        <div><dt>نوع الأعمال</dt><dd>${esc(data.worktype || '—')}</dd></div>
-        <div><dt>القطاع</dt><dd>${esc(data.sector || '—')}</dd></div>
-        <div><dt>تاريخ التقديم</dt><dd>${esc(data.submit || '—')}</dd></div>
-        <div><dt>تاريخ الضمان</dt><dd>${esc(data.guarantee || '—')}</dd></div>
-      </dl>
-      <div class="drawer-section">
-        <h4>مسار تجهيز الملف</h4>
-        <div class="drawer-workflow">${workflowPills(data.stage)}</div>
-      </div>
-      <div class="drawer-section">
-        <h4>الإجراء المقترح</h4>
-        <p>${esc(data.action || 'راجع حالة المناقصة وحدد الخطوة التالية.')}</p>
-      </div>
-      <div class="drawer-actions">
-        <a href="${esc(data.folder || '#')}" target="_blank" rel="noopener">فتح مجلد SharePoint</a>
-        <button type="button" data-drawer-filter="${esc(data.filter || 'all')}">عرض نفس الحالة</button>
-      </div>
-    `;
-    drawer.classList.add('open');
-    drawer.setAttribute('aria-hidden', 'false');
-    document.getElementById('drawer-scrim')?.classList.add('open');
-  }
-
-  function closeDrawer() {
-    const drawer = document.getElementById('tender-detail-drawer');
-    drawer?.classList.remove('open');
-    drawer?.setAttribute('aria-hidden', 'true');
-    document.getElementById('drawer-scrim')?.classList.remove('open');
-    document.querySelectorAll('.tender-row').forEach((row) => row.classList.remove('is-selected'));
-  }
-
-  document.addEventListener('click', (event) => {
-    const filterButton = event.target.closest('[data-drawer-filter]');
-    if (filterButton) {
-      const filter = filterButton.dataset.drawerFilter || 'all';
-      if (typeof window.filterBy === 'function') window.filterBy(filter);
-      closeDrawer();
-      return;
-    }
-
-    const row = event.target.closest('#tenders-tbody .tender-row');
-    if (!row || event.target.closest('.folder-link')) return;
-    openDrawerFromRow(row);
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      closeDrawer();
-      return;
-    }
-
-    const row = event.target.closest?.('#tenders-tbody .tender-row');
-    if (!row || (event.key !== 'Enter' && event.key !== ' ')) return;
-    event.preventDefault();
-    openDrawerFromRow(row);
-  });
-
-  window.closeTenderDrawer = closeDrawer;
-  window.openTenderDetailFromRow = openDrawerFromRow;
-})();
-</script>
 <script src="../internal-interactions.js?v=10"></script>
-<script src="../portal-sidebar.js?v=5"></script>
+<script src="../portal-sidebar.js?v=4"></script>
 </body>
 </html>
 

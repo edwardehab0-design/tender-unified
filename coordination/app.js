@@ -67,41 +67,11 @@ const fallbackTenders = [
   }
 ];
 
-const PREF_KEY = "alrawafOpsPrefsV1";
-const ACTIVITY_KEY = "alrawafActivityLogV1";
-const SP_KEY = "alrawafSharePointBaseV1";
-const MAX_ACTIVITY_ENTRIES = 200;
-
-function readPrefs() {
-  try {
-    return JSON.parse(localStorage.getItem(PREF_KEY) || "{}");
-  } catch {
-    return {};
-  }
-}
-
-function writePrefs() {
-  try {
-    localStorage.setItem(PREF_KEY, JSON.stringify(prefs));
-  } catch {}
-}
-
-let prefs = readPrefs();
-// تطبيق السمة فوراً لتفادي وميض الوضع النهاري قبل تحميل البيانات
-try {
-  document.documentElement.setAttribute("data-theme", prefs.theme === "dark" ? "dark" : "light");
-  if (prefs.density === "compact" && document.body) document.body.classList.add("density-compact");
-} catch {}
 let tenders = [];
 let selectedDepartment = "all";
-let selectedFilter = ["all", "new", "active", "late", "ready"].includes(prefs.filter) ? prefs.filter : "all";
+let selectedFilter = "all";
 let searchTerm = "";
 let selectedContext = null;
-let selectedIds = new Set();
-let selectedView = ["board", "table", "calendar", "analytics"].includes(prefs.view) ? prefs.view : "board";
-let railOpen = prefs.railOpen === true;
-let advFilters = { sector: "", client: "", from: "", to: "" };
-let calendarRef = new Date();
 let savedState = readState();
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
@@ -288,7 +258,9 @@ function normalizeTender(row, index) {
 function statusFor(tender, deptIndex) {
   const state = savedState[tender.id]?.departments?.[departments[deptIndex].key];
   if (state) return state;
-  // لا توجد حالة محفوظة: القسم قيد العمل حتى يُحدّثه شخص فعلياً
+  const seed = [...String(tender.id)].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) + deptIndex;
+  if (seed % 7 === 0) return "late";
+  if (seed % 4 === 0) return "completed";
   return "in-progress";
 }
 
@@ -301,34 +273,13 @@ function setDepartmentStatus(tenderId, departmentKey, status) {
     savedState[tenderId].timing[departmentKey] = savedState[tenderId].timing[departmentKey] || {};
     savedState[tenderId].timing[departmentKey].completedAt = new Date().toISOString();
   }
-  const tender = tenders.find((t) => t.id === tenderId);
-  // عند اكتمال كل الأقسام نُزيل أي تجاوز يدوي للمرحلة كي تتدفق البطاقة تلقائيا إلى "جاهزة للاعتماد"
-  let clearedStage = false;
-  if (tender && departmentRows(tender).every((row) => row.status === "completed")) {
-    delete savedState[tenderId].stage;
-    clearedStage = true;
-  }
   writeState();
-  if (window.SB?.enabled) {
-    window.SB.setDeptStatus(tenderId, departmentKey, status);
-    if (clearedStage) window.SB.setStageOverride(tenderId, null);
-  }
-  const dept = departments.find((d) => d.key === departmentKey);
-  if (tender && status === "completed") {
-    addActivityEntry(tenderId, tender.title, "complete", `اعتماد إكمال ${dept?.name || departmentKey}`);
-  }
 }
 
 function setApproval(tenderId, status) {
   savedState[tenderId] = savedState[tenderId] || {};
   savedState[tenderId].approval = status;
   writeState();
-  if (window.SB?.enabled) window.SB.setApproval(tenderId, status);
-  const tender = tenders.find((t) => t.id === tenderId);
-  if (tender) {
-    addActivityEntry(tenderId, tender.title, status === "approved" ? "approve" : "reject",
-      status === "approved" ? "تم الاعتماد النهائي للمنافسة" : "تم رفض المنافسة");
-  }
 }
 
 function savedAssignedNames(tenderId, departmentKey) {
@@ -344,13 +295,6 @@ function setAssignment(tenderId, departmentKey, names) {
   savedState[tenderId].timing[departmentKey] = savedState[tenderId].timing[departmentKey] || {};
   savedState[tenderId].timing[departmentKey].assignedAt = new Date().toISOString();
   writeState();
-  if (window.SB?.enabled) window.SB.setAssignments(tenderId, departmentKey, names);
-  const tender = tenders.find((t) => t.id === tenderId);
-  const dept = departments.find((d) => d.key === departmentKey);
-  if (tender && names.length) {
-    addActivityEntry(tenderId, tender.title, "assign",
-      `تعيين ${names.join("، ")} في ${dept?.name || departmentKey}`);
-  }
 }
 
 function departmentComments(tenderId, departmentKey) {
@@ -370,238 +314,6 @@ function addDepartmentComment(tenderId, departmentKey, text) {
     by: isExecutive() ? "مدير الإدارة" : "مدير القسم"
   });
   writeState();
-  if (window.SB?.enabled) window.SB.addComment(tenderId, departmentKey, value);
-  const tender = tenders.find((t) => t.id === tenderId);
-  const dept = departments.find((d) => d.key === departmentKey);
-  if (tender) {
-    addActivityEntry(tenderId, tender.title, "comment",
-      `ملاحظة (${dept?.name || departmentKey}): ${value.slice(0, 80)}${value.length > 80 ? "…" : ""}`);
-  }
-}
-
-// ── سجل النشاط ──
-function readActivityLog() {
-  try { return JSON.parse(localStorage.getItem(ACTIVITY_KEY) || "[]"); } catch { return []; }
-}
-
-function writeActivityLog(log) {
-  try { localStorage.setItem(ACTIVITY_KEY, JSON.stringify(log)); } catch {}
-}
-
-function addActivityEntry(tenderId, tenderTitle, type, text) {
-  const log = readActivityLog();
-  log.unshift({
-    id: tenderId,
-    title: tenderTitle,
-    type,
-    text,
-    at: new Date().toISOString(),
-    by: isExecutive() ? "مدير الإدارة" : "مدير القسم"
-  });
-  if (log.length > MAX_ACTIVITY_ENTRIES) log.length = MAX_ACTIVITY_ENTRIES;
-  writeActivityLog(log);
-}
-
-function tenderActivityLog(tenderId) {
-  return readActivityLog().filter((entry) => entry.id === tenderId);
-}
-
-// ── إعداد SharePoint ──
-function getSharePointBase() {
-  try { return localStorage.getItem(SP_KEY) || ""; } catch { return ""; }
-}
-
-function saveSharePointBase(url) {
-  try { localStorage.setItem(SP_KEY, String(url || "").trim()); } catch {}
-}
-
-function openSharePointConfig() {
-  const modal = qs("sp-modal");
-  if (!modal) return;
-  qs("sp-url-input").value = getSharePointBase();
-  modal.hidden = false;
-}
-
-function closeSharePointConfig() {
-  const modal = qs("sp-modal");
-  if (modal) modal.hidden = true;
-}
-
-function openDeptLibrary(deptKey) {
-  const dept = departments.find((d) => d.key === deptKey);
-  const lib = dept?.library || deptKey;
-  const base = getSharePointBase();
-  if (!base) {
-    openSharePointConfig();
-    return;
-  }
-  const url = lib.startsWith("http") ? lib : `${base.replace(/\/$/, "")}/${lib}`;
-  window.open(url, "_blank", "noopener");
-}
-
-// ── البحث المتقدم بفلاتر مركّبة ──
-function uniqueValues(key) {
-  return [...new Set(tenders.map((tender) => tender[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ar"));
-}
-
-function renderAdvancedFilters() {
-  const container = qs("adv-filters");
-  if (!container) return;
-  const sectors = uniqueValues("sector");
-  const clients = uniqueValues("client");
-  const active = hasActiveAdvanced();
-  document.querySelector(".rail-advanced")?.classList.toggle("has-active", active);
-  container.innerHTML = `
-    <label class="adv-field">
-      <span>القطاع</span>
-      <select data-adv="sector">
-        <option value="">كل القطاعات</option>
-        ${sectors.map((value) => `<option value="${safe(value)}" ${advFilters.sector === value ? "selected" : ""}>${safe(value)}</option>`).join("")}
-      </select>
-    </label>
-    <label class="adv-field">
-      <span>العميل</span>
-      <select data-adv="client">
-        <option value="">كل العملاء</option>
-        ${clients.map((value) => `<option value="${safe(value)}" ${advFilters.client === value ? "selected" : ""}>${safe(value)}</option>`).join("")}
-      </select>
-    </label>
-    <div class="adv-dates">
-      <label class="adv-field"><span>إغلاق من</span><input type="date" data-adv="from" value="${safe(advFilters.from)}"></label>
-      <label class="adv-field"><span>إلى</span><input type="date" data-adv="to" value="${safe(advFilters.to)}"></label>
-    </div>
-    ${active ? `<button type="button" class="adv-clear" id="adv-clear">مسح الفلاتر المتقدمة</button>` : ""}
-  `;
-}
-
-// ── الوضع الليلي ──
-function applyTheme() {
-  const dark = prefs.theme === "dark";
-  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-  const btn = qs("theme-toggle");
-  if (btn) {
-    btn.setAttribute("aria-pressed", dark ? "true" : "false");
-    btn.title = dark ? "الوضع النهاري" : "الوضع الليلي";
-  }
-}
-
-function toggleTheme() {
-  prefs.theme = prefs.theme === "dark" ? "light" : "dark";
-  writePrefs();
-  applyTheme();
-}
-
-// ── كثافة البطاقات ──
-function applyDensity() {
-  const compact = prefs.density === "compact";
-  document.body.classList.toggle("density-compact", compact);
-  const btn = qs("density-toggle");
-  if (btn) {
-    btn.setAttribute("aria-pressed", compact ? "true" : "false");
-    btn.title = compact ? "عرض مريح" : "عرض مضغوط";
-  }
-}
-
-function toggleDensity() {
-  prefs.density = prefs.density === "compact" ? "comfortable" : "compact";
-  writePrefs();
-  applyDensity();
-}
-
-function applyRailState() {
-  document.body.classList.toggle("ops-rail-collapsed", !railOpen);
-  const btn = qs("rail-toggle");
-  if (!btn) return;
-  btn.setAttribute("aria-pressed", railOpen ? "true" : "false");
-  btn.textContent = railOpen ? "إخفاء الفلاتر" : "الفلاتر";
-  btn.title = railOpen ? "إخفاء الفلاتر وضغط الفريق" : "إظهار الفلاتر وضغط الفريق";
-}
-
-function toggleRail() {
-  railOpen = !railOpen;
-  prefs.railOpen = railOpen;
-  writePrefs();
-  applyRailState();
-}
-
-// ── الإشعارات ──
-function renderNotifications() {
-  const countBadge = qs("notif-count");
-  if (!countBadge) return;
-  const alerts = smartAlerts();
-  const critical = alerts.filter((a) => a.tone === "danger").length;
-  if (critical > 0) {
-    countBadge.textContent = critical;
-    countBadge.hidden = false;
-  } else {
-    countBadge.hidden = true;
-  }
-}
-
-function buildNotifPanel() {
-  const panel = qs("notif-panel");
-  if (!panel) return;
-  const alerts = smartAlerts();
-  panel.innerHTML = `
-    <div class="notif-panel-head">
-      <strong>الإشعارات (${alerts.length})</strong>
-      <button type="button" id="notif-close" aria-label="إغلاق">×</button>
-    </div>
-    <div class="notif-items">
-      ${alerts.length ? alerts.map((alert) => `
-        <div class="notif-item ${safe(alert.tone)}">
-          <strong>${safe(alert.title)}</strong>
-          <span>${safe(alert.text)}</span>
-        </div>
-      `).join("") : `<div class="notif-empty">لا توجد إشعارات حرجة الآن.</div>`}
-    </div>
-  `;
-  panel.querySelector("#notif-close")?.addEventListener("click", closeNotifPanel);
-}
-
-function openNotifPanel() {
-  buildNotifPanel();
-  qs("notif-panel").hidden = false;
-  qs("notif-wrap")?.classList.add("open");
-}
-
-function closeNotifPanel() {
-  qs("notif-panel").hidden = true;
-  qs("notif-wrap")?.classList.remove("open");
-}
-
-// ── تصدير CSV ──
-function exportCSV() {
-  const list = visibleTenders();
-  const headers = ["رقم المنافسة", "اسم المنافسة", "العميل", "القطاع", "موعد الإغلاق", "الحالة", "نسبة التقدم", "قرار المدير"];
-  const rows = list.map((tender) => {
-    const dRows = departmentRows(tender);
-    const completed = dRows.filter((row) => row.status === "completed").length;
-    const pct = Math.round((completed / departments.length) * 100);
-    const approval = savedState[tender.id]?.approval;
-    return [
-      tender.id,
-      tender.title,
-      tender.client,
-      tender.sector,
-      tender.submitDate,
-      columnLabel(tenderStage(tender)),
-      `${pct}%`,
-      approval ? statusLabel(approval) : "—"
-    ];
-  });
-  const csvContent = "﻿" + [headers, ...rows]
-    .map((row) => row.map((cell) => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(","))
-    .join("\n");
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `تقرير-العمليات-${new Date().toISOString().slice(0, 10)}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
 }
 
 function personLoad(name) {
@@ -684,10 +396,8 @@ function assignedEngineers(tender, dept, index) {
 }
 
 function fileCount(tender, index) {
-  // عدد المرفقات الحقيقي لكل قسم؛ يبقى 0 حتى نربط جدول attachments باللوحة
-  const dept = departments[index];
-  const files = savedState[tender.id]?.files?.[dept?.key];
-  return Array.isArray(files) ? files.length : 0;
+  const seed = [...String(tender.id)].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+  return (seed + index) % 5;
 }
 
 function techAssignmentNote(tender) {
@@ -762,6 +472,7 @@ function progress(tender) {
 
 function tenderState(tender) {
   const rows = departmentRows(tender);
+  if (rows.some((row) => row.status === "late")) return "late";
   if (rows.every((row) => row.status === "completed")) return "ready";
   return "active";
 }
@@ -771,38 +482,21 @@ function visibleTenders() {
   return tenders.filter((tender) => {
     const visibleByRole = isExecutive() || selectedDepartment === "all" || selectedDepartment === currentDepartmentKey();
     const matchesDepartment = selectedDepartment === "all" || departmentRows(tender).some((row) => row.key === selectedDepartment);
-    const column = tenderStage(tender);
+    const rows = departmentRows(tender);
     const matchesFilter = selectedFilter === "all"
-      || column === selectedFilter
-      || (selectedFilter === "ready" && column === "approved");
+      || tenderState(tender) === selectedFilter
+      || (selectedFilter === "new" && rows.some((row) => !row.engineers.length || row.status === "in-progress"));
     const matchesSearch = !term || `${tender.title} ${tender.client} ${tender.sector}`.toLowerCase().includes(term);
-    const matchesAdvanced = matchesAdvancedFilters(tender);
-    return visibleByRole && matchesDepartment && matchesFilter && matchesSearch && matchesAdvanced;
+    return visibleByRole && matchesDepartment && matchesFilter && matchesSearch;
   });
 }
 
-function matchesAdvancedFilters(tender) {
-  if (advFilters.sector && tender.sector !== advFilters.sector) return false;
-  if (advFilters.client && tender.client !== advFilters.client) return false;
-  const close = new Date(tender.submitDate);
-  if (advFilters.from && !Number.isNaN(close.getTime()) && close < new Date(advFilters.from)) return false;
-  if (advFilters.to && !Number.isNaN(close.getTime()) && close > new Date(advFilters.to)) return false;
-  return true;
-}
-
-function hasActiveAdvanced() {
-  return Boolean(advFilters.sector || advFilters.client || advFilters.from || advFilters.to);
-}
-
 function departmentStats(dept) {
-  const pairs = tenders.map((tender) => {
-    const row = departmentRows(tender).find((r) => r.key === dept.key);
-    return row ? { row, tender } : null;
-  }).filter(Boolean);
-  const open = pairs.filter(({ row }) => row.status !== "completed").length;
-  const completed = pairs.filter(({ row }) => row.status === "completed").length;
-  const late = pairs.filter(({ row, tender }) => row.status !== "completed" && daysLeft(tender.submitDate) <= 3).length;
-  const unassigned = pairs.filter(({ row }) => row.key === "TECH" && !row.engineers.length).length;
+  const rows = tenders.map((tender) => departmentRows(tender).find((row) => row.key === dept.key)).filter(Boolean);
+  const open = rows.filter((row) => row.status !== "completed").length;
+  const completed = rows.filter((row) => row.status === "completed").length;
+  const late = rows.filter((row) => row.status === "late").length;
+  const unassigned = rows.filter((row) => row.key === "TECH" && !row.engineers.length).length;
   const load = tenders.length ? Math.round((open / tenders.length) * 100) : 0;
   return { open, completed, late, unassigned, load };
 }
@@ -856,160 +550,13 @@ function renderInsights() {
   bestNote.textContent = top ? `${top.department} · ${top.score} نقطة · ${top.open} مهام مفتوحة` : "لا توجد مهام محسوبة بعد";
 
   const ready = tenders.filter((tender) => tenderState(tender) === "ready").length;
-  const late = tenders.filter((tender) => tenderStage(tender) === "late").length;
+  const late = tenders.filter((tender) => tenderState(tender) === "late").length;
   const unassigned = tenders.reduce((sum, tender) => sum + departmentRows(tender).filter((row) => row.key === "TECH" && !row.engineers.length).length, 0);
   pulse.innerHTML = `
     <div><b>${ready}</b><span>ملفات تنتظر قرار المدير</span></div>
     <div><b>${late}</b><span>ملفات تحتاج متابعة فورية</span></div>
     <div><b>${unassigned}</b><span>مهام عروض فنية غير مسندة</span></div>
   `;
-}
-
-// اسم مختصر للـ BIC يظهر في chip الكارت
-function shortBicLabel(bic) {
-  if (!bic) return "";
-  if (bic.type === "manager") return "المدير";
-  if (bic.type === "unassigned") return "غير مسندة";
-  return bic.label.split("·")[0].trim().split(" ")[0]; // الاسم الأول فقط
-}
-
-// ── Ball-in-court: القسم/الشخص الذي يملك الكرة الآن ──
-function ballInCourt(tender) {
-  const stage = tenderStage(tender);
-  if (stage === "approved") return null;
-  const rows = departmentRows(tender);
-  if (rows.every((r) => r.status === "completed")) {
-    return { label: "المدير التنفيذي", type: "manager" };
-  }
-  const pending = rows.find((r) => r.status !== "completed");
-  if (!pending) return null;
-  if (!pending.engineers.length) {
-    return { label: `${pending.short} · غير مسندة`, type: "unassigned" };
-  }
-  const name = personName(pending.engineers[0]);
-  return { label: `${safe(name)} · ${pending.short}`, type: "engineer" };
-}
-
-// ── Workflow Stepper: مراحل مسار المنافسة (Oracle-style) ──
-const WF_STEPS = [
-  { key: "received",    label: "الاستلام" },
-  { key: "distributed", label: "التوزيع" },
-  { key: "preparing",   label: "الإعداد" },
-  { key: "review",      label: "المراجعة" },
-  { key: "approved",    label: "الاعتماد" }
-];
-const WF_STAGE_MAP = { new: 1, active: 2, late: 2, ready: 3, approved: 5 };
-
-function renderWorkflowStepper(tender) {
-  const stage = tenderStage(tender);
-  const activeStep = WF_STAGE_MAP[stage] ?? 1;
-  const isLate = stage === "late";
-  return `<div class="wf-track">${WF_STEPS.map((s, i) => {
-    const done = i < activeStep;
-    const current = i === activeStep;
-    const cls = done ? "done" : current ? (isLate ? "current-late" : "current") : "pending";
-    const icon = done ? "✓" : String(i + 1);
-    const conn = i < WF_STEPS.length - 1
-      ? `<div class="wf-conn ${i < activeStep ? "done" : ""}"></div>` : "";
-    return `<div class="wf-step ${cls}"><div class="wf-dot">${icon}</div><span class="wf-label">${safe(s.label)}</span></div>${conn}`;
-  }).join("")}</div>`;
-}
-
-// ── Workload View: أعباء العمل الحالية (Monday-style) ──
-function renderWorkloadList() {
-  const container = qs("workload-list");
-  if (!container) return;
-  const load = new Map();
-  tenders.forEach((tender) => {
-    departmentRows(tender).forEach((row) => {
-      if (row.status === "completed") return;
-      row.engineers.forEach((person) => {
-        const name = personName(person);
-        const key = `${name}|${row.short}`;
-        if (!load.has(key)) {
-          load.set(key, { name, dept: row.short, title: personTitle(person), active: 0, late: 0 });
-        }
-        const item = load.get(key);
-        item.active += 1;
-        if (row.status === "late") item.late += 1;
-      });
-    });
-  });
-  const sorted = [...load.values()].sort((a, b) => b.active - a.active || b.late - a.late);
-  if (!sorted.length) {
-    container.innerHTML = `<div class="activity-empty">لا توجد مهام نشطة حالياً.</div>`;
-    return;
-  }
-  container.innerHTML = sorted.slice(0, 12).map((item) => {
-    const isOverload = item.active >= 3;
-    const hasLate = item.late > 0;
-    const avatarClass = hasLate ? "wl-danger" : isOverload ? "wl-warn" : "wl-ok";
-    const initials = item.name.split(" ").slice(0, 2).map((w) => w[0]).join("");
-    const lateTag = item.late ? `<span class="wl-late-tag">${item.late} متأخرة</span>` : "";
-    return `
-      <div class="wl-person-card">
-        <div class="wl-person-top">
-          <span class="wl-avatar ${avatarClass}">${safe(initials)}</span>
-          <div class="wl-person-info">
-            <strong class="wl-name">${safe(item.name)}</strong>
-            <small class="wl-dept">${safe(item.dept)}${item.title ? ` · ${safe(item.title)}` : ""}</small>
-          </div>
-        </div>
-        <div class="wl-person-foot">
-          <span class="wl-task-count ${avatarClass}">${item.active} مهمة</span>
-          ${lateTag}
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-function renderStatusChart() {
-  const container = qs("status-dist-chart");
-  if (!container) return;
-  const counts = { new: 0, active: 0, late: 0, ready: 0, approved: 0 };
-  tenders.forEach((tender) => {
-    const s = tenderStage(tender);
-    if (s in counts) counts[s] += 1;
-  });
-  const total = tenders.length || 1;
-  const rows = [
-    { key: "new",      label: "مهام جديدة",      color: "var(--blue)" },
-    { key: "active",   label: "قيد العمل",        color: "var(--amber)" },
-    { key: "late",     label: "متأخرة",           color: "var(--red)" },
-    { key: "ready",    label: "جاهزة",            color: "var(--green)" },
-    { key: "approved", label: "معتمدة",           color: "var(--navy)" }
-  ];
-  container.innerHTML = rows.filter((r) => counts[r.key] > 0).map((r) => {
-    const pct = Math.round((counts[r.key] / total) * 100);
-    return `
-      <div class="sdc-row">
-        <span class="sdc-label">${safe(r.label)}</span>
-        <div class="sdc-track"><i style="width:${pct}%;background:${r.color}"></i></div>
-        <span class="sdc-val">${counts[r.key]}</span>
-      </div>
-    `;
-  }).join("");
-}
-
-function renderDeptChart() {
-  const container = qs("dept-comp-chart");
-  if (!container) return;
-  container.innerHTML = departments.map((dept) => {
-    const rows = tenders.map((tender) => departmentRows(tender).find((r) => r.key === dept.key)).filter(Boolean);
-    const total = rows.length || 1;
-    const completed = rows.filter((r) => r.status === "completed").length;
-    const hasLate = rows.some((r) => r.status === "late");
-    const pct = Math.round((completed / total) * 100);
-    const barClass = hasLate ? "bar-danger" : pct >= 75 ? "bar-good" : pct >= 40 ? "bar-ok" : "bar-warn";
-    return `
-      <div class="dcc-row">
-        <span class="dcc-code">${safe(dept.short)}</span>
-        <div class="dcc-track"><i class="${barClass}" style="width:${Math.max(pct, 4)}%"></i></div>
-        <span class="dcc-pct">${pct}%</span>
-      </div>
-    `;
-  }).join("");
 }
 
 function smartAlerts() {
@@ -1065,144 +612,15 @@ function renderRole() {
   if (!executive && selectedDepartment === "all") selectedDepartment = currentDepartmentKey();
 }
 
-function boardColumn(tender) {
-  const approval = savedState[tender.id]?.approval;
-  if (approval === "approved") return "approved";
-  const state = tenderState(tender);
-  if (state === "ready") return "ready";
-  const left = daysLeft(tender.submitDate);
-  if (left <= 3) return "late";
-  const rows = departmentRows(tender);
-  const anyCompleted = rows.some((row) => row.status === "completed");
-  const anyUnassigned = rows.some((row) => !row.engineers.length);
-  if (!anyCompleted && anyUnassigned) return "new";
-  return "active";
-}
-
-// المرحلة المعروضة على اللوحة: يدوية (سحب) إن وُجدت، وإلا محسوبة تلقائيا
-function tenderStage(tender) {
-  const manual = savedState[tender.id]?.stage;
-  if (manual && KANBAN_COLUMNS.some((col) => col.key === manual)) return manual;
-  return boardColumn(tender);
-}
-
-// نقل منافسة إلى عمود عبر السحب والإفلات
-function setTenderStage(tenderId, stage) {
-  if (!KANBAN_COLUMNS.some((col) => col.key === stage)) return;
-  const tender = tenders.find((item) => item.id === tenderId);
-  if (!tender) return;
-  savedState[tenderId] = savedState[tenderId] || {};
-  let approvalChange;
-  if (stage === "approved") {
-    savedState[tenderId].approval = "approved";
-    approvalChange = "approved";
-  } else if (savedState[tenderId].approval === "approved") {
-    savedState[tenderId].approval = "";
-    approvalChange = "";
-  }
-  if (stage === "ready") completeAllDepartments(tenderId, { skipWrite: true });
-  // إن طابقت المرحلة المحسوبة تلقائيا نمسح التجاوز ليبقى السجل نظيفا
-  const autoAfter = boardColumn(tender);
-  if (stage === autoAfter) delete savedState[tenderId].stage;
-  else savedState[tenderId].stage = stage;
-  writeState();
-  if (window.SB?.enabled) {
-    if (approvalChange !== undefined) window.SB.setApproval(tenderId, approvalChange);
-    window.SB.setStageOverride(tenderId, savedState[tenderId].stage || null);
-  }
-  addActivityEntry(tenderId, tender.title, "stage", `نقل إلى: ${columnLabel(stage)}`);
-}
-
-// اعتماد إكمال كل أقسام المنافسة دفعة واحدة
-function completeAllDepartments(tenderId, options = {}) {
-  savedState[tenderId] = savedState[tenderId] || {};
-  savedState[tenderId].departments = savedState[tenderId].departments || {};
-  savedState[tenderId].timing = savedState[tenderId].timing || {};
-  departments.forEach((dept) => {
-    savedState[tenderId].departments[dept.key] = "completed";
-    savedState[tenderId].timing[dept.key] = savedState[tenderId].timing[dept.key] || {};
-    if (!savedState[tenderId].timing[dept.key].completedAt) {
-      savedState[tenderId].timing[dept.key].completedAt = new Date().toISOString();
-    }
-    if (window.SB?.enabled) window.SB.setDeptStatus(tenderId, dept.key, "completed");
-  });
-  if (!options.skipWrite) writeState();
-}
-
 function renderKpis() {
   const source = tenders;
   const ready = source.filter((tender) => tenderState(tender) === "ready").length;
-  const late = source.filter((tender) => tenderStage(tender) === "late").length;
-  const unassigned = source.reduce((sum, tender) => sum + departmentRows(tender).filter((row) => !row.engineers.length).length, 0);
+  const late = source.filter((tender) => tenderState(tender) === "late").length;
   const files = source.reduce((sum, tender) => sum + departmentRows(tender).reduce((inner, dept) => inner + dept.files, 0), 0);
-  setText("kpi-active", source.length);
-  setText("kpi-ready", ready);
-  setText("kpi-late", late);
-  setText("kpi-attention", source.length - ready);
-  setText("kpi-unassigned", unassigned);
-  setText("kpi-files", files);
-}
-
-function renderCommandCenter() {
-  const source = tenders;
-  const visible = visibleTenders();
-  const ready = source.filter((tender) => tenderStage(tender) === "ready").length;
-  const approved = source.filter((tender) => tenderStage(tender) === "approved").length;
-  const late = source.filter((tender) => tenderStage(tender) === "late").length;
-  const unassigned = source.reduce((sum, tender) => (
-    sum + departmentRows(tender).filter((row) => !row.engineers.length).length
-  ), 0);
-  const metrics = employeeMetrics();
-  const openTasks = metrics.reduce((sum, item) => sum + item.open, 0);
-  const risky = late + unassigned;
-  const readyTotal = ready + approved;
-  const readyPct = source.length ? Math.round((readyTotal / source.length) * 100) : 0;
-
-  setText("ops-command-active", source.length);
-  setText("ops-command-visible", `${visible.length} ظاهرة الآن`);
-  setText("ops-command-risk", risky);
-  setText("ops-command-ready-pct", `${readyPct}%`);
-  setText("ops-command-ready-count", `${readyTotal} ملف جاهز أو معتمد`);
-  setText("ops-command-load", openTasks);
-  setText("ops-command-note", risky
-    ? `${late} متأخرة و ${unassigned} مهمة غير مسندة. ابدأ بالعناصر الحرجة.`
-    : "الوضع مستقر. ركز على دفع الملفات المفتوحة نحو الاعتماد."
-  );
-  setText("ops-flow-summary", `${visible.length} معروضة · ${late} متأخرة · ${readyTotal} جاهزة للاعتماد`);
-
-  const flow = qs("ops-flow-board");
-  if (!flow) return;
-  const counts = { new: 0, active: 0, late: 0, ready: 0, approved: 0 };
-  source.forEach((tender) => {
-    const stage = tenderStage(tender);
-    if (counts[stage] !== undefined) counts[stage] += 1;
-  });
-  flow.innerHTML = KANBAN_COLUMNS.map((stage, index) => `
-    <article class="ops-flow-card" data-stage="${safe(stage.key)}">
-      <i></i>
-      <span>${safe(stage.label)}</span>
-      <strong>${counts[stage.key] || 0}</strong>
-      <small>مرحلة ${index + 1} من ${KANBAN_COLUMNS.length}</small>
-    </article>
-  `).join("");
-}
-
-function setText(id, value) {
-  const el = qs(id);
-  if (el) el.textContent = value;
-}
-
-function renderFilterCounts() {
-  const cols = { all: tenders.length, new: 0, active: 0, late: 0, ready: 0 };
-  tenders.forEach((tender) => {
-    const col = tenderStage(tender);
-    if (cols[col] !== undefined && col !== "all") cols[col] += 1;
-  });
-  setText("count-all", cols.all);
-  setText("count-new", cols.new);
-  setText("count-active", cols.active);
-  setText("count-late", cols.late);
-  setText("count-ready", cols.ready + tenders.filter((tender) => tenderStage(tender) === "approved").length);
+  qs("kpi-active").textContent = source.length;
+  qs("kpi-ready").textContent = ready;
+  qs("kpi-attention").textContent = source.length - ready;
+  qs("kpi-files").textContent = files;
 }
 
 function employeeMetrics() {
@@ -1336,30 +754,28 @@ function renderDepartments() {
   qs("department-list").innerHTML = departmentButtons.map((dept) => {
     const stats = dept.key === "all"
       ? {
-        open: tenders.filter((tender) => tenderStage(tender) !== "ready" && tenderStage(tender) !== "approved").length,
+        open: tenders.filter((tender) => tenderState(tender) !== "ready").length,
         completed: tenders.filter((tender) => tenderState(tender) === "ready").length,
-        late: tenders.filter((tender) => tenderStage(tender) === "late").length,
+        late: tenders.filter((tender) => tenderState(tender) === "late").length,
         unassigned: tenders.reduce((sum, tender) => sum + departmentRows(tender).filter((row) => row.key === "TECH" && !row.engineers.length).length, 0),
-        load: tenders.length ? Math.round((tenders.filter((tender) => tenderStage(tender) !== "ready" && tenderStage(tender) !== "approved").length / tenders.length) * 100) : 0
+        load: tenders.length ? Math.round((tenders.filter((tender) => tenderState(tender) !== "ready").length / tenders.length) * 100) : 0
       }
       : departmentStats(dept);
-    const flag = stats.late >= 2 ? "risk" : stats.late === 1 ? "busy" : stats.load > 80 ? "busy" : "calm";
-    const status = flag === "risk" ? "خطر" : flag === "busy" ? "مزدحم" : "هادئ";
-    const meta = [
-      `${stats.open} مفتوحة`,
-      `${stats.completed} مكتملة`,
-      stats.late ? `<span class="m-late">${stats.late} متأخرة</span>` : "",
-      stats.unassigned ? `<span class="m-warn">${stats.unassigned} غير مسندة</span>` : ""
-    ].filter(Boolean).join('<i class="dept-sep"></i>');
+    const status = stats.late ? "خطر" : stats.load > 70 ? "مزدحم" : "هادئ";
     return `
       <button class="department-button ${selectedDepartment === dept.key ? "active" : ""}" type="button" data-department="${dept.key}">
-        <div class="dept-row">
-          <span class="dept-code">${safe(dept.short)}</span>
-          <strong>${safe(dept.name)}</strong>
-          <span class="dept-flag ${flag}">${safe(status)}</span>
-        </div>
-        <span class="dept-bar"><i style="width:${Math.min(stats.load, 100)}%"></i></span>
-        <span class="dept-meta">${meta}</span>
+        <span class="dept-code">${safe(dept.short)}</span>
+        <strong>${safe(dept.name)}</strong>
+        <em>${safe(status)}</em>
+        <span class="department-load">
+          <i><b style="width:${Math.min(stats.load, 100)}%"></b></i>
+          <span>${stats.open} مفتوحة</span>
+        </span>
+        <span class="dept-stats">
+          <b>${stats.completed} مكتملة</b>
+          <b>${stats.late} متأخرة</b>
+          ${stats.unassigned ? `<b class="warn">${stats.unassigned} غير مسندة</b>` : ""}
+        </span>
       </button>
     `;
   }).join("");
@@ -1368,233 +784,111 @@ function renderDepartments() {
   qs("toolbar-title").textContent = active ? active.name : "كل الأقسام";
 }
 
-const KANBAN_COLUMNS = [
-  { key: "new", label: "مهام جديدة" },
-  { key: "active", label: "قيد العمل" },
-  { key: "late", label: "متأخرة" },
-  { key: "ready", label: "جاهزة للاعتماد" },
-  { key: "approved", label: "معتمدة" }
-];
-
-function columnLabel(col) {
-  return { new: "جديدة", active: "قيد العمل", late: "متأخرة", ready: "جاهزة", approved: "معتمدة" }[col] || col;
-}
-
-function isUrgentClose(label) {
-  return label === "اليوم" || label === "متأخر";
-}
-
-function daysLeft(dateValue) {
-  const target = new Date(dateValue);
-  if (Number.isNaN(target.getTime())) return Infinity;
-  return Math.ceil((target - new Date()) / DAY_MS);
-}
-
-// نقاط مخاطرة المنافسة: تأخر + غير مسند + قرب الإغلاق
-function riskScore(tender) {
-  const rows = departmentRows(tender);
-  const late = rows.filter((row) => row.status === "late").length;
-  const unassigned = rows.filter((row) => !row.engineers.length).length;
-  const left = daysLeft(tender.submitDate);
-  let score = late * 3 + unassigned * 2;
-  if (left <= 0) score += 5;
-  else if (left <= 2) score += 3;
-  else if (left <= 5) score += 1;
-  if (savedState[tender.id]?.approval === "approved") score = 0;
-  const level = score >= 6 ? "high" : score >= 3 ? "watch" : "ok";
-  return { score, level, late, unassigned, left };
-}
-
-function riskLabel(level) {
-  return { high: "مخاطرة عالية", watch: "تحتاج انتباه", ok: "تحت السيطرة" }[level] || "";
-}
-
-function renderDeadlineBar() {
-  const bar = qs("deadline-bar");
-  if (!bar) return;
-  const upcoming = tenders
-    .filter((tender) => savedState[tender.id]?.approval !== "approved")
-    .map((tender) => ({ tender, left: daysLeft(tender.submitDate), rows: departmentRows(tender) }))
-    .filter((item) => Number.isFinite(item.left))
-    .sort((a, b) => a.left - b.left)
-    .slice(0, 5);
-
-  if (!upcoming.length) {
-    bar.innerHTML = "";
-    bar.hidden = true;
-    return;
-  }
-  bar.hidden = false;
-  bar.innerHTML = `
-    <div class="deadline-bar-head">
-      <span class="deadline-pulse"></span>
-      <strong>مواعيد إغلاق قريبة</strong>
-    </div>
-    <div class="deadline-track">
-      ${upcoming.map(({ tender, left, rows }) => {
-        const urgency = left <= 0 ? "over" : left <= 2 ? "soon" : "ok";
-        const text = left < 0 ? `متأخرة ${Math.abs(left)} يوم` : left === 0 ? "تغلق اليوم" : `بعد ${left} يوم`;
-        return `
-          <button class="deadline-chip ${urgency}" type="button" data-tender="${safe(tender.id)}" data-dept="${safe(rows[0].key)}" title="${safe(tender.title)}">
-            <em>${safe(text)}</em>
-            <span>${safe(tender.title)}</span>
-            <small>${safe(tender.client)}</small>
-          </button>
-        `;
-      }).join("")}
-    </div>
+function renderBoard() {
+  const rows = visibleTenders();
+  qs("tender-board").innerHTML = rows.length ? rows.map(renderTender).join("") : `
+    <div class="empty-state">لا توجد منافسات مطابقة للتصفية الحالية.</div>
   `;
 }
 
-function renderKanban() {
-  const board = qs("kanban");
-  if (!board) return;
-  const list = visibleTenders();
-  let columns = KANBAN_COLUMNS;
-  if (selectedFilter !== "all") {
-    const allowed = selectedFilter === "ready" ? ["ready", "approved"] : [selectedFilter];
-    columns = KANBAN_COLUMNS.filter((col) => allowed.includes(col.key));
-  }
-  const canManage = isExecutive();
-  board.classList.toggle("can-drag", canManage);
-  board.innerHTML = columns.map((col) => {
-    const cards = list.filter((tender) => tenderStage(tender) === col.key);
-    return `
-      <div class="kan-col" data-col="${col.key}">
-        <div class="kan-col-head">
-          <span class="kan-col-title"><i></i>${safe(col.label)}</span>
-          <span class="kan-col-count">${cards.length}</span>
+function renderTender(tender) {
+  const rows = departmentRows(tender);
+  const completed = rows.filter((row) => row.status === "completed").length;
+  const late = rows.filter((row) => row.status === "late").length;
+  const ready = completed === departments.length;
+  const state = tenderState(tender);
+  const completionPct = Math.round((completed / departments.length) * 100);
+  const unassigned = rows.filter((row) => row.key === "TECH" && !row.engineers.length).length;
+  const approval = savedState[tender.id]?.approval || "";
+  return `
+    <article class="tender-card compact-card state-${state}" data-tender="${safe(tender.id)}">
+      <div class="tender-head">
+        <div>
+          <div class="mission-signal">
+            <span>${safe(stateText(state))}</span>
+            <b>${completed}/${departments.length} مكتمل</b>
+            ${late ? `<em>${late} متأخر</em>` : ""}
+            ${unassigned ? `<em class="data-alert">${unassigned} غير مسند</em>` : ""}
+          </div>
+          <h2 class="tender-title">
+            <a class="tender-title-link" href="../tenders/?q=${encodeURIComponent(tender.title)}" title="عرض في صفحة المناقصات">${safe(tender.title)}</a>
+          </h2>
+          <div class="tender-meta">
+            <span class="pill">${safe(tender.id)}</span>
+            <span class="pill">${safe(tender.client)}</span>
+            <span class="pill">${safe(tender.sector)}</span>
+          </div>
         </div>
-        <div class="kan-col-body" data-drop="${col.key}">
-          ${cards.length ? cards.map(renderKanCard).join("") : `<div class="kan-empty">${canManage ? "أفلت ملفا هنا" : "لا توجد ملفات هنا"}</div>`}
+        <div class="tender-side">
+          <article class="compact-stat">
+            <span>الجاهزية</span>
+            <strong>${completionPct}%</strong>
+          </article>
+          <article class="compact-stat">
+            <span>الإغلاق</span>
+            <strong>${safe(daysTo(tender.submitDate))}</strong>
+          </article>
         </div>
       </div>
-    `;
-  }).join("");
-}
 
-function quickEngineerOptions(dept) {
-  const pool = dept ? assignableEmployees(dept) : [];
-  return `<option value="">إسناد سريع…</option>` + pool.map((person) => `<option value="${safe(personName(person))}">${safe(personName(person))} · ${safe(assignmentRoleLabel(person))}</option>`).join("");
-}
+      <div class="compact-hint">
+        <span>اختر القسم لفتح التعيين، خط الزمن، الملفات، والملاحظات.</span>
+      </div>
 
-function renderKanCard(tender) {
-  const rows = departmentRows(tender);
-  const col = tenderStage(tender);
-  const close = daysTo(tender.submitDate);
-  const urgent = isUrgentClose(close);
-  const approval = savedState[tender.id]?.approval || "";
-  const risk = riskScore(tender);
-  const canManage = isExecutive();
-  const isSelected = selectedIds.has(tender.id);
-  const stateTag = approval === "approved" ? "معتمد" : columnLabel(col);
-  const bic = ballInCourt(tender);
-  const hasHeadEnd = risk.level === "high" || canManage;
-  const headEnd = hasHeadEnd ? `<div class="kan-head-end">
-    ${risk.level === "high" ? `<span class="kan-risk-dot" title="${safe(riskLabel(risk.level))}"></span>` : ""}
-    ${canManage ? `<label class="kan-select" data-stop-open title="تحديد للإجراء الجماعي"><input type="checkbox" data-select="${safe(tender.id)}" ${isSelected ? "checked" : ""}></label>` : ""}
-  </div>` : "";
-  const hasHead = bic || hasHeadEnd;
-  return `
-    <article class="kan-card state-${col} ${isSelected ? "is-selected" : ""}" data-tender="${safe(tender.id)}" data-dept="${safe(rows[0].key)}" ${canManage ? 'draggable="true"' : ""}>
-      ${hasHead ? `<div class="kan-head">
-        ${bic ? `<span class="kan-bic-chip ${safe(bic.type)}" title="${safe(bic.label)}">${safe(shortBicLabel(bic))}</span>` : ""}
-        ${headEnd}
-      </div>` : ""}
-      <h3 class="kan-title">${safe(tender.title)}</h3>
-      <div class="kan-meta">
-        <span class="kan-state-tag ${col}">${safe(stateTag)}</span>
-        <span class="kan-close ${urgent ? "is-urgent" : ""}">${safe(close)}</span>
+      <div class="ops-timeline compact-timeline" aria-label="مسار الأقسام">
+        ${rows.map((row, index) => `
+          <button class="timeline-node ${rowStateClass(row.status, row)}" type="button" data-tender="${safe(tender.id)}" data-dept="${safe(row.key)}">
+            <span>${safe(row.short)}</span>
+            <strong>${safe(statusLabel(row.status))}</strong>
+            <small>${safe(row.engineers.map(personName).join("، ") || "غير مسند")}</small>
+          </button>
+        `).join("")}
+      </div>
+
+      <div class="approval-row">
+        <div class="approval-state">
+          ${approval ? `قرار المدير: ${statusLabel(approval)}` : ready ? "كل الأقسام اكتملت. المنافسة جاهزة لاعتماد المدير." : `اكتمل ${completed} من ${departments.length} أقسام.`}
+        </div>
+        <div class="approval-actions">
+          <button type="button" data-approve="${safe(tender.id)}" ${ready && isExecutive() ? "" : "disabled"}>اعتماد</button>
+          <button class="reject" type="button" data-reject="${safe(tender.id)}" ${ready && isExecutive() ? "" : "disabled"}>رفض</button>
+        </div>
       </div>
     </article>
   `;
 }
 
-function renderTable() {
-  const body = qs("table-body");
-  if (!body) return;
-  const list = visibleTenders();
-  body.innerHTML = list.length ? list.map((tender) => {
-    const rows = departmentRows(tender);
-    const completed = rows.filter((row) => row.status === "completed").length;
-    const pct = Math.round((completed / departments.length) * 100);
-    const col = tenderStage(tender);
-    const close = daysTo(tender.submitDate);
-    const urgent = isUrgentClose(close);
-    const approval = savedState[tender.id]?.approval || "";
-    return `
-      <tr data-tender="${safe(tender.id)}" data-dept="${safe(rows[0].key)}">
-        <td><div class="tbl-title">${safe(tender.title)}<small>${safe(tender.id)}</small></div></td>
-        <td>${safe(tender.client)}</td>
-        <td>${safe(tender.sector)}</td>
-        <td><div class="tbl-progress"><i><b style="width:${pct}%"></b></i><em>${pct}%</em></div></td>
-        <td class="tbl-deadline ${urgent ? "urgent" : ""}">${safe(close)}</td>
-        <td><span class="status-tag ${col}">${safe(columnLabel(col))}</span></td>
-        <td>${approval ? safe(statusLabel(approval)) : "—"}</td>
-      </tr>
-    `;
-  }).join("") : `<tr><td colspan="7"><div class="empty-state">لا توجد منافسات مطابقة للتصفية الحالية.</div></td></tr>`;
-}
-
-const CAL_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
-
-function renderCalendar() {
-  const grid = qs("calendar-grid");
-  const title = qs("cal-title");
-  if (!grid || !title) return;
-  const year = calendarRef.getFullYear();
-  const month = calendarRef.getMonth();
-  title.textContent = `${CAL_MONTHS[month]} ${year}`;
-  const startDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const today = new Date();
-  const byDay = {};
-  visibleTenders().forEach((tender) => {
-    const date = new Date(tender.submitDate);
-    if (Number.isNaN(date.getTime())) return;
-    if (date.getFullYear() === year && date.getMonth() === month) {
-      const day = date.getDate();
-      (byDay[day] = byDay[day] || []).push(tender);
-    }
-  });
-  let cells = "";
-  for (let i = 0; i < startDay; i += 1) cells += `<div class="cal-cell empty"></div>`;
-  for (let day = 1; day <= daysInMonth; day += 1) {
-    const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
-    const events = byDay[day] || [];
-    cells += `
-      <div class="cal-cell ${isToday ? "today" : ""}">
-        <div class="cal-date">${day}</div>
-        <div class="cal-events">
-          ${events.map((tender) => {
-            const col = tenderStage(tender);
-            const cls = col === "late" ? "late" : (col === "ready" || col === "approved") ? "ready" : "";
-            const rows = departmentRows(tender);
-            return `<button class="cal-event ${cls}" type="button" data-tender="${safe(tender.id)}" data-dept="${safe(rows[0].key)}" title="${safe(tender.title)}">${safe(tender.title)}</button>`;
-          }).join("")}
-        </div>
+function renderLane(tender, row) {
+  const engineerAvatars = row.engineers.length
+    ? row.engineers.map((person) => `<span class="avatar">${safe(personName(person).slice(0, 1))}</span>`).join("")
+    : `<span class="unassigned-chip">غير مسند</span>`;
+  const engineerCountText = row.engineers.length ? `${row.engineers.length} مهندس` : "لا يوجد مهندس مطابق";
+  const timeline = timelineFor(tender, row.key, departments.findIndex((dept) => dept.key === row.key), row.status);
+  const quickPool = assignableEmployees(row);
+  return `
+    <article class="lane ${rowStateClass(row.status, row)}" tabindex="0" data-tender="${safe(tender.id)}" data-dept="${safe(row.key)}">
+      <span class="lane-beam"></span>
+      <div>
+        <span class="lane-status">${safe(statusLabel(row.status))}</span>
+        <h3>${safe(row.name)}</h3>
       </div>
-    `;
-  }
-  grid.innerHTML = cells;
-}
-
-// شريط تنقل بين أقسام المنافسة داخل الدرج مع حالة إكمال كل قسم
-function renderDrawerDeptNav(tender, activeKey) {
-  const nav = qs("drawer-dept-nav");
-  if (!nav) return;
-  const rows = departmentRows(tender);
-  const doneCount = rows.filter((row) => row.status === "completed").length;
-  nav.innerHTML = `
-    ${rows.map((row) => {
-      const done = row.status === "completed";
-      const isActive = row.key === activeKey;
-      return `<button type="button" class="dept-chip-nav ${done ? "is-done" : ""} ${isActive ? "is-active" : ""}" data-dept-nav="${safe(row.key)}" title="${safe(row.name)}">
-        <span class="dcn-mark">${done ? "✓" : ""}</span>
-        <span class="dcn-code">${safe(row.short)}</span>
-      </button>`;
-    }).join("")}
-    <span class="dept-nav-progress">${doneCount}/${rows.length} مكتملة</span>
+      <p>${safe(row.tasks.slice(0, 2).join(" · "))}</p>
+      <div class="avatar-row">
+        ${engineerAvatars}
+      </div>
+      <div class="lane-foot">
+        <span>${safe(engineerCountText)}</span>
+        <span>${formatHours(timeline.completedAt ? hoursBetween(timeline.assignedAt, timeline.completedAt) : hoursBetween(timeline.assignedAt, new Date()))}</span>
+        <span>${row.files} ملف</span>
+      </div>
+      <div class="quick-assign" data-stop-open>
+        <select data-quick-engineer="${safe(tender.id)}" data-quick-dept="${safe(row.key)}">
+          <option value="">تعيين سريع</option>
+          ${quickPool.map((person) => `<option value="${safe(personName(person))}">${safe(personName(person))} · ${safe(assignmentRoleLabel(person))} · ${personLoad(personName(person)).open} مفتوحة</option>`).join("")}
+        </select>
+        <button type="button" data-save-quick="${safe(tender.id)}" data-quick-dept="${safe(row.key)}">حفظ</button>
+      </div>
+    </article>
   `;
 }
 
@@ -1610,9 +904,6 @@ function openDrawer(tenderId, departmentKey) {
   qs("drawer-status").textContent = statusLabel(row.status);
   qs("drawer-engineers-count").textContent = row.engineers.length;
   qs("drawer-files-count").textContent = row.files;
-  renderDrawerDeptNav(tender, departmentKey);
-  const stepperEl = qs("drawer-wf-stepper");
-  if (stepperEl) stepperEl.innerHTML = renderWorkflowStepper(tender);
   qs("drawer-tender-overview").innerHTML = `
     <div><span>العميل</span><strong>${safe(tender.client)}</strong></div>
     <div><span>القطاع</span><strong>${safe(tender.sector)}</strong></div>
@@ -1661,7 +952,6 @@ function openDrawer(tenderId, departmentKey) {
   `).join("");
 
   renderComments(tender.id, row.key);
-  renderActivityLog(tender.id);
 
   const files = Array.from({ length: Math.max(row.files, 1) }, (_, index) => index + 1);
   qs("drawer-files").innerHTML = files.map((item) => `
@@ -1695,22 +985,6 @@ function renderComments(tenderId, departmentKey) {
   `).join("") : `
     <div class="comment-empty">لا توجد ملاحظات بعد.</div>
   `;
-}
-
-function renderActivityLog(tenderId) {
-  const container = qs("drawer-activity");
-  if (!container) return;
-  const log = tenderActivityLog(tenderId);
-  container.innerHTML = log.length ? log.slice(0, 25).map((entry) => `
-    <div class="activity-item">
-      <span class="activity-dot ${safe(entry.type)}"></span>
-      <div>
-        <strong>${safe(entry.text)}</strong>
-        <span>${safe(entry.by)}</span>
-        <em>${safe(formatDateTime(entry.at))}</em>
-      </div>
-    </div>
-  `).join("") : `<div class="activity-empty">لا يوجد نشاط مسجل لهذه المنافسة بعد.</div>`;
 }
 
 function renderAssignmentTools(tender, row) {
@@ -1802,181 +1076,40 @@ function closeDrawer() {
   qs("detail-drawer").setAttribute("aria-hidden", "true");
 }
 
-function renderActiveView() {
-  if (selectedView === "board") {
-    renderKanban();
-  } else if (selectedView === "table") {
-    renderTable();
-  } else if (selectedView === "calendar") {
-    renderCalendar();
-  } else if (selectedView === "analytics") {
-    renderStatusChart();
-    renderDeptChart();
-    renderWorkloadList();
-    renderInsights();
-    renderSmartAlerts();
-    renderEmployeePerformance();
-  }
-}
-
-function switchView(view) {
-  selectedView = view;
-  prefs.view = view;
-  writePrefs();
-  document.querySelectorAll("#view-tabs button").forEach((button) => button.classList.toggle("active", button.dataset.view === view));
-  document.querySelectorAll(".ops-view").forEach((panel) => { panel.hidden = panel.dataset.view !== view; });
-  renderActiveView();
-}
-
 function render() {
   renderRole();
   renderKpis();
-  renderCommandCenter();
-  renderFilterCounts();
-  renderDeadlineBar();
+  renderEmployeePerformance();
   renderDepartments();
-  renderAdvancedFilters();
-  renderActiveView();
-  renderBulkBar();
-  renderNotifications();
-}
-
-// شريط عائم للإجراءات الجماعية على المنافسات المحددة
-function renderBulkBar() {
-  let bar = qs("bulk-bar");
-  if (!bar) {
-    bar = document.createElement("div");
-    bar.id = "bulk-bar";
-    bar.className = "bulk-bar";
-    document.body.appendChild(bar);
-  }
-  // أزل المعرّفات التي لم تعد ظاهرة
-  const visibleIds = new Set(tenders.map((tender) => tender.id));
-  selectedIds.forEach((id) => { if (!visibleIds.has(id)) selectedIds.delete(id); });
-
-  const count = selectedIds.size;
-  if (!count) {
-    bar.classList.remove("show");
-    bar.innerHTML = "";
-    return;
-  }
-  const canManage = isExecutive();
-  bar.innerHTML = `
-    <span class="bulk-count"><b>${count}</b> منافسة محددة</span>
-    <div class="bulk-actions">
-      <button type="button" data-bulk="ready" ${canManage ? "" : "disabled"}>نقل إلى جاهزة</button>
-      <button type="button" data-bulk="approve" ${canManage ? "" : "disabled"}>اعتماد المحدد</button>
-      <button type="button" class="ghost" data-bulk="clear">إلغاء التحديد</button>
-    </div>
-  `;
-  bar.classList.add("show");
-}
-
-function runBulkAction(action) {
-  if (action === "clear") {
-    selectedIds.clear();
-    render();
-    return;
-  }
-  if (!isExecutive()) return;
-  selectedIds.forEach((id) => {
-    const tender = tenders.find((item) => item.id === id);
-    if (!tender) return;
-    if (action === "ready") {
-      setTenderStage(id, "ready");
-    } else if (action === "approve") {
-      const done = departmentRows(tender).every((row) => row.status === "completed");
-      if (done) setApproval(id, "approved");
-    }
-  });
-  if (action === "approve") selectedIds.clear();
-  render();
-}
-
-// استعادة تفضيلات العرض المحفوظة على واجهة المستخدم
-function applySavedPrefs() {
-  applyTheme();
-  applyDensity();
-  applyRailState();
-  document.querySelectorAll("#view-tabs button").forEach((button) => button.classList.toggle("active", button.dataset.view === selectedView));
-  document.querySelectorAll(".ops-view").forEach((panel) => { panel.hidden = panel.dataset.view !== selectedView; });
-  document.querySelectorAll("[data-filter]").forEach((button) => button.classList.toggle("active", button.dataset.filter === selectedFilter));
+  renderInsights();
+  renderSmartAlerts();
+  renderBoard();
 }
 
 async function loadData() {
   try {
     await loadEmployees();
     await loadTechOffers();
-    let rows = null;
-    // المصدر الأساسي: قاعدة بيانات Supabase (إن كانت مهيّأة)
-    if (window.SB?.enabled) {
+    const sources = window.TENDER_PORTAL_CONFIG?.sources?.liveTenders || ["../data.json"];
+    let data = null;
+    for (const source of sources) {
       try {
-        const [dbTenders, dbState] = await Promise.all([
-          window.SB.fetchTenders(),
-          window.SB.fetchState()
-        ]);
-        if (Array.isArray(dbTenders) && dbTenders.length) {
-          rows = dbTenders;
-          if (dbState) savedState = dbState;
+        const response = await fetch(source, { cache: "no-store" });
+        if (response.ok) {
+          data = await response.json();
+          break;
         }
-      } catch (err) {
-        console.warn("[loadData] Supabase fetch failed, falling back:", err);
-      }
+      } catch {}
     }
-    // احتياطي: ملف data.json الثابت
-    if (!rows) {
-      const sources = window.TENDER_PORTAL_CONFIG?.sources?.liveTenders || ["../data.json"];
-      let data = null;
-      for (const source of sources) {
-        try {
-          const response = await fetch(source, { cache: "no-store" });
-          if (response.ok) {
-            data = await response.json();
-            break;
-          }
-        } catch {}
-      }
-      rows = Array.isArray(data?.tenders) ? data.tenders : fallbackTenders;
-    }
+    const rows = Array.isArray(data?.tenders) ? data.tenders : fallbackTenders;
     tenders = rows.map(normalizeTender);
   } catch {
     tenders = fallbackTenders;
   }
-  applySavedPrefs();
   render();
-  subscribeRealtime();
-}
-
-// يشترك في تحديثات قاعدة البيانات الفورية مرة واحدة فقط
-let _realtimeSubscribed = false;
-function subscribeRealtime() {
-  if (_realtimeSubscribed || !window.SB?.enabled) return;
-  _realtimeSubscribed = true;
-  let pending = false;
-  window.SB.subscribe(async () => {
-    if (pending) return;
-    pending = true;
-    setTimeout(async () => {
-      pending = false;
-      try {
-        const st = await window.SB.fetchState();
-        if (st) { savedState = st; render(); }
-      } catch {}
-    }, 400);
-  });
 }
 
 document.addEventListener("click", (event) => {
-  const kpiCard = event.target.closest(".kpi[data-kpi-filter], .ops-command-kpi[data-kpi-filter]");
-  if (kpiCard) {
-    selectedFilter = kpiCard.dataset.kpiFilter;
-    prefs.filter = selectedFilter;
-    writePrefs();
-    document.querySelectorAll("[data-filter]").forEach((btn) => btn.classList.toggle("active", btn.dataset.filter === selectedFilter));
-    switchView("board");
-    return;
-  }
-
   const deptButton = event.target.closest("[data-department]");
   if (deptButton) {
     selectedDepartment = deptButton.dataset.department;
@@ -1984,39 +1117,31 @@ document.addEventListener("click", (event) => {
     return;
   }
 
-  const viewButton = event.target.closest("#view-tabs button[data-view]");
-  if (viewButton) {
-    switchView(viewButton.dataset.view);
-    return;
-  }
-
   const filterButton = event.target.closest("[data-filter]");
   if (filterButton) {
     selectedFilter = filterButton.dataset.filter;
-    prefs.filter = selectedFilter;
-    writePrefs();
     document.querySelectorAll("[data-filter]").forEach((button) => button.classList.toggle("active", button === filterButton));
-    renderActiveView();
+    renderBoard();
     return;
   }
 
-  const bulkButton = event.target.closest("[data-bulk]");
-  if (bulkButton && !bulkButton.disabled) {
-    runBulkAction(bulkButton.dataset.bulk);
-    return;
-  }
-
-  if (event.target.closest("#adv-clear")) {
-    advFilters = { sector: "", client: "", from: "", to: "" };
-    render();
+  const quickSave = event.target.closest("[data-save-quick]");
+  if (quickSave) {
+    const tenderId = quickSave.dataset.saveQuick;
+    const departmentKey = quickSave.dataset.quickDept;
+    const select = quickSave.closest(".quick-assign")?.querySelector("select");
+    if (select?.value) {
+      setAssignment(tenderId, departmentKey, [select.value]);
+      render();
+    }
     return;
   }
 
   if (event.target.closest("[data-stop-open]")) return;
 
-  const opener = event.target.closest(".kan-card[data-tender][data-dept], .dept-chip[data-tender][data-dept], tr[data-tender][data-dept], .cal-event[data-tender][data-dept], .deadline-chip[data-tender][data-dept]");
-  if (opener) {
-    openDrawer(opener.dataset.tender, opener.dataset.dept);
+  const lane = event.target.closest(".lane[data-tender][data-dept], .timeline-node[data-tender][data-dept]");
+  if (lane) {
+    openDrawer(lane.dataset.tender, lane.dataset.dept);
     return;
   }
 
@@ -2036,23 +1161,7 @@ document.addEventListener("click", (event) => {
 
 qs("search-input").addEventListener("input", (event) => {
   searchTerm = event.target.value;
-  renderActiveView();
-});
-
-document.addEventListener("keydown", (event) => {
-  if ((event.key === "Enter" || event.key === " ") && event.target.closest(".kpi[data-kpi-filter]")) {
-    event.preventDefault();
-    event.target.closest(".kpi[data-kpi-filter]").click();
-  }
-});
-
-qs("cal-prev")?.addEventListener("click", () => {
-  calendarRef = new Date(calendarRef.getFullYear(), calendarRef.getMonth() - 1, 1);
-  renderCalendar();
-});
-qs("cal-next")?.addEventListener("click", () => {
-  calendarRef = new Date(calendarRef.getFullYear(), calendarRef.getMonth() + 1, 1);
-  renderCalendar();
+  renderBoard();
 });
 
 qs("drawer-close").addEventListener("click", closeDrawer);
@@ -2070,142 +1179,15 @@ qs("save-comment").addEventListener("click", () => {
 
 qs("complete-department").addEventListener("click", () => {
   if (!selectedContext) return;
-  const { tenderId, departmentKey } = selectedContext;
-  setDepartmentStatus(tenderId, departmentKey, "completed");
-  const tender = tenders.find((item) => item.id === tenderId);
-  const allDone = tender && departmentRows(tender).every((row) => row.status === "completed");
+  setDepartmentStatus(selectedContext.tenderId, selectedContext.departmentKey, "completed");
+  closeDrawer();
   render();
-  // إذا اكتملت كل الأقسام تُغلق وتنتقل البطاقة تلقائيا إلى "جاهزة للاعتماد"،
-  // وإلا نُبقي الدرج مفتوحا ليكمل المستخدم القسم التالي
-  if (allDone) closeDrawer();
-  else openDrawer(tenderId, departmentKey);
-});
-
-qs("drawer-dept-nav").addEventListener("click", (event) => {
-  const chip = event.target.closest("[data-dept-nav]");
-  if (!chip || !selectedContext) return;
-  openDrawer(selectedContext.tenderId, chip.dataset.deptNav);
 });
 
 qs("open-library").addEventListener("click", () => {
   if (!selectedContext) return;
-  openDeptLibrary(selectedContext.departmentKey);
+  const dept = departments.find((item) => item.key === selectedContext.departmentKey);
+  alert(`سيتم ربط هذا الزر بمكتبة ${dept?.library || "SharePoint"} عند إضافة روابط SharePoint النهائية.`);
 });
-
-qs("config-sharepoint")?.addEventListener("click", openSharePointConfig);
-
-// ── Notification bell ──
-qs("notif-bell")?.addEventListener("click", (event) => {
-  event.stopPropagation();
-  if (qs("notif-panel").hidden) openNotifPanel();
-  else closeNotifPanel();
-});
-
-document.addEventListener("click", (event) => {
-  if (!qs("notif-wrap")?.classList.contains("open")) return;
-  if (!qs("notif-wrap")?.contains(event.target)) closeNotifPanel();
-}, true);
-
-// ── Export CSV ──
-qs("export-btn")?.addEventListener("click", exportCSV);
-
-// ── Theme + density toggles ──
-qs("theme-toggle")?.addEventListener("click", toggleTheme);
-qs("density-toggle")?.addEventListener("click", toggleDensity);
-qs("rail-toggle")?.addEventListener("click", toggleRail);
-
-// ── SharePoint modal ──
-qs("sp-save")?.addEventListener("click", () => {
-  const url = qs("sp-url-input")?.value?.trim() || "";
-  saveSharePointBase(url);
-  closeSharePointConfig();
-  if (selectedContext) openDeptLibrary(selectedContext.departmentKey);
-});
-
-qs("sp-cancel")?.addEventListener("click", closeSharePointConfig);
-qs("sp-modal-overlay")?.addEventListener("click", closeSharePointConfig);
-
-// ── التحديد الجماعي + التعيين السريع (أحداث change) ──
-document.addEventListener("change", (event) => {
-  const advField = event.target.closest("[data-adv]");
-  if (advField) {
-    advFilters[advField.dataset.adv] = advField.value;
-    render();
-    return;
-  }
-
-  const selectBox = event.target.closest("[data-select]");
-  if (selectBox) {
-    const id = selectBox.dataset.select;
-    if (selectBox.checked) selectedIds.add(id);
-    else selectedIds.delete(id);
-    const card = selectBox.closest(".kan-card");
-    if (card) card.classList.toggle("is-selected", selectBox.checked);
-    renderBulkBar();
-    return;
-  }
-
-  const deptSelect = event.target.closest(".kan-quick-dept");
-  if (deptSelect) {
-    const card = deptSelect.closest(".kan-card");
-    const engSelect = card?.querySelector(".kan-quick-eng");
-    const dept = departments.find((item) => item.key === deptSelect.value);
-    if (engSelect) engSelect.innerHTML = quickEngineerOptions(dept);
-    return;
-  }
-
-  const engSelect = event.target.closest(".kan-quick-eng");
-  if (engSelect && engSelect.value) {
-    const tenderId = engSelect.dataset.tender;
-    const card = engSelect.closest(".kan-card");
-    const deptKey = card?.querySelector(".kan-quick-dept")?.value;
-    if (tenderId && deptKey) {
-      setAssignment(tenderId, deptKey, [engSelect.value]);
-      render();
-    }
-  }
-});
-
-// ── السحب والإفلات بين أعمدة اللوحة (للصلاحية التنفيذية) ──
-(() => {
-  const board = qs("kanban");
-  if (!board) return;
-  let draggingId = null;
-
-  board.addEventListener("dragstart", (event) => {
-    const card = event.target.closest(".kan-card[draggable='true']");
-    if (!card) return;
-    draggingId = card.dataset.tender;
-    card.classList.add("dragging");
-    event.dataTransfer.effectAllowed = "move";
-    try { event.dataTransfer.setData("text/plain", draggingId); } catch {}
-  });
-
-  board.addEventListener("dragend", () => {
-    draggingId = null;
-    board.querySelectorAll(".dragging").forEach((el) => el.classList.remove("dragging"));
-    board.querySelectorAll(".drop-active").forEach((el) => el.classList.remove("drop-active"));
-  });
-
-  board.addEventListener("dragover", (event) => {
-    const zone = event.target.closest(".kan-col");
-    if (!zone) return;
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
-    board.querySelectorAll(".drop-active").forEach((el) => { if (el !== zone) el.classList.remove("drop-active"); });
-    zone.classList.add("drop-active");
-  });
-
-  board.addEventListener("drop", (event) => {
-    const zone = event.target.closest(".kan-col[data-col]");
-    if (!zone) return;
-    event.preventDefault();
-    const id = draggingId || (() => { try { return event.dataTransfer.getData("text/plain"); } catch { return null; } })();
-    zone.classList.remove("drop-active");
-    if (!id || !isExecutive()) return;
-    setTenderStage(id, zone.dataset.col);
-    render();
-  });
-})();
 
 loadData();

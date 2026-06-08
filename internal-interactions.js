@@ -17,7 +17,6 @@
     ".pw-overlay",
     "#welcome-screen"
   ].join(",");
-  const ignoredRows = ".tender-row,[data-iu-ignore-row='true']";
   const interactiveSelector = "a,button,input,select,textarea,[contenteditable='true'],[role='button']";
   const memoryStore = Object.create(null);
 
@@ -313,17 +312,13 @@
     if (root.nodeType === 1 && root.matches && root.matches(rowSelector)) rows.push(root);
     root.querySelectorAll(rowSelector).forEach((row) => rows.push(row));
     rows.forEach((row) => {
-      if (isIgnoredRow(row)) return;
+      if (row.closest(ignoredContainers)) return;
       if (row.children.length < 2) return;
       row.classList.add("iu-row-openable");
       applyRiskClass(row);
       if (!row.hasAttribute("tabindex")) row.tabIndex = 0;
       row.setAttribute("title", "اضغط لعرض التفاصيل");
     });
-  }
-
-  function isIgnoredRow(row) {
-    return row.closest(ignoredContainers) || row.matches(ignoredRows);
   }
 
   function applyRiskClass(row) {
@@ -598,7 +593,7 @@
   document.addEventListener("click", (event) => {
     if (event.target.closest(interactiveSelector)) return;
     const row = event.target.closest(rowSelector);
-    if (!row || isIgnoredRow(row)) return;
+    if (!row || row.closest(ignoredContainers)) return;
     openDrawer(row);
   });
 
@@ -606,7 +601,7 @@
     if (event.key === "Escape") closeDrawer();
     if (event.key !== "Enter" && event.key !== " ") return;
     const row = event.target.closest(rowSelector);
-    if (!row || isIgnoredRow(row)) return;
+    if (!row || row.closest(ignoredContainers)) return;
     event.preventDefault();
     openDrawer(row);
   });
