@@ -1,0 +1,687 @@
+127.0.0.1 - - [03/Jun/2026 11:51:34] "GET /tender-portal-local-prototype.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 11:52:07] "GET /tender-portal-local-prototype.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 11:52:13] "GET /tender-portal-local-prototype.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 11:52:13] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 11:52:13] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 11:54:37] "GET /tender-portal-local-prototype.html HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 11:54:37] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 11:54:37] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 11:54:37] "GET /tender-portal-local-prototype.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 11:54:37] "GET /tender-portal-local-prototype.html/n HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 11:54:39] "GET /tender-portal-local-prototype.html HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:00:53] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:00:53] "GET /shared-visual.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:00:53] "GET /landing-official.css?v=7 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:00:53] "GET /styles.css?v=welcome-sage-premium-2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:00:53] "GET /config.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:00:53] "GET /portfolio/assets/tendering-logo.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:00:53] "GET /portfolio/assets/alrawaf-logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:00:53] "GET /_preview/assets/alrawaf-building-night.png HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:01:50] "GET /tender-portal-local-prototype.html HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:02:02] "GET /tender-portal-local-prototype.html?bust=20260603 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:02:14] "GET /tender-portal-local-prototype.html?bust=20260603 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:02:23] "GET /tender-portal-local-prototype.html?bust=20260603 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:02:23] "GET /styles.css?v=welcome-sage-premium-2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:02:23] "GET /shared-visual.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:02:23] "GET /landing-official.css?v=7 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:02:23] "GET /config.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:02:23] "GET /portfolio/assets/tendering-logo.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:02:23] "GET /portfolio/assets/alrawaf-logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:02:23] "GET /_preview/assets/alrawaf-building-night.png HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:03:07] "GET /tenders/?login=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:03:07] "GET /portal-sidebar.js?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:03:07] "GET /internal-unified.css?v=15 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:03:07] "GET /portal-sidebar.css?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:03:07] "GET /internal-interactions.js?v=10 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:03:10] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:03:10] "GET /api/live-tenders?t=1780477390626 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:03:10] "GET /data.json?t=1780477390669 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:03:33] "GET /tender-portal-local-prototype.html?finalcheck=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:03:55] "GET /tender-portal-local-prototype.html?bust=20260603 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:03:55] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:03:55] "GET /styles.css?v=welcome-sage-premium-2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:03:55] "GET /shared-visual.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:03:55] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:03:55] "GET /tender-portal-local-prototype.html/n HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:03:56] "GET /tender-portal-local-prototype.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:03:56] "GET /tender-portal-local-prototype.html?bust=20260603 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:09] "GET /tenders/?login=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:09] "GET /internal-unified.css?v=15 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:09] "GET /portal-sidebar.css?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:09] "GET /portal-sidebar.js?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:09] "GET /internal-interactions.js?v=10 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:09] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:04:09] "GET /api/live-tenders?t=1780477449664 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:04:09] "GET /data.json?t=1780477449702 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:19] "GET /coordination/ HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:19] "GET /portal-sidebar.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:19] "GET /coordination/styles.css?v=36 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:19] "GET /coordination/app.js?v=36 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:19] "GET /coordination/employees.json?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:19] "GET /coordination/tech-offers.json?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:19] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:04:19] "GET /api/live-tenders HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:04:19] "GET /data.json HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:20] "GET /clients/ HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:20] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:04:20] "GET /api/live-tenders?t=1780477460956 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:04:20] "GET /data.json?t=1780477460968 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:21] "GET /analytics/ HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:21] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:04:21] "GET /api/live-tenders?t=1780477461922 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:04:21] "GET /data.json?t=1780477461932 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:22] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:04:22] "GET /api/live-tenders?t=1780477462865 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:04:22] "GET /data.json?t=1780477462873 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:23] "GET /coordination/employees.json?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:23] "GET /coordination/tech-offers.json?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:23] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:04:23] "GET /api/live-tenders HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:04:23] "GET /data.json HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:43] "GET /tenders/ HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:04:43] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:04:43] "GET /api/live-tenders?t=1780477483689 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:04:43] "GET /data.json?t=1780477483709 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:11:33] "GET /tenders/?skin=generic-check HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:12:08] "GET /tenders/?skin=generic-v1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:12:08] "GET /shared-visual.css?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:12:08] "GET /config.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:12:08] "GET /internal-unified.css?v=15 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:12:08] "GET /portal-sidebar.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:12:08] "GET /tenders/generic-experiment.css?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:12:08] "GET /internal-interactions.js?v=10 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:12:08] "GET /portal-sidebar.js?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:12:08] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:12:08] "GET /api/live-tenders?t=1780477928683 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:12:08] "GET /data.json?t=1780477928745 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:12:57] "GET /tenders/?skin=generic-v1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:12:57] "GET /tenders/generic-experiment.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:12:57] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:12:57] "GET /api/live-tenders?t=1780477977203 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:12:57] "GET /data.json?t=1780477977218 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:15] "GET /tenders/?skin=generic-v1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:14:15] "GET /tenders?skin=generic-v1 HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:14:15] "GET /tenders/?skin=generic-v1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:15] "GET /tenders/generic-experiment.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:14:15] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:14:15] "GET /api/live-tenders?t=1780478055691 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:14:15] "GET /data.json?t=1780478055712 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:15] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:15] "GET /shared-visual.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:15] "GET /styles.css?v=welcome-sage-premium-2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:15] "GET /tenders?skin=generic-v1 HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:14:15] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:14:15] "GET /tender-portal-local-prototype.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:15] "GET /tender-portal-local-prototype.html/n HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:14:15] "GET /tender-portal-local-prototype.html?bust=20260603 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:15] "GET /tenders/?skin=generic-v1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:17] "GET /tenders/?skin=generic-v1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:17] "GET /tenders/generic-experiment.css?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:17] "GET /portal-sidebar.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:14:17] "GET /internal-unified.css?v=15 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:14:17] "GET /shared-visual.css?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:14:17] "GET /internal-interactions.js?v=10 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:14:17] "GET /config.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:14:17] "GET /portal-sidebar.js?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:14:17] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:14:17] "GET /api/live-tenders?t=1780478057818 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:14:17] "GET /data.json?t=1780478057902 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:24] "GET /tenders/?skin=generic-v1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:24] "GET /config.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:24] "GET /portal-sidebar.css?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:24] "GET /shared-visual.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:24] "GET /internal-interactions.js?v=10 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:24] "GET /internal-unified.css?v=15 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:24] "GET /tenders/generic-experiment.css?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:24] "GET /portal-sidebar.js?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:25] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:14:25] "GET /api/live-tenders?t=1780478065056 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:14:25] "GET /data.json?t=1780478065067 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:14:25] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:14:25] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:19:15] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:19:15] "GET /api/live-tenders?t=1780478355692 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:19:15] "GET /data.json?t=1780478355700 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:19:25] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:19:25] "GET /api/live-tenders?t=1780478365441 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:19:25] "GET /data.json?t=1780478365466 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:20:00] "GET /tenders/?skin=generic-v2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:20:20] "GET /tenders/?skin=generic-v2&t=1780478420246 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:20:20] "GET /tenders/generic-experiment.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:20:20] "GET /tenders/generic-tenders.css?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:20:20] "GET /tenders/generic-tenders.js?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:20:20] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:20:20] "GET /api/live-tenders?t=1780478420395 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:20:20] "GET /data.json?t=1780478420401 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:20:20] "GET /data.json?t=1780478420414 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:20:40] "GET /tenders/?skin=generic-v2&t=1780478420246 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:20:41] "GET /tenders/generic-tenders.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:20:41] "GET /tenders/generic-tenders.js?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:20:41] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:20:41] "GET /api/live-tenders?t=1780478441083 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:20:41] "GET /data.json?t=1780478441097 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:20:41] "GET /data.json?t=1780478441100 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:21:09] "GET /tenders/?skin=generic-v2-final HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:24:25] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:24:25] "GET /api/live-tenders?t=1780478665447 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:24:25] "GET /data.json?t=1780478665464 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:25:41] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:25:41] "GET /api/live-tenders?t=1780478741450 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:25:41] "GET /data.json?t=1780478741459 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /tenders/?skin=generic-v2-final HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /tenders?skin=generic-v2-final HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /tenders/?skin=generic-v2-final HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /internal-unified.css?v=15 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /tenders/generic-tenders.css?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /shared-visual.css?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /config.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /portal-sidebar.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /internal-interactions.js?v=10 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /portal-sidebar.js?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /api/live-tenders?t=1780478808797 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /data.json?t=1780478808800 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /styles.css?v=welcome-sage-premium-2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /shared-visual.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /tender-portal-local-prototype.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /tenders?skin=generic-v2-final HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /tenders?skin=generic-v1 HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /tender-portal-local-prototype.html?bust=20260603 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /tender-portal-local-prototype.html/n HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /data.json?t=1780478808827 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /tenders/?skin=generic-v2-final HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:48] "GET /tenders/?skin=generic-v1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:50] "GET /tenders/?skin=generic-v2-final HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:50] "GET /config.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:26:50] "GET /shared-visual.css?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:26:50] "GET /tenders/generic-tenders.css?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:50] "GET /portal-sidebar.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:26:50] "GET /internal-interactions.js?v=10 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:26:50] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:50] "GET /internal-unified.css?v=15 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:26:50] "GET /portal-sidebar.js?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:26:50] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:26:50] "GET /api/live-tenders?t=1780478810686 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:26:50] "GET /data.json?t=1780478810755 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:26:50] "GET /data.json?t=1780478810758 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:27:58] "GET /data.json HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:28:16] "GET /coordination/ HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:28:16] "GET /portal-sidebar.css?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:28:16] "GET /coordination/styles.css?v=36 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:28:16] "GET /coordination/app.js?v=36 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:28:16] "GET /coordination/employees.json?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:28:16] "GET /coordination/tech-offers.json?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:28:16] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:28:16] "GET /api/live-tenders HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:28:16] "GET /data.json HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:28:37] "GET /clients/ HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:28:37] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:28:37] "GET /api/live-tenders?t=1780478917459 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:28:37] "GET /data.json?t=1780478917478 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:29:06] "GET /data.json?t=1780478946811 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:29:25] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:29:25] "GET /api/live-tenders?t=1780478965441 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:29:25] "GET /data.json?t=1780478965447 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:29:36] "GET /tenders/?skin=generic-v2-final HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:29:36] "GET /tenders?skin=generic-v2-final HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:29:36] "GET /tenders/?skin=generic-v2-final HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:29:36] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:29:36] "GET /shared-visual.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:29:36] "GET /styles.css?v=welcome-sage-premium-2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:29:37] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:29:37] "GET /tender-portal-local-prototype.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:29:37] "GET /tender-portal-local-prototype.html/n HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:29:37] "GET /tenders?skin=generic-v1 HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:29:37] "GET /tender-portal-local-prototype.html?bust=20260603 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:29:37] "GET /tenders?skin=generic-v2-final HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:29:37] "GET /tenders/?skin=generic-v1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:29:37] "GET /tenders/?skin=generic-v2-final HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:29:37] "GET /tenders/generic-tenders.css?v=2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:29:37] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:29:37] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:29:37] "GET /api/live-tenders?t=1780478977088 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:29:37] "GET /data.json?t=1780478977111 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:29:37] "GET /data.json?t=1780478977124 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:29:38] "GET /tenders/?skin=generic-v2-final HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:29:38] "GET /tenders/generic-tenders.css?v=2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:29:38] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:29:38] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:29:38] "GET /api/live-tenders?t=1780478978988 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:29:39] "GET /data.json?t=1780478979060 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:29:39] "GET /data.json?t=1780478979064 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:32:09] "GET /tenders/?skin=generic-v3&t=1780479129068 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:32:09] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:32:09] "GET /tenders/generic-tenders.css?v=3 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:32:09] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:32:09] "GET /api/live-tenders?t=1780479129250 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:32:09] "GET /data.json?t=1780479129258 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:32:09] "GET /data.json?t=1780479129258 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:32:14] "GET /tenders/?skin=generic-v3&t=1780479129068 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:32:14] "GET /tenders/generic-tenders.css?v=3 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:32:14] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:32:14] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:32:14] "GET /api/live-tenders?t=1780479134917 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:32:14] "GET /data.json?t=1780479134923 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:32:14] "GET /data.json?t=1780479134944 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:33:50] "GET /coordination/employees.json?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:33:50] "GET /coordination/tech-offers.json?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:33:50] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:33:50] "GET /api/live-tenders HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:33:50] "GET /data.json HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:33:52] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:33:52] "GET /api/live-tenders?t=1780479232667 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:33:52] "GET /data.json?t=1780479232672 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:33:55] "GET /analytics/ HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:33:55] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:33:55] "GET /api/live-tenders?t=1780479235494 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:33:55] "GET /data.json?t=1780479235503 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:34:00] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:34:00] "GET /api/live-tenders?t=1780479240767 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:34:00] "GET /data.json?t=1780479240773 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:34:07] "GET /tenders/ HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:34:07] "GET /tenders/generic-tenders.css?v=3 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:34:07] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:34:07] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:34:07] "GET /api/live-tenders?t=1780479247977 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:34:07] "GET /data.json?t=1780479247992 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:34:07] "GET /data.json?t=1780479247993 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:34:28] "GET /data.json?t=1780479268166 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:37:09] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:37:09] "GET /api/live-tenders?t=1780479429255 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:37:09] "GET /data.json?t=1780479429259 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:37:28] "GET /tenders/?skin=generic-v4&t=1780479448672 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:37:28] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:37:28] "GET /tenders/generic-tenders.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:37:28] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:37:28] "GET /api/live-tenders?t=1780479448852 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:37:28] "GET /data.json?t=1780479448868 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:37:28] "GET /data.json?t=1780479448875 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tenders/?skin=generic-v4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /shared-visual.css?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /internal-unified.css?v=15 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /config.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /portal-sidebar.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tenders/generic-tenders.css?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /internal-interactions.js?v=10 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tenders?skin=generic-v4 HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /portal-sidebar.js?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tenders/?skin=generic-v4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /api/live-tenders?t=1780479491457 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /data.json?t=1780479491459 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /data.json?t=1780479491468 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /styles.css?v=welcome-sage-premium-2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /shared-visual.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tenders?skin=generic-v4 HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tenders?skin=generic-v3 HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tender-portal-local-prototype.html/n HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tenders?skin=generic-v3&t=1780479129068 HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tenders?skin=generic-v1 HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tender-portal-local-prototype.html?bust=20260603 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tender-portal-local-prototype.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tenders?skin=generic-v2-final HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tenders/?skin=generic-v4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tenders/?skin=generic-v3&t=1780479129068 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tenders/?skin=generic-v3 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tenders/?skin=generic-v1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:38:11] "GET /tenders/?skin=generic-v2-final HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:08] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:39:08] "GET /api/live-tenders?t=1780479548442 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:39:08] "GET /data.json?t=1780479548459 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:27] "GET /tenders/?skin=generic-v4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:27] "GET /config.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:39:27] "GET /internal-unified.css?v=15 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:39:27] "GET /shared-visual.css?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:39:27] "GET /portal-sidebar.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:39:27] "GET /internal-interactions.js?v=10 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:39:27] "GET /portal-sidebar.js?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:39:27] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:39:27] "GET /tenders/generic-tenders.css?v=5 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:27] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:39:27] "GET /api/live-tenders?t=1780479567959 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:39:28] "GET /data.json?t=1780479568035 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:28] "GET /data.json?t=1780479568039 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:28] "GET /tenders/?skin=generic-v5&t=1780479568856 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:29] "GET /tenders/generic-tenders.css?v=5 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:29] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:39:29] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:39:29] "GET /api/live-tenders?t=1780479569078 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:39:29] "GET /data.json?t=1780479569089 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:29] "GET /data.json?t=1780479569091 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:44] "GET /tenders/?skin=generic-v4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:44] "GET /config.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:44] "GET /internal-unified.css?v=15 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:44] "GET /portal-sidebar.css?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:44] "GET /internal-interactions.js?v=10 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:44] "GET /tenders/generic-tenders.css?v=5 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:44] "GET /portal-sidebar.js?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:44] "GET /shared-visual.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:44] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:45] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:39:45] "GET /api/live-tenders?t=1780479585242 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:39:45] "GET /data.json?t=1780479585252 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:45] "GET /data.json?t=1780479585271 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:39:45] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:39:45] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:42:09] "GET /tenders/?skin=generic-v6&t=1780479728942 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:09] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:42:09] "GET /tenders/generic-tenders.css?v=6 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:09] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:42:09] "GET /api/live-tenders?t=1780479729226 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:42:09] "GET /data.json?t=1780479729238 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:09] "GET /data.json?t=1780479729239 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:52] "GET /tenders/?skin=generic-v6&t=1780479728942 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:52] "GET /tenders/generic-tenders.css?v=6 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:52] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:42:52] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:42:52] "GET /api/live-tenders?t=1780479772953 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:42:53] "GET /data.json?t=1780479773027 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:53] "GET /data.json?t=1780479773031 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:56] "GET /tenders/?skin=generic-v6&t=1780479728942 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:56] "GET /config.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:56] "GET /internal-unified.css?v=15 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:56] "GET /portal-sidebar.css?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:56] "GET /internal-interactions.js?v=10 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:56] "GET /portal-sidebar.js?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:56] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:56] "GET /tenders/generic-tenders.css?v=6 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:56] "GET /shared-visual.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:58] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:42:58] "GET /api/live-tenders?t=1780479778325 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:42:58] "GET /data.json?t=1780479778334 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:58] "GET /data.json?t=1780479778353 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:42:58] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:42:58] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:44:23] "GET /tenders/?skin=generic-v7&t=1780479863310 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:23] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:44:23] "GET /tenders/generic-tenders.css?v=7 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:23] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:44:23] "GET /api/live-tenders?t=1780479863523 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:44:23] "GET /data.json?t=1780479863530 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:23] "GET /data.json?t=1780479863539 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:35] "GET /tenders/?skin=generic-v7&t=1780479863310 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:35] "GET /tenders/generic-tenders.css?v=7 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:35] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:44:35] "GET /api/live-tenders?t=1780479875673 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:44:35] "GET /data.json?t=1780479875743 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:35] "GET /data.json?t=1780479875749 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:40] "GET /tenders/?skin=generic-v7&t=1780479863310 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:40] "GET /config.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:40] "GET /internal-unified.css?v=15 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:40] "GET /shared-visual.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:40] "GET /tenders/generic-tenders.css?v=7 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:40] "GET /portal-sidebar.js?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:40] "GET /internal-interactions.js?v=10 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:40] "GET /portal-sidebar.css?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:40] "GET /tenders/generic-tenders.js?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:41] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:44:41] "GET /api/live-tenders?t=1780479881840 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:44:41] "GET /data.json?t=1780479881847 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:41] "GET /data.json?t=1780479881867 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:44:42] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:44:42] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:48:02] "GET /tenders/?skin=generic-v8&t=1780480082146 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:48:02] "GET /tenders/generic-tenders.css?v=8 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:48:02] "GET /tenders/generic-tenders.js?v=8 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:48:02] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:48:02] "GET /api/live-tenders?t=1780480082427 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:48:02] "GET /data.json?t=1780480082438 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:48:02] "GET /data.json?t=1780480082440 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:48:02] "GET /portfolio/assets/alrawaf-logo.png HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:49:46] "GET /tenders/?skin=generic-v8-final HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:02] "GET /tenders/?skin=generic-v8-final HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:02] "GET /tenders?skin=generic-v8-final HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:50:02] "GET /tenders/?skin=generic-v8-final HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:02] "GET /tenders/generic-tenders.js?v=8 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:50:02] "GET /tenders/generic-tenders.css?v=8 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:50:02] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:50:02] "GET /api/live-tenders?t=1780480202950 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:50:02] "GET /data.json?t=1780480202954 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:02] "GET /data.json?t=1780480202969 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /styles.css?v=welcome-sage-premium-2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /shared-visual.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tenders?skin=generic-v3&t=1780479129068 HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tenders?skin=generic-v3 HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tenders?skin=generic-v5 HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tenders?skin=generic-v2-final HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tenders?skin=generic-v8-final HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tender-portal-local-prototype.html/n HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tender-portal-local-prototype.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tenders?skin=generic-v1 HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tender-portal-local-prototype.html?bust=20260603 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tenders?skin=generic-v4 HTTP/1.1" 301 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tenders/?skin=generic-v3&t=1780479129068 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tenders/?skin=generic-v5 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tenders/?skin=generic-v3 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tenders/?skin=generic-v2-final HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tenders/?skin=generic-v8-final HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tenders/?skin=generic-v1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:03] "GET /tenders/?skin=generic-v4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:04] "GET /tenders/?skin=generic-v8-final HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:04] "GET /tenders/generic-tenders.css?v=8 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:04] "GET /tenders/generic-tenders.js?v=8 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:04] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:50:04] "GET /api/live-tenders?t=1780480204636 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:50:04] "GET /data.json?t=1780480204643 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:50:04] "GET /portfolio/assets/alrawaf-logo.png HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:50:04] "GET /data.json?t=1780480204676 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:53:14] "GET /tenders/?skin=generic-v9&t=1780480394306 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:53:14] "GET /shared-visual.css?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:53:14] "GET /internal-unified.css?v=15 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:53:14] "GET /config.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:53:14] "GET /portal-sidebar.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:53:14] "GET /internal-interactions.js?v=10 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:53:14] "GET /portal-sidebar.js?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:53:14] "GET /tenders/generic-tenders.js?v=8 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:53:14] "GET /tenders/generic-tenders.css?v=9 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:53:14] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:53:14] "GET /api/live-tenders?t=1780480394505 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:53:14] "GET /data.json?t=1780480394507 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:53:14] "GET /data.json?t=1780480394516 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:53:19] "GET /tenders/?skin=generic-v9&t=1780480394306 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:53:19] "GET /tenders/generic-tenders.css?v=9 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:53:19] "GET /tenders/generic-tenders.js?v=8 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:53:19] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:53:19] "GET /api/live-tenders?t=1780480399860 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:53:19] "GET /data.json?t=1780480399927 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:53:19] "GET /data.json?t=1780480399931 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:53:27] "GET /tenders/?skin=generic-v9&t=1780480394306 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:53:27] "GET /tenders/generic-tenders.css?v=9 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 12:53:27] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:53:27] "GET /api/live-tenders?t=1780480407841 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:53:27] "GET /data.json?t=1780480407861 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:53:27] "GET /data.json?t=1780480407863 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:53:28] "GET /data.json?t=1780480408129 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 12:58:27] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 12:58:27] "GET /api/live-tenders?t=1780480707844 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 12:58:27] "GET /data.json?t=1780480707849 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:02:34] "GET /tenders/?skin=generic-v10&t=1780480954442 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:02:34] "GET /tenders/generic-tenders.css?v=10 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:02:34] "GET /tenders/generic-tenders.js?v=10 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:02:34] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:02:34] "GET /api/live-tenders?t=1780480954606 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:02:34] "GET /data.json?t=1780480954609 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:02:34] "GET /portfolio/assets/alrawaf-logo.png HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:02:34] "GET /data.json?t=1780480954641 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:02:44] "GET /tenders/?skin=generic-v10&t=1780480964052 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:02:44] "GET /tenders/generic-tenders.css?v=10 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:02:44] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:02:44] "GET /api/live-tenders?t=1780480964193 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:02:44] "GET /data.json?t=1780480964200 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:02:44] "GET /data.json?t=1780480964208 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:03:29] "GET /tenders/?skin=generic-v10 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:03:29] "GET /tenders/generic-tenders.css?v=10 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:03:29] "GET /tenders/generic-tenders.js?v=10 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:03:29] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:03:29] "GET /api/live-tenders?t=1780481009908 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:03:29] "GET /data.json?t=1780481009911 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:03:29] "GET /data.json?t=1780481009921 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:04:10] "GET /tenders/?skin=generic-v10 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:04:10] "GET /tenders/generic-tenders.css?v=10 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:04:10] "GET /tenders/generic-tenders.js?v=10 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:04:10] "GET /portal-sidebar.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:04:10] "GET /internal-unified.css?v=15 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:04:10] "GET /shared-visual.css?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:04:10] "GET /config.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:04:10] "GET /internal-interactions.js?v=10 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:04:10] "GET /portal-sidebar.js?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:04:10] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:04:10] "GET /api/live-tenders?t=1780481050327 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:04:10] "GET /data.json?t=1780481050336 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:04:10] "GET /portfolio/assets/alrawaf-logo.png HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:04:10] "GET /data.json?t=1780481050373 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:06:22] "GET /tenders/?skin=generic-v11&t=1780481182780 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:06:22] "GET /tenders/generic-tenders.css?v=11 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:06:22] "GET /tenders/generic-tenders.js?v=11 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:06:22] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:06:22] "GET /api/live-tenders?t=1780481182984 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:06:22] "GET /data.json?t=1780481182996 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:06:23] "GET /data.json?t=1780481182999 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:06:49] "GET /tenders/?skin=generic-v11&t=1780481182780 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:06:50] "GET /tenders/generic-tenders.css?v=11 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:06:50] "GET /tenders/generic-tenders.js?v=11 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:06:50] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:06:50] "GET /api/live-tenders?t=1780481210090 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:06:50] "GET /data.json?t=1780481210158 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:06:50] "GET /data.json?t=1780481210163 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:11:23] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:11:23] "GET /api/live-tenders?t=1780481483451 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:11:23] "GET /data.json?t=1780481483458 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:52] "GET /?skin=generic-all&t=1780481692111 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:52] "GET /styles.css?v=welcome-sage-premium-2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:14:52] "GET /shared-visual.css?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:14:52] "GET /landing-official.css?v=7 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:14:52] "GET /config.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:14:52] "GET /generic-pages.css?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:52] "GET /portfolio/assets/tendering-logo.jpg HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:14:52] "GET /_preview/assets/alrawaf-building-night.png HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:14:52] "GET /generic-pages.js?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:52] "GET /data.json?t=1780481692304 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:53] "GET /portfolio/?skin=generic-all&t=1780481692111 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:53] "GET /portal-sidebar.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:14:53] "GET /portfolio/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:53] "GET /portfolio/visual-prototype.css?v=12 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:53] "GET /portal-sidebar.js?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:14:53] "GET /portfolio/app.js?v=status-stages-3 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:53] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:14:53] "GET /api/portfolio?t=1780481693346 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:14:53] "GET /data.json?t=1780481693350 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:53] "GET /portfolio/data.json?t=1780481693360 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:54] "GET /coordination/?skin=generic-all&t=1780481692111 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:54] "GET /coordination/styles.css?v=36 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:54] "GET /coordination/app.js?v=36 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:54] "GET /portal-sidebar.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:54] "GET /coordination/employees.json?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:54] "GET /data.json?t=1780481694325 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:54] "GET /coordination/tech-offers.json?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:54] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:14:54] "GET /api/live-tenders HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:14:54] "GET /data.json HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:55] "GET /clients/?skin=generic-all&t=1780481692111 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:55] "GET /internal-unified.css?v=15 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:14:55] "GET /generic-pages.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:14:55] "GET /internal-interactions.js?v=10 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:14:55] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:14:55] "GET /api/live-tenders?t=1780481695836 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:14:55] "GET /data.json?t=1780481695868 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:55] "GET /data.json?t=1780481695877 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:56] "GET /analytics/?skin=generic-all&t=1780481692111 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:56] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:14:56] "GET /api/live-tenders?t=1780481696928 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:14:56] "GET /data.json?t=1780481696948 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:56] "GET /data.json?t=1780481696959 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:57] "GET /executive-report/?skin=generic-all&t=1780481692111 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:57] "GET /generic-pages.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:14:57] "GET /executive-report/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:57] "GET /executive-report/app.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:57] "GET /data.json?t=1780481697966 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:57] "GET /executive-report/data.json?v=1780481697963 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:58] "GET /coordination/?skin=generic-all HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:58] "GET /coordination/employees.json?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:58] "GET /data.json?t=1780481698928 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:58] "GET /coordination/tech-offers.json?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:14:58] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:14:58] "GET /api/live-tenders HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:14:58] "GET /data.json HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:16:42] "GET /coordination/?skin=generic-all HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:16:42] "GET /generic-pages.css?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:16:42] "GET /portal-sidebar.css?v=4 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:16:42] "GET /coordination/styles.css?v=36 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:16:42] "GET /generic-pages.js?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:16:42] "GET /coordination/app.js?v=36 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:16:43] "GET /coordination/employees.json?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:16:43] "GET /data.json?t=1780481803089 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:16:43] "GET /coordination/tech-offers.json?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:16:43] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:16:43] "GET /api/live-tenders HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:16:43] "GET /data.json HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:16:55] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:16:55] "GET /styles.css?v=welcome-sage-premium-2 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:16:55] "GET /landing-official.css?v=7 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:16:55] "GET /generic-pages.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:16:55] "GET /portfolio/assets/tendering-logo.jpg HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:16:55] "GET /_preview/assets/alrawaf-building-night.png HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:16:55] "GET /data.json?t=1780481815691 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:10] "GET /portfolio/ HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:10] "GET /portfolio/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:10] "GET /portfolio/visual-prototype.css?v=12 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:10] "GET /generic-pages.css?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:17:10] "GET /portfolio/app.js?v=status-stages-3 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:10] "GET /generic-pages.js?v=1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jun/2026 13:17:10] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:17:10] "GET /api/portfolio?t=1780481830139 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:17:10] "GET /data.json?t=1780481830150 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:10] "GET /portfolio/data.json?t=1780481830153 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:16] "GET /coordination/ HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:16] "GET /coordination/employees.json?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:16] "GET /data.json?t=1780481836819 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:16] "GET /coordination/tech-offers.json?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:16] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:17:16] "GET /api/live-tenders HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:17:16] "GET /data.json HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:17] "GET /analytics/ HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:17] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:17:17] "GET /api/live-tenders?t=1780481837920 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:17:17] "GET /data.json?t=1780481837923 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:17] "GET /data.json?t=1780481837932 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:20] "GET /clients/ HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:20] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:17:20] "GET /api/live-tenders?t=1780481840209 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:17:20] "GET /data.json?t=1780481840211 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:20] "GET /data.json?t=1780481840217 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:21] "GET /executive-report/ HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:21] "GET /executive-report/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:21] "GET /executive-report/app.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:21] "GET /executive-report/data.json?v=1780481841672 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:21] "GET /data.json?t=1780481841673 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:23] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:17:23] "GET /api/live-tenders?t=1780481843379 HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:17:23] "GET /data.json?t=1780481843380 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:17:23] "GET /data.json?t=1780481843390 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jun/2026 13:39:35] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:39:35] "GET /DevMgmt/ProductConfigDyn.xml HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 13:39:35] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 13:39:35] "GET /DevMgmt/DiscoveryTree.xml HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 16:53:01] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 16:53:01] "GET /DevMgmt/ProductConfigDyn.xml HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 16:53:01] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 16:53:01] "GET /DevMgmt/DiscoveryTree.xml HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 17:07:50] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 17:07:50] "GET /DevMgmt/ProductConfigDyn.xml HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 17:07:50] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 17:07:50] "GET /DevMgmt/DiscoveryTree.xml HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 17:52:00] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 17:52:00] "GET /DevMgmt/ProductConfigDyn.xml HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 17:52:00] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 17:52:00] "GET /DevMgmt/DiscoveryTree.xml HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 17:52:06] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 17:52:06] "GET /DevMgmt/ProductConfigDyn.xml HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jun/2026 17:52:06] code 404, message File not found
+127.0.0.1 - - [03/Jun/2026 17:52:06] "GET /DevMgmt/DiscoveryTree.xml HTTP/1.1" 404 -
