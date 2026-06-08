@@ -1,635 +1,114 @@
 {
-  "sourceFile": "D:\\New folder\\منسوبى الإدارة العامة للمناقصات3-11-2025.xlsx",
-  "lastGeneratedFromExcel": "2026-05-29T16:22:19.411786",
-  "generalManagement": [
-    {
-      "serial": 1,
-      "manager": "",
-      "employeeId": "11111885",
-      "name": "علاء أبو النجا",
-      "title": "senior department director",
-      "departmentKey": "GENERAL",
-      "departmentName": "الإدارة العامة للمناقصات"
-    },
-    {
-      "serial": 2,
-      "manager": "علاء أبو النجا",
-      "employeeId": "11114645",
-      "name": "محمد عبدالعزيز عباده ابو النجا",
-      "title": "Administrative Coordinator",
-      "departmentKey": "GENERAL",
-      "departmentName": "الإدارة العامة للمناقصات"
-    },
-    {
-      "serial": 3,
-      "manager": "علاء أبو النجا",
-      "employeeId": "11119565",
-      "name": "احمد محمد ابو المكارم مصطفى",
-      "title": "Office Manager",
-      "departmentKey": "GENERAL",
-      "departmentName": "الإدارة العامة للمناقصات"
-    },
-    {
-      "serial": 4,
-      "manager": "علاء أبو النجا",
-      "employeeId": "11117602",
-      "name": "رغد منيف منسي العفتان",
-      "title": "Administrative Assistant",
-      "departmentKey": "GENERAL",
-      "departmentName": "الإدارة العامة للمناقصات"
-    },
-    {
-      "serial": 5,
-      "manager": "علاء أبو النجا",
-      "employeeId": "11124748",
-      "name": "سامى سليمان",
-      "title": "Administrative Assistant",
-      "departmentKey": "GENERAL",
-      "departmentName": "الإدارة العامة للمناقصات"
-    },
-    {
-      "serial": 6,
-      "manager": "علاء أبو النجا",
-      "employeeId": "11119931",
-      "name": "مساعد عبدالله عقلاء الحسين",
-      "title": "Administrative Assistant",
-      "departmentKey": "GENERAL",
-      "departmentName": "الإدارة العامة للمناقصات"
-    },
-    {
-      "serial": 7,
-      "manager": "علاء أبو النجا",
-      "employeeId": "11117958",
-      "name": "إيهاب ادوارد عزيز",
-      "title": "Senior Systems informayion officer",
-      "departmentKey": "GENERAL",
-      "departmentName": "الإدارة العامة للمناقصات"
-    }
-  ],
   "departments": [
     {
       "key": "BS",
-      "name": "إدارة تقدير التكاليف - الإنشاءات",
-      "englishName": "Cost Estimation - Buildings",
-      "sourceLabel": "1.1 إدارة تقدير التكاليف ( الإنشاءات)",
-      "employees": [
-        {
-          "serial": 8,
-          "manager": "علاء أبو النجا",
-          "employeeId": "11113616",
-          "name": "محمود احمد عبدالغني جاد المولى",
-          "title": "senior manager II",
-          "departmentKey": "BS",
-          "departmentName": "إدارة تقدير التكاليف - الإنشاءات"
-        },
-        {
-          "serial": 9,
-          "manager": "محمود احمد عبدالغني جاد المولى",
-          "employeeId": "11116812",
-          "name": "عمرو عطيتو محمد قمصان",
-          "title": "manager II",
-          "departmentKey": "BS",
-          "departmentName": "إدارة تقدير التكاليف - الإنشاءات"
-        },
-        {
-          "serial": 10,
-          "manager": "عمرو عطيتو محمد قمصان",
-          "employeeId": "11123157",
-          "name": "محمد محمود عبدالوهاب سليم",
-          "title": "Senior Cost Estimation Engineer I",
-          "departmentKey": "BS",
-          "departmentName": "إدارة تقدير التكاليف - الإنشاءات"
-        },
-        {
-          "serial": 11,
-          "manager": "عمرو عطيتو محمد قمصان",
-          "employeeId": "11120868",
-          "name": "مؤمن مكرم محمود خليفة",
-          "title": "Quantity Surveyor II",
-          "departmentKey": "BS",
-          "departmentName": "إدارة تقدير التكاليف - الإنشاءات"
-        },
-        {
-          "serial": 12,
-          "manager": "عمرو عطيتو محمد قمصان",
-          "employeeId": "11122213",
-          "name": "احمد محمد عبدالرجال اسماعيل",
-          "title": "Senior Cost Estimation Engineer I",
-          "departmentKey": "BS",
-          "departmentName": "إدارة تقدير التكاليف - الإنشاءات"
-        },
-        {
-          "serial": 13,
-          "manager": "عمرو عطيتو محمد قمصان",
-          "employeeId": "11113557",
-          "name": "فاريان ديانيتو روبيو",
-          "title": "Quantity Surveyor III",
-          "departmentKey": "BS",
-          "departmentName": "إدارة تقدير التكاليف - الإنشاءات"
-        },
-        {
-          "serial": 14,
-          "manager": "عمرو عطيتو محمد قمصان",
-          "employeeId": "11124987",
-          "name": "ليلي حموده متولي",
-          "title": "Cost Estimation Engineer II",
-          "departmentKey": "BS",
-          "departmentName": "إدارة تقدير التكاليف - الإنشاءات"
-        },
-        {
-          "serial": 15,
-          "manager": "محمود احمد عبدالغني جاد المولى",
-          "employeeId": "11121426",
-          "name": "عاطف صلاح الدين عقل ابراهيم",
-          "title": "Manager I",
-          "departmentKey": "BS",
-          "departmentName": "إدارة تقدير التكاليف - الإنشاءات"
-        },
-        {
-          "serial": 16,
-          "manager": "عاطف صلاح الدين عقل ابراهيم",
-          "employeeId": "11125066",
-          "name": "محمد إبراهيم",
-          "title": "Cost Estimation Engineer II",
-          "departmentKey": "BS",
-          "departmentName": "إدارة تقدير التكاليف - الإنشاءات"
-        },
-        {
-          "serial": 17,
-          "manager": "محمود احمد عبدالغني جاد المولى",
-          "employeeId": "11116828",
-          "name": "امير رجب ابراهيم عبدربه",
-          "title": "Manager I",
-          "departmentKey": "BS",
-          "departmentName": "إدارة تقدير التكاليف - الإنشاءات"
-        },
-        {
-          "serial": 18,
-          "manager": "امير رجب ابراهيم عبدربه",
-          "employeeId": "11123349",
-          "name": "أحمد شعبان الجمل",
-          "title": "Senior Cost Estimation Engineer I",
-          "departmentKey": "BS",
-          "departmentName": "إدارة تقدير التكاليف - الإنشاءات"
-        },
-        {
-          "serial": 19,
-          "manager": "امير رجب ابراهيم عبدربه",
-          "employeeId": "11123947",
-          "name": "يوسف أحمد شلبى",
-          "title": "Cost Estimation Engineer I",
-          "departmentKey": "BS",
-          "departmentName": "إدارة تقدير التكاليف - الإنشاءات"
-        },
-        {
-          "serial": 20,
-          "manager": "محمود احمد عبدالغني جاد المولى",
-          "employeeId": "11111563",
-          "name": "اسلام سامي رجب عطاالله",
-          "title": "Senior Quantity Surveyor",
-          "departmentKey": "BS",
-          "departmentName": "إدارة تقدير التكاليف - الإنشاءات"
-        }
-      ],
-      "manager": "محمود احمد عبدالغني جاد المولى",
+      "name": "قسم تقدير تكاليف الإنشاءات",
+      "manager": "محمود أحمد عبد الغني",
       "library": "SharePoint/BS",
+      "sourceLabel": "الهيكل التنظيمي",
       "tasks": [
-        "تحليل نطاق المنافسة",
-        "تقدير التكلفة الأولي",
-        "حصر المخاطر المالية",
-        "رفع توصية التسعير"
+        "مراجعة كراسة الشروط والمواصفات",
+        "تقدير تكاليف الإنشاءات",
+        "حصر البنود الحرجة",
+        "رفع الملاحظات الفنية للمكتبة"
+      ],
+      "employees": [
+        { "name": "محمود أحمد عبد الغني",   "title": "مدير قسم تقدير تكاليف الإنشاءات" },
+        { "name": "عمرو عطيتو",              "title": "مدير وحدة الأعمال المدنية والمعمارية" },
+        { "name": "محمد عبد الوهاب سليم",   "title": "مهندس تقدير تكاليف" },
+        { "name": "أحمد عبدالرجال",          "title": "مهندس تقدير تكاليف" },
+        { "name": "محمد الرفاعي",            "title": "مهندس تقدير تكاليف" },
+        { "name": "فاريان ديانيتو روبيو",    "title": "حاسب كميات" },
+        { "name": "عاطف صلاح الدين",         "title": "قائد فريق الأعمال الميكانيكية" },
+        { "name": "محمد إبراهيم",            "title": "مهندس تقدير تكاليف" },
+        { "name": "محمد سماحة",              "title": "مهندس تقدير تكاليف" },
+        { "name": "أمير رجب",                "title": "قائد فريق الأنظمة الكهربائية والتيار الخفيف" },
+        { "name": "أحمد شعبان الجمل",        "title": "مهندس تقدير تكاليف" }
       ]
     },
     {
       "key": "INF",
-      "name": "إدارة تقدير التكاليف - البنية التحتية",
-      "englishName": "Cost Estimation - Infrastructure",
-      "sourceLabel": "1.2 إدارة تقدير التكاليف ( البنية التحتية)",
-      "employees": [
-        {
-          "serial": 21,
-          "manager": "علاء أبو النجا",
-          "employeeId": "11115670",
-          "name": "ناصر علي عبدو سنبل",
-          "title": "senior manager II",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 22,
-          "manager": "ناصر علي عبدو سنبل",
-          "employeeId": "11118100",
-          "name": "إيهاب محمد سيد احمد أبو غزاله",
-          "title": "manager II",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 23,
-          "manager": "إيهاب محمد سيد احمد أبو غزاله",
-          "employeeId": "11118653",
-          "name": "فتح سيف سعيد على",
-          "title": "Manager I",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 24,
-          "manager": "فتح سيف سعيد على",
-          "employeeId": "11123611",
-          "name": "أحمد خلف جودة عبدالغنى",
-          "title": "Senior Cost Estimation Engineer I",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 25,
-          "manager": "فتح سيف سعيد على",
-          "employeeId": "11123646",
-          "name": "ماجد عبدالله أحمد الاقرد",
-          "title": "Cost Estimation Engineer II",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 26,
-          "manager": "فتح سيف سعيد على",
-          "employeeId": "11119049",
-          "name": "رامي صبحي شبل احمد",
-          "title": "Quantity Surveyor II",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 27,
-          "manager": "فتح سيف سعيد على",
-          "employeeId": "11124699",
-          "name": "اسلام طارق عمر",
-          "title": "Senior Cost Estimation Engineer I",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 28,
-          "manager": "إيهاب محمد سيد احمد أبو غزاله",
-          "employeeId": "11114912",
-          "name": "وائل صلاح عبد الحميد عبد الرحمن",
-          "title": "Manager I",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 29,
-          "manager": "وائل صلاح عبد الحميد عبد الرحمن",
-          "employeeId": "11123316",
-          "name": "عبدالله غريب الظاهرى",
-          "title": "Cost Estimation Engineer I",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 30,
-          "manager": "وائل صلاح عبد الحميد عبد الرحمن",
-          "employeeId": "11123983",
-          "name": "محمد محمد حسين الكبوس",
-          "title": "Cost Estimation Engineer II",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 31,
-          "manager": "ناصر علي عبدو سنبل",
-          "employeeId": "11122094",
-          "name": "مراد على عبده الاهدل",
-          "title": "manager II",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 32,
-          "manager": "مراد على عبده الاهدل",
-          "employeeId": "11120010",
-          "name": "بهاء الدين حباشى حسين عبدالرحيم",
-          "title": "Manager I",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 33,
-          "manager": "بهاء الدين حباشى حسين عبدالرحيم",
-          "employeeId": "11124015",
-          "name": "محمد جمال محمود محمد عيد",
-          "title": "Senior Cost Estimation Engineer I",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 34,
-          "manager": "بهاء الدين حباشى حسين عبدالرحيم",
-          "employeeId": "11120837",
-          "name": "احمد حامد سيف",
-          "title": "Cost Estimation Engineer II",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 35,
-          "manager": "بهاء الدين حباشى حسين عبدالرحيم",
-          "employeeId": "11119983",
-          "name": "نجلاء فوزى محمد السيد",
-          "title": "Cost Estimation Engineer II",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 36,
-          "manager": "بهاء الدين حباشى حسين عبدالرحيم",
-          "employeeId": "11120415",
-          "name": "محمد احمد على احمد",
-          "title": "Cost Estimation Engineer II",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 37,
-          "manager": "مراد على عبده الاهدل",
-          "employeeId": "11121613",
-          "name": "حذيفة احمد احمد الانسى",
-          "title": "Manager I",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        },
-        {
-          "serial": 38,
-          "manager": "حذيفة احمد احمد الانسى",
-          "employeeId": "11122980",
-          "name": "عبدالرحمن محمد قناف المعافا",
-          "title": "Cost Estimation Engineer II",
-          "departmentKey": "INF",
-          "departmentName": "إدارة تقدير التكاليف - البنية التحتية"
-        }
-      ],
-      "manager": "ناصر علي عبدو سنبل",
+      "name": "قسم تقدير تكاليف البنية التحتية",
+      "manager": "ناصر سنبل",
       "library": "SharePoint/INF",
+      "sourceLabel": "الهيكل التنظيمي",
       "tasks": [
-        "مراجعة بنود البنية التحتية",
-        "حصر الكميات الحرجة",
-        "تقدير الموارد",
-        "رفع الملاحظات الفنية"
+        "مراجعة نطاق البنية التحتية",
+        "تقدير تكاليف الطرق والشبكات",
+        "حصر المستلزمات والمواد",
+        "رفع الملاحظات الفنية للمكتبة"
+      ],
+      "employees": [
+        { "name": "ناصر سنبل",               "title": "مدير قسم تقدير تكاليف البنية التحتية" },
+        { "name": "مراد الأهدل",             "title": "مدير وحدة الطرق والكباري" },
+        { "name": "حذيفة الأنسي",            "title": "قائد فريق الإندسكيب" },
+        { "name": "عبدالرحمن المعافا",       "title": "مهندس تقدير تكاليف" },
+        { "name": "بهاء الدين حسين",         "title": "قائد فريق الطرق والكباري" },
+        { "name": "محمد جمال عيد",           "title": "مهندس تقدير تكاليف" },
+        { "name": "أحمد حامد سيف",           "title": "مهندس تقدير تكاليف" },
+        { "name": "يوسف أحمد شلبي",          "title": "مهندس تقدير تكاليف" },
+        { "name": "وائل صلاح",               "title": "قائد فريق كهرباء القوى" },
+        { "name": "محمد الكبوس",             "title": "مهندس تقدير تكاليف" },
+        { "name": "عبدالله الظاهري",         "title": "مهندس تقدير تكاليف" },
+        { "name": "إيهاب أبو غزالة",         "title": "مدير وحدة الشبكات" },
+        { "name": "فتح سيف",                 "title": "قائد فريق الشبكات" },
+        { "name": "أحمد خلف",                "title": "مهندس تقدير تكاليف" },
+        { "name": "محمد أحمد علي",           "title": "مهندس تقدير تكاليف" }
       ]
     },
     {
       "key": "TECH",
-      "name": "إدارة العروض الفنية والتأهيل",
-      "englishName": "Technical Proposals & Prequalification",
-      "sourceLabel": "1.3 إدارة العروض الفنيه والتاهيل",
-      "employees": [
-        {
-          "serial": 39,
-          "manager": "علاء أبو النجا",
-          "employeeId": "11119204",
-          "name": "محمد سلامة على جابر",
-          "title": "Senior manager II",
-          "departmentKey": "TECH",
-          "departmentName": "إدارة العروض الفنية والتأهيل"
-        },
-        {
-          "serial": 40,
-          "manager": "محمد سلامة على جابر",
-          "employeeId": "11120082",
-          "name": "احمد نبيل محمد حسن",
-          "title": "Manager II",
-          "departmentKey": "TECH",
-          "departmentName": "إدارة العروض الفنية والتأهيل"
-        },
-        {
-          "serial": 41,
-          "manager": "احمد نبيل محمد حسن",
-          "employeeId": "11117967",
-          "name": "محمد عبد المحفوظ محمد ناصف",
-          "title": "Manager I",
-          "departmentKey": "TECH",
-          "departmentName": "إدارة العروض الفنية والتأهيل"
-        },
-        {
-          "serial": 42,
-          "manager": "محمد عبد المحفوظ محمد ناصف",
-          "employeeId": "11121326",
-          "name": "شهاب عماد محمد يوسف يوسف",
-          "title": "Qualification Engineer",
-          "departmentKey": "TECH",
-          "departmentName": "إدارة العروض الفنية والتأهيل"
-        },
-        {
-          "serial": 43,
-          "manager": "محمد عبد المحفوظ محمد ناصف",
-          "employeeId": "11124609",
-          "name": "احمد رضوان",
-          "title": "Senior Qualification Specialist",
-          "departmentKey": "TECH",
-          "departmentName": "إدارة العروض الفنية والتأهيل"
-        },
-        {
-          "serial": 44,
-          "manager": "محمد سلامة على جابر",
-          "employeeId": "11124452",
-          "name": "على العدوى الشربينى",
-          "title": "senior manager I",
-          "departmentKey": "TECH",
-          "departmentName": "إدارة العروض الفنية والتأهيل"
-        },
-        {
-          "serial": 45,
-          "manager": "على العدوى الشربينى",
-          "employeeId": "11124123",
-          "name": "يوسف عفيفى أحمد سليم",
-          "title": "Manager I",
-          "departmentKey": "TECH",
-          "departmentName": "إدارة العروض الفنية والتأهيل"
-        },
-        {
-          "serial": 46,
-          "manager": "على العدوى الشربينى",
-          "employeeId": "11117296",
-          "name": "محمد خالد طه سدير",
-          "title": "Manager I",
-          "departmentKey": "TECH",
-          "departmentName": "إدارة العروض الفنية والتأهيل"
-        },
-        {
-          "serial": 47,
-          "manager": "يوسف عفيفى أحمد سليم",
-          "employeeId": "11120079",
-          "name": "انس محمد امين شهاب الدين",
-          "title": "Senior Technical Proposal Engineer",
-          "departmentKey": "TECH",
-          "departmentName": "إدارة العروض الفنية والتأهيل"
-        },
-        {
-          "serial": 48,
-          "manager": "يوسف عفيفى أحمد سليم",
-          "employeeId": "11121405",
-          "name": "احمد سعد ابراهيم العنترى",
-          "title": "Technical Proposal Engineer",
-          "departmentKey": "TECH",
-          "departmentName": "إدارة العروض الفنية والتأهيل"
-        },
-        {
-          "serial": 49,
-          "manager": "خالد محمد طه سدير",
-          "employeeId": "11120030",
-          "name": "احمد محمد رضا محمد ربيع",
-          "title": "Technical Proposal Engineer",
-          "departmentKey": "TECH",
-          "departmentName": "إدارة العروض الفنية والتأهيل"
-        },
-        {
-          "serial": 50,
-          "manager": "خالد محمد طه سدير",
-          "employeeId": "11123387",
-          "name": "وسيم سعيد محمود العجمى",
-          "title": "Technical Proposal Engineer",
-          "departmentKey": "TECH",
-          "departmentName": "إدارة العروض الفنية والتأهيل"
-        }
-      ],
-      "manager": "محمد سلامة على جابر",
+      "name": "قسم التأهيل والعروض الفنية",
+      "manager": "محمد سلامة",
       "library": "SharePoint/TECH",
+      "sourceLabel": "الهيكل التنظيمي",
       "tasks": [
-        "مراجعة مستندات الطرح",
-        "إعداد العرض الفني",
-        "متابعة التأهيل",
-        "رفع الاستفسارات"
+        "مراجعة متطلبات التأهيل",
+        "إعداد العروض الفنية",
+        "تجميع وثائق التأهيل",
+        "رفع الملفات الفنية للمكتبة"
+      ],
+      "employees": [
+        { "name": "محمد سلامة",              "title": "مدير قسم التأهيل والعروض الفنية" },
+        { "name": "علي العدوي الشربيني",      "title": "مدير وحدة العروض الفنية" },
+        { "name": "يوسف عفيفي",              "title": "قائد فريق البنية التحتية" },
+        { "name": "أنس شهاب",                "title": "مهندس عروض فنية" },
+        { "name": "أحمد سعد العنتري",        "title": "مهندس عروض فنية" },
+        { "name": "أحمد محمد رضا",           "title": "مهندس عروض فنية" },
+        { "name": "وسيم سعيد العجمي",        "title": "مهندس عروض فنية" },
+        { "name": "أحمد نبيل حسن",           "title": "مدير وحدة التأهيل الفني" },
+        { "name": "محمد ناصف",               "title": "قائد فريق التأهيل الفني" },
+        { "name": "شهاب عماد يوسف",          "title": "مهندس تأهيل فني" },
+        { "name": "أحمد رضوان",              "title": "أخصائي تأهيل فني" }
       ]
     },
     {
       "key": "DESIGN",
-      "name": "إدارة الدراسات والتصاميم",
-      "englishName": "Studies & Design",
-      "sourceLabel": "إدارة الدراسات والتصاميم",
-      "employees": [
-        {
-          "serial": 51,
-          "manager": "علاء أبو النجا",
-          "employeeId": "11119012",
-          "name": "مصطفى معوض مصطفى",
-          "title": "senior manager II",
-          "departmentKey": "DESIGN",
-          "departmentName": "إدارة الدراسات والتصاميم"
-        },
-        {
-          "serial": 52,
-          "manager": "مصطفى معوض مصطفى",
-          "employeeId": "11119216",
-          "name": "ياسر زين العابدين الحاج",
-          "title": "senior manager I",
-          "departmentKey": "DESIGN",
-          "departmentName": "إدارة الدراسات والتصاميم"
-        },
-        {
-          "serial": 53,
-          "manager": "ياسر زين العابدين الحاج",
-          "employeeId": "11120405",
-          "name": "رمضان عبده",
-          "title": "Manager I",
-          "departmentKey": "DESIGN",
-          "departmentName": "إدارة الدراسات والتصاميم"
-        },
-        {
-          "serial": 54,
-          "manager": "ياسر زين العابدين الحاج",
-          "employeeId": "11121167",
-          "name": "محمود محمد إسماعيل عبد الغنى",
-          "title": "Senior Civil Engineer II",
-          "departmentKey": "DESIGN",
-          "departmentName": "إدارة الدراسات والتصاميم"
-        },
-        {
-          "serial": 55,
-          "manager": "ياسر زين العابدين الحاج",
-          "employeeId": "11121610",
-          "name": "راهيش خان خان",
-          "title": "Document Controller I",
-          "departmentKey": "DESIGN",
-          "departmentName": "إدارة الدراسات والتصاميم"
-        },
-        {
-          "serial": 56,
-          "manager": "مصطفى معوض مصطفى",
-          "employeeId": "11118566",
-          "name": "ماجد نجاح الشاعر",
-          "title": "Senior Civil Engineer II",
-          "departmentKey": "DESIGN",
-          "departmentName": "إدارة الدراسات والتصاميم"
-        },
-        {
-          "serial": 57,
-          "manager": "مصطفى معوض مصطفى",
-          "employeeId": "11119761",
-          "name": "احمد رمضان خليل",
-          "title": "Technical  Engineer I",
-          "departmentKey": "DESIGN",
-          "departmentName": "إدارة الدراسات والتصاميم"
-        },
-        {
-          "serial": 58,
-          "manager": "مصطفى معوض مصطفى",
-          "employeeId": "11117283",
-          "name": "شحته صبحى",
-          "title": "manager II",
-          "departmentKey": "DESIGN",
-          "departmentName": "إدارة الدراسات والتصاميم"
-        },
-        {
-          "serial": 59,
-          "manager": "شحته صبحى",
-          "employeeId": "11118237",
-          "name": "احمد محمد يونس",
-          "title": "Manager I",
-          "departmentKey": "DESIGN",
-          "departmentName": "إدارة الدراسات والتصاميم"
-        },
-        {
-          "serial": 60,
-          "manager": "شحته صبحى",
-          "employeeId": "11124854",
-          "name": "عماد الجندى",
-          "title": "Senior Mechanical Engineer II",
-          "departmentKey": "DESIGN",
-          "departmentName": "إدارة الدراسات والتصاميم"
-        },
-        {
-          "serial": 61,
-          "manager": "شحته صبحى",
-          "employeeId": "11120390",
-          "name": "محمود سيد رمضان صالح",
-          "title": "Mechanical Engineer I",
-          "departmentKey": "DESIGN",
-          "departmentName": "إدارة الدراسات والتصاميم"
-        },
-        {
-          "serial": 62,
-          "manager": "شحته صبحى",
-          "employeeId": "11122724",
-          "name": "ايمن حمود صالح الشمج",
-          "title": "Senior Technical  Engineer I",
-          "departmentKey": "DESIGN",
-          "departmentName": "إدارة الدراسات والتصاميم"
-        }
-      ],
-      "manager": "مصطفى معوض مصطفى",
+      "name": "قسم الدراسات والتصاميم",
+      "manager": "مصطفى معوض",
       "library": "SharePoint/DESIGN",
+      "sourceLabel": "الهيكل التنظيمي",
       "tasks": [
-        "مراجعة المخططات",
         "تقييم متطلبات التصميم",
-        "حصر النواقص",
-        "رفع ملفات التصميم"
+        "إعداد الدراسات الفنية",
+        "مراجعة المخططات والرسومات",
+        "رفع ملفات التصميم للمكتبة"
+      ],
+      "employees": [
+        { "name": "مصطفى معوض",              "title": "مدير قسم الدراسات والتصاميم" },
+        { "name": "ياسر زين العابدين",       "title": "مدير وحدة الدراسات والتصاميم للمشاريع" },
+        { "name": "محمود عبد الغني",          "title": "مهندس مدني" },
+        { "name": "رمضان عبده",              "title": "مهندس إنشائي" },
+        { "name": "ماجد الشاعر",             "title": "مهندس أول محطات" },
+        { "name": "حمدي رفعت",               "title": "مهندس كهرباء كنترول" },
+        { "name": "محمد طارق",               "title": "مهندس هيدروليكا" },
+        { "name": "راهيش خان",               "title": "حافظ مستندات" },
+        { "name": "روني تابون",              "title": "رسام" },
+        { "name": "شحته صبحي",               "title": "مدير وحدة الدراسات والتصاميم الفنية" },
+        { "name": "أحمد يونس",               "title": "مهندس أول إنشائي" },
+        { "name": "محمود سيد صالح",          "title": "مهندس ميكانيكا" },
+        { "name": "أيمن الشمج",              "title": "مهندس معماري" }
       ]
     }
-  ],
-  "totals": {
-    "general": 7,
-    "departmentEmployees": 55,
-    "all": 62
-  }
+  ]
 }

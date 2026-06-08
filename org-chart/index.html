@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شركة الرواف — الهيكل التنظيمي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="../config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../auth-guard.js"></script>
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("alrawafTheme")==="green"?"green":"grad");}catch(e){}</script>
+<link rel="stylesheet" href="../portal-sidebar.css?v=19">
+<link rel="stylesheet" href="../portal-theme.css?v=10">
+<style>
+:root{
+  --primary:#1b3a6b; --primary-2:#254d8f; --primary-3:#1a2e54;
+  --gold:#b8860b; --gold-light:#d4a017; --gold-bright:#f0c040;
+  /* panel-matching plum palette (same as control sidebar) */
+  --ps-plum-dark:#1a0f2e; --ps-plum:#2a1b47; --ps-green:#173128;
+  --ps-gold:#c9a227; --ps-gold-light:#e8b547;
+  --page-bg:#f4f6fb; --card-bg:#ffffff; --card-border:#e2e7f1;
+  --card-radius:8px;
+  --text:#1a2332; --text-2:#4a5568; --text-muted:#8a96a8;
+  --c-gen:#5b3f93; --c-bs:#1b6ec2; --c-inf:#0e8a8a; --c-tech:#c2780b; --c-design:#7c3aed;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;overflow-x:hidden}
+body{font-family:'Cairo','Tajawal',sans-serif;background:var(--page-bg);color:var(--text);min-height:100vh}
+
+/* ===== UNIFIED HEADER (matches all portal pages) ===== */
+.header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;height:72px;position:sticky;top:0;z-index:100;width:100%;
+  background:linear-gradient(105deg,var(--ps-plum-dark) 0%,var(--ps-plum) 55%,var(--ps-green) 100%);
+  border-bottom:2px solid var(--ps-gold-light);
+  box-shadow:0 2px 14px rgba(26,15,46,.32);
+}
+.header-logo{display:flex;align-items:center;gap:14px}
+.header-logo img{height:52px;width:auto;object-fit:contain}
+.header-logo .h-title{font-size:16px;font-weight:900;color:var(--gold-bright);line-height:1.2}
+.header-logo .h-sub{font-size:10px;color:rgba(255,255,255,.55)}
+.header-actions{display:flex;align-items:center;gap:10px}
+.hbtn{
+  display:inline-flex;align-items:center;cursor:pointer;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.26);
+  color:#fff;font-family:inherit;font-size:13px;font-weight:700;
+  padding:8px 14px;border-radius:7px;transition:.15s;
+}
+.hbtn:hover{background:rgba(255,255,255,.22)}
+
+/* ===== LAYOUT ===== */
+.main{padding:22px 26px 70px;max-width:100%;margin:0 auto}
+.page-head{margin:2px 0 16px}
+.page-head h1{font-size:24px;font-weight:900;color:var(--primary)}
+.page-head p{color:var(--text-muted);font-size:13.5px;margin-top:4px;font-weight:600}
+
+/* ===== STATS (flat, accent edge — no circles) ===== */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:18px 0}
+.stat{
+  background:var(--card-bg);border:1px solid var(--card-border);
+  border-inline-start:4px solid currentColor;border-radius:var(--card-radius);
+  padding:14px 16px;
+}
+.stat .num{font-size:24px;font-weight:800;line-height:1;color:var(--text)}
+.stat .lbl{font-size:12px;color:var(--text-muted);font-weight:600;margin-top:6px}
+
+/* ===== TOOLBAR ===== */
+.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.search-wrap{position:relative;flex:1;min-width:240px}
+.search-wrap svg{position:absolute;inset-inline-start:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;fill:var(--text-muted)}
+#search{
+  width:100%;padding:11px 42px;border:1px solid var(--card-border);border-radius:7px;
+  font-family:inherit;font-size:14px;font-weight:600;background:var(--card-bg);color:var(--text);outline:none;transition:.15s;
+}
+#search:focus{border-color:var(--primary-2);box-shadow:0 0 0 3px rgba(37,77,143,.12)}
+.legend{display:flex;gap:7px;flex-wrap:wrap}
+.lg{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:6px 11px;border-radius:6px;border:1px solid var(--card-border);background:#fff;color:var(--text-2)}
+.lg i{width:9px;height:9px;border-radius:2px}
+
+/* ===== PERSON CARD (no avatar — accent edge only) ===== */
+.person{
+  position:relative;background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-inline-start:3px solid var(--accent,#cbd5e1);
+  border-radius:var(--card-radius);padding:10px 14px;
+  transition:background .15s,border-color .15s,box-shadow .15s;
+}
+.person:hover{background:#f7f9fd}
+.person.dim{opacity:.22}
+.person.hit{border-color:var(--gold-light);box-shadow:0 0 0 2px rgba(212,160,23,.28)}
+.p-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.p-title{font-size:12px;color:var(--text-2);font-weight:600;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.p-mail{font-size:11px;color:var(--text-muted);margin-top:3px;text-decoration:none;display:inline-block;direction:ltr}
+.p-mail:hover{color:var(--accent);text-decoration:underline}
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:4px;margin-bottom:5px;color:var(--accent);background:var(--accent-soft)}
+.person.is-mgr{border-inline-start-width:4px}
+.person.is-mgr .p-name{font-size:15px}
+
+/* department accent tokens */
+.gen-c{--accent:var(--c-gen);--accent-soft:#efeaf8}
+.bs-c{--accent:var(--c-bs);--accent-soft:#e8f1fb}
+.inf-c{--accent:var(--c-inf);--accent-soft:#e3f4f4}
+.tech-c{--accent:var(--c-tech);--accent-soft:#fbf2df}
+.design-c{--accent:var(--c-design);--accent-soft:#f1eafd}
+
+/* ===== DIRECTOR (flat banner) ===== */
+.director-wrap{display:flex;justify-content:center;margin:4px 0}
+.director{
+  width:min(520px,100%);text-align:center;border-radius:10px;padding:20px 24px;
+  background:linear-gradient(105deg,var(--ps-plum-dark),var(--ps-plum) 55%,var(--ps-green));
+  border:1px solid rgba(232,181,71,.5);border-top:3px solid var(--ps-gold-light);
+  color:#fff;
+}
+.director .d-name{font-size:20px;font-weight:900}
+.director .d-title{font-size:13px;color:var(--ps-gold-light);font-weight:700;margin-top:4px}
+.director .d-mail{font-size:12px;color:rgba(255,255,255,.72);margin-top:6px;text-decoration:none;display:inline-block;direction:ltr}
+.director .d-mail:hover{color:#fff;text-decoration:underline}
+.trunk{width:2px;height:22px;background:linear-gradient(var(--gold-light),transparent);margin:0 auto}
+
+/* ===== OFFICE ROW ===== */
+.office{background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:16px 18px;margin:4px 0 14px}
+.section-cap{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.section-cap .dot{width:10px;height:10px;border-radius:2px}
+.section-cap h2{font-size:15px;font-weight:800}
+.section-cap small{color:var(--text-muted);font-weight:600;font-size:12px}
+.office-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+
+/* ===== DEPARTMENTS ===== */
+.dept-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:4px}
+.dept{background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:16px;position:relative;overflow:hidden}
+.dept::before{content:'';position:absolute;top:0;inset-inline:0;height:4px;background:var(--accent)}
+.dept-head{display:flex;align-items:center;gap:10px;margin:6px 0 14px}
+.dept-code{font-size:13px;font-weight:800;color:#fff;background:var(--accent);padding:6px 11px;border-radius:6px;letter-spacing:.5px;flex:none}
+.dept-head .dh-name{font-size:16px;font-weight:800;line-height:1.2}
+.dept-head .dh-sub{font-size:11.5px;color:var(--text-muted);font-weight:600;margin-top:2px}
+
+.unit{margin-top:12px;border:1px solid var(--card-border);border-radius:8px;padding:12px;background:#fafbfd}
+.unit-cap{font-size:12.5px;font-weight:800;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.unit-cap::before{content:'';width:8px;height:8px;border-radius:2px;background:var(--accent)}
+.stack{display:grid;gap:8px}
+.team{margin-top:8px;padding-inline-start:12px;border-inline-start:2px solid var(--card-border)}
+.team .team-lead{margin-bottom:8px}
+.team .members{display:grid;gap:8px;padding-inline-start:10px;border-inline-start:1px dotted var(--card-border)}
+
+.dept.gen{--accent:var(--c-gen);--accent-soft:#efeaf8}
+.dept.bs{--accent:var(--c-bs);--accent-soft:#e8f1fb}
+.dept.inf{--accent:var(--c-inf);--accent-soft:#e3f4f4}
+.dept.tech{--accent:var(--c-tech);--accent-soft:#fbf2df}
+.dept.design{--accent:var(--c-design);--accent-soft:#f1eafd}
+
+/* subtle fade only */
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.anim{opacity:0;animation:fade .4s ease forwards}
+
+.empty-note{display:none;text-align:center;color:var(--text-muted);font-weight:700;padding:30px}
+
+@media(max-width:1080px){.dept-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.main{padding:16px 12px 60px}.header{padding:0 16px}.header-logo .h-title{font-size:14px}.office-grid{grid-template-columns:1fr}}
+
+@media print{
+  .header-actions,.toolbar,#control-sidebar,.control-sidebar{display:none!important}
+  body{background:#fff;padding:0!important}
+  body.has-control-sidebar{padding-right:0!important}
+}
+</style>
+<link rel="stylesheet" href="../portal-header.css?v=6">
+</head>
+<body>
+<header class="header">
+  <div class="header-logo">
+    <img src="data:image/png;base64,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" alt="الرواف" />
+    <div>
+      <div class="h-title">الإدارة العامة للمناقصات</div>
+      <div class="h-sub">الرواف للمقاولات — نظام المناقصات</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="hbtn" onclick="window.print()">طباعة / PDF</button>
+    <button class="hbtn" onclick="expandToggle()" id="exp-btn">طيّ الإيميلات</button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-head">
+    <h1>الهيكل التنظيمي</h1>
+    <p>الإدارة العامة للمناقصات والدراسات — شركة الرواف للمقاولات</p>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 10-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1114 9.5 4.5 4.5 0 019.5 14z"/></svg>
+      <input id="search" type="search" placeholder="ابحث عن موظف بالاسم أو المسمى أو البريد…" autocomplete="off">
+    </div>
+    <div class="legend">
+      <span class="lg"><i style="background:var(--c-gen)"></i>الإدارة العامة</span>
+      <span class="lg"><i style="background:var(--c-bs)"></i>تقدير تكاليف الإنشاءات</span>
+      <span class="lg"><i style="background:var(--c-inf)"></i>تقدير تكاليف البنية التحتية</span>
+      <span class="lg"><i style="background:var(--c-tech)"></i>التأهيل والعروض الفنية</span>
+      <span class="lg"><i style="background:var(--c-design)"></i>الدراسات والتصاميم</span>
+    </div>
+  </div>
+
+  <div id="org"></div>
+  <div class="empty-note" id="empty">لا توجد نتائج مطابقة لبحثك.</div>
+</main>
+
+<script>
+/* ============================================================
+   بيانات الهيكل التنظيمي — المخطط الرسمي
+   ============================================================ */
+const DIRECTOR = { name:"علاء أبو النجا", title:"مدير إدارة المناقصات والدراسات", email:"alaaaboelnaja@alrawaf.com.sa" };
+
+const OFFICE = {
+  name:"الإدارة العامة والمكتب", key:"gen",
+  members:[
+    { name:"محمد أبو النجا", title:"منسق عام", email:"m.abouelnaga@alrawaf.com.sa" },
+    { name:"أحمد أبو المكارم", title:"مدير مكتب", email:"ahmedaboelmakarem@alrawaf.com.sa" },
+    { name:"إيهاب ادوارد", title:"أخصائي نظم المعلومات", email:"ehab.edward@alrawaf.com.sa" },
+    { name:"إسلام سامي", title:"مراجع وحاسب كميات أول", email:"eslam.samy@alrawaf.com.sa" },
+    { name:"رغد منيف الغفتان", title:"مساعد إداري", email:"raghad.alaftan@alrawaf.com.sa" },
+    { name:"مساعد عبدالله الحسين", title:"إداري", email:"musaad.abdullah@alrawaf.com.sa" },
+    { name:"سامي سليمان السديري", title:"إداري", email:"samy.alsudayri@alrawaf.com.sa" }
+  ]
+};
+
+const DEPARTMENTS = [
+  {
+    key:"bs", name:"قسم تقدير تكاليف الإنشاءات", short:"BS",
+    manager:{ name:"محمود أحمد عبد الغني", title:"مدير قسم تقدير تكاليف الإنشاءات", email:"mahmoud.a.abdelghany@alrawaf.com.sa" },
+    units:[{
+      name:"وحدة الأعمال المدنية والمعمارية",
+      manager:{ name:"عمرو عطيتو", title:"مدير وحدة الأعمال المدنية والمعمارية", email:"amr.atitou@alrawaf.com.sa" },
+      members:[
+        { name:"محمد عبد الوهاب سليم", title:"مهندس تقدير تكاليف", email:"mohamed.selim@alrawaf.com.sa" },
+        { name:"أحمد عبدالرجال", title:"مهندس تقدير تكاليف", email:"ahmed.abdalrijal@alrawaf.com.sa" },
+        { name:"محمد الرفاعي", title:"مهندس تقدير تكاليف", email:"mohamed.sayed@alrawaf.com.sa" },
+        { name:"فاريان ديانيتو روبيو", title:"حاسب كميات", email:"varianrubio3557@alrawaf.com.sa" }
+      ],
+      teams:[
+        { lead:{ name:"عاطف صلاح الدين", title:"قائد فريق أعمال ميكانيكية", email:"atef.salah@alrawaf.com.sa" },
+          members:[
+            { name:"محمد إبراهيم", title:"مهندس تقدير تكاليف", email:"mohamed.abdelkhalek@alrawaf.com.sa" },
+            { name:"محمد سماحة", title:"مهندس تقدير تكاليف", email:"mohamed.samaha@alrawaf.com.sa" }
+          ]},
+        { lead:{ name:"أمير رجب", title:"قائد فريق الأنظمة الكهربائية والتيار الخفيف", email:"amir.ragab@alrawaf.com.sa" },
+          members:[
+            { name:"أحمد شعبان الجمل", title:"مهندس تقدير تكاليف", email:"ahmed.shaaban@alrawaf.com.sa" }
+          ]}
+      ]
+    }]
+  },
+  {
+    key:"inf", name:"قسم تقدير تكاليف البنية التحتية", short:"INF",
+    manager:{ name:"ناصر سنبل", title:"مدير قسم تقدير تكاليف البنية التحتية", email:"nassersonbl2017@alrawaf.com.sa" },
+    units:[
+      {
+        name:"وحدة الطرق والكباري",
+        manager:{ name:"مراد الأهدل", title:"مدير وحدة الطرق والكباري", email:"murad.alahdal@alrawaf.com.sa" },
+        members:[],
+        teams:[
+          { lead:{ name:"حذيفة الأنسي", title:"قائد فريق الإندسكيب", email:"huzaifa.alanesi@alrawaf.com.sa" },
+            members:[ { name:"عبدالرحمن المعافا", title:"مهندس تقدير تكاليف", email:"abdulrahman.almuafa@alrawaf.com.sa" } ]},
+          { lead:{ name:"بهاء الدين حسين", title:"قائد فريق الطرق والكباري", email:"bahaaeldin.hussein@alrawaf.com.sa" },
+            members:[
+              { name:"محمد جمال عيد", title:"مهندس تقدير تكاليف", email:"mohamed.eid@alrawaf.com.sa" },
+              { name:"أحمد حامد سيف", title:"مهندس تقدير تكاليف", email:"ahmed.saif@alrawaf.com.sa" },
+              { name:"يوسف أحمد شلبي", title:"مهندس تقدير تكاليف", email:"youssef.yasser@alrawaf.com.sa" }
+            ]},
+          { lead:{ name:"وائل صلاح", title:"قائد فريق كهرباء القوى", email:"wael.salah@alrawaf.com.sa" },
+            members:[
+              { name:"محمد الكبوس", title:"مهندس تقدير تكاليف", email:"mohamed.alkabos@alrawaf.com.sa" },
+              { name:"عبدالله الظاهري", title:"مهندس تقدير تكاليف", email:"abdullah.aldhaheri@alrawaf.com.sa" }
+            ]}
+        ]
+      },
+      {
+        name:"وحدة الشبكات",
+        manager:{ name:"إيهاب أبو غزالة", title:"مدير وحدة الشبكات", email:"ehab.mohamed8100@alrawaf.com.sa" },
+        members:[],
+        teams:[
+          { lead:{ name:"فتح سيف", title:"قائد فريق الشبكات", email:"fath.saif8653@alrawaf.com.sa" },
+            members:[
+              { name:"أحمد خلف", title:"مهندس تقدير تكاليف", email:"ahmed.khalaf@alrawaf.com.sa" },
+              { name:"محمد أحمد علي", title:"مهندس تقدير تكاليف", email:"mohamed.alahmadi@alrawaf.com.sa" }
+            ]}
+        ]
+      }
+    ]
+  },
+  {
+    key:"tech", name:"قسم التأهيل والعروض الفنية", short:"TECH",
+    manager:{ name:"محمد سلامة", title:"مدير قسم التأهيل والعروض الفنية", email:"mohamed.salama@alrawaf.com.sa" },
+    units:[
+      {
+        name:"وحدة العروض الفنية",
+        manager:{ name:"علي العدوي الشربيني", title:"مدير وحدة العروض الفنية", email:"ali.aladawi@alrawaf.com.sa" },
+        members:[],
+        teams:[
+          { lead:{ name:"يوسف عفيفي", title:"قائد فريق البنية التحتية", email:"yousef.afifi@alrawaf.com.sa" },
+            members:[
+              { name:"أنس شهاب", title:"مهندس عروض فنية", email:"anas.shehab@alrawaf.com.sa" },
+              { name:"أحمد سعد العنتري", title:"مهندس عروض فنية", email:"ahmed.elantary@alrawaf.com.sa" },
+              { name:"أحمد محمد رضا", title:"مهندس عروض فنية", email:"ahmed.almaamari@alrawaf.com.sa" },
+              { name:"وسيم سعيد العجمي", title:"مهندس عروض فنية", email:"wasem.saed@alrawaf.com.sa" }
+            ]}
+        ]
+      },
+      {
+        name:"وحدة التأهيل الفني",
+        manager:{ name:"أحمد نبيل حسن", title:"مدير وحدة التأهيل الفني", email:"ahmed.nabil@alrawaf.com.sa" },
+        members:[],
+        teams:[
+          { lead:{ name:"محمد ناصف", title:"قائد فريق التأهيل الفني", email:"m.nasef@alrawaf.com.sa" },
+            members:[
+              { name:"شهاب عماد يوسف", title:"مهندس تأهيل فني", email:"shehab.youssef@alrawaf.com.sa" },
+              { name:"أحمد رضوان", title:"أخصائي تأهيل فني", email:"ahmed.radwan@alrawaf.com.sa" }
+            ]}
+        ]
+      }
+    ]
+  },
+  {
+    key:"design", name:"قسم الدراسات والتصاميم", short:"DESIGN",
+    manager:{ name:"مصطفى معوض", title:"مدير قسم الدراسات والتصاميم", email:"mostafa.moawed@alrawaf.com.sa" },
+    units:[
+      {
+        name:"وحدة الدراسات والتصاميم للمشاريع",
+        manager:{ name:"ياسر زين العابدين", title:"مدير وحدة الدراسات والتصاميم للمشاريع", email:"yasir.zain@alrawaf.com.sa" },
+        members:[
+          { name:"محمود عبد الغني", title:"مهندس مدني", email:"mahmoud.abdulghani@alrawaf.com.sa" },
+          { name:"رمضان عبده", title:"مهندس إنشائي", email:"ramadan.abdou20405@alrawaf.com.sa" },
+          { name:"ماجد الشاعر", title:"مهندس أول محطات", email:"maged.elshaer@alrawaf.com.sa" },
+          { name:"حمدي رفعت", title:"مهندس كهرباء كنترول", email:"hamdy.fahmy@alrawaf.com.sa" },
+          { name:"محمد طارق", title:"مهندس هيدروليكا", email:"mohamed.moharm@alrawaf.com.sa" },
+          { name:"راهيش خان", title:"حافظ مستندات", email:"rahish.khan@alrawaf.com.sa" },
+          { name:"روني تابون", title:"رسام", email:"ronnie@alrawaf.com.sa" }
+        ],
+        teams:[]
+      },
+      {
+        name:"وحدة الدراسات والتصاميم الفنية للمناقصات",
+        manager:{ name:"شحته صبحي", title:"مدير وحدة الدراسات والتصاميم الفنية للمناقصات", email:"shehta.sobhy@alrawaf.com.sa" },
+        members:[
+          { name:"أحمد يونس", title:"مهندس أول إنشائي", email:"a.younes@alrawaf.com.sa" },
+          { name:"محمود سيد صالح", title:"مهندس ميكانيكا", email:"mahmoud.sayed@alrawaf.com.sa" },
+          { name:"أيمن الشمج", title:"مهندس معماري", email:"ayman.alshamaj@alrawaf.com.sa" }
+        ],
+        teams:[]
+      }
+    ]
+  }
+];
+
+/* ============================ render ============================ */
+let _i=0;
+function personCard(p, deptKey, opts={}){
+  const cls=['person','anim',(deptKey||'gen')+'-c'];
+  if(opts.deptMgr) cls.push('is-mgr');
+  const badge = opts.badge ? `<span class="badge">${opts.badge}</span>` : '';
+  const delay = (_i++ % 14) * 22;
+  return `<div class="${cls.join(' ')}" style="animation-delay:${delay}ms"
+       data-search="${(p.name+' '+p.title+' '+p.email).toLowerCase()}">
+    ${badge}
+    <div class="p-name">${p.name}</div>
+    <div class="p-title">${p.title}</div>
+    <a class="p-mail" href="mailto:${p.email}">${p.email}</a>
+  </div>`;
+}
+function unitBlock(u, deptKey){
+  let html = `<div class="unit"><div class="unit-cap">${u.name}</div><div class="stack">`;
+  html += personCard(u.manager, deptKey, {badge:'مدير وحدة'});
+  (u.members||[]).forEach(m=> html += personCard(m, deptKey));
+  (u.teams||[]).forEach(t=>{
+    html += `<div class="team"><div class="team-lead">${personCard(t.lead, deptKey,{badge:'قائد فريق'})}</div><div class="members">`;
+    t.members.forEach(m=> html += personCard(m, deptKey));
+    html += `</div></div>`;
+  });
+  html += `</div></div>`;
+  return html;
+}
+function deptBlock(d){
+  let html = `<section class="dept ${d.key}">
+    <div class="dept-head">
+      <div class="dept-code">${d.short}</div>
+      <div><div class="dh-name">${d.name}</div><div class="dh-sub">${countDept(d)} موظف</div></div>
+    </div>`;
+  html += personCard(d.manager, d.key, {deptMgr:true, badge:'مدير القسم'});
+  d.units.forEach(u=> html += unitBlock(u, d.key));
+  html += `</section>`;
+  return html;
+}
+function countUnit(u){ return 1 + (u.members?.length||0) + (u.teams||[]).reduce((s,t)=>s+1+t.members.length,0); }
+function countDept(d){ return 1 + d.units.reduce((s,u)=>s+countUnit(u),0); }
+
+function render(){
+  const root = document.getElementById('org');
+  let html = '';
+  html += `<div class="director-wrap"><div class="director anim">
+      <div class="d-name">${DIRECTOR.name}</div>
+      <div class="d-title">${DIRECTOR.title}</div>
+      <a class="d-mail" href="mailto:${DIRECTOR.email}">${DIRECTOR.email}</a>
+    </div></div><div class="trunk"></div>`;
+  html += `<div class="office">
+      <div class="section-cap"><span class="dot" style="background:var(--c-gen)"></span>
+        <h2>${OFFICE.name}</h2><small>${OFFICE.members.length} موظف</small></div>
+      <div class="office-grid">${OFFICE.members.map(m=>personCard(m,'gen')).join('')}</div>
+    </div>`;
+  html += `<div class="dept-grid">${DEPARTMENTS.map(deptBlock).join('')}</div>`;
+  root.innerHTML = html;
+
+  const statColors=['var(--c-gen)','var(--c-bs)','var(--c-inf)','var(--c-tech)','var(--c-design)'];
+  const totals = [
+    {n:countAll(), l:'إجمالي الموظفين'},
+    {n:DEPARTMENTS.length, l:'الأقسام'},
+    {n:totalUnits(), l:'الوحدات'},
+    {n:totalTeams(), l:'فرق العمل'},
+    {n:1+OFFICE.members.length, l:'الإدارة العامة'}
+  ];
+  document.getElementById('stats').innerHTML = totals.map((t,i)=>
+    `<div class="stat" style="color:${statColors[i]}"><div class="num">${t.n}</div><div class="lbl">${t.l}</div></div>`).join('');
+}
+function countAll(){ return 1 + OFFICE.members.length + DEPARTMENTS.reduce((s,d)=>s+countDept(d),0); }
+function totalUnits(){ return DEPARTMENTS.reduce((s,d)=>s+d.units.length,0); }
+function totalTeams(){ return DEPARTMENTS.reduce((s,d)=>s+d.units.reduce((a,u)=>a+(u.teams||[]).length,0),0); }
+
+const search = document.getElementById('search');
+search.addEventListener('input', ()=>{
+  const q = search.value.trim().toLowerCase();
+  const cards = document.querySelectorAll('.person');
+  let hits=0;
+  cards.forEach(c=>{
+    const match = !q || c.dataset.search.includes(q);
+    c.classList.toggle('dim', q && !match);
+    c.classList.toggle('hit', q && match);
+    if(match && q) hits++;
+  });
+  document.getElementById('empty').style.display = (q && hits===0) ? 'block' : 'none';
+});
+
+let emailsShown = true;
+function expandToggle(){
+  emailsShown = !emailsShown;
+  document.querySelectorAll('.p-mail').forEach(e=> e.style.display = emailsShown ? 'inline-block' : 'none');
+  document.getElementById('exp-btn').textContent = emailsShown ? 'طيّ الإيميلات' : 'إظهار الإيميلات';
+}
+
+render();
+</script>
+
+<script src="../portal-sidebar.js?v=13"></script>
+</body>
+</html>

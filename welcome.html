@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>أهلاً وسهلاً — إدارة المناقصات</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-1: #3b3a66; --bg-2: #2a2848; --bg-3: #232140;
+      --gold-1: #e6c878; --gold-2: #c49a3f; --gold-soft: #b9a26a;
+      --ink: #f4f1ea; --muted: rgba(255,255,255,.55);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Tajawal", Arial, sans-serif;
+      min-height: 100dvh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      background:
+        radial-gradient(700px 420px at 50% -10%, rgba(200,162,74,.10), transparent 60%),
+        radial-gradient(600px 500px at 100% 110%, rgba(91,79,160,.18), transparent 55%),
+        linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
+    }
+    .welcome-card {
+      width: 100%; max-width: 380px;
+      background: rgba(255,255,255,.045);
+      border: 1px solid rgba(230,200,120,.22);
+      border-radius: 24px;
+      padding: 34px 30px 30px;
+      text-align: center;
+      box-shadow: 0 30px 70px rgba(15,12,40,.45), inset 0 1px 0 rgba(255,255,255,.06);
+      backdrop-filter: blur(10px);
+      animation: rise .55s cubic-bezier(.2,.7,.3,1) both;
+    }
+    @keyframes rise { from { opacity: 0; transform: translateY(18px) scale(.97); } to { opacity: 1; transform: none; } }
+
+    .welcome-avatar {
+      width: 104px; height: 104px; margin: 0 auto 18px;
+      border-radius: 50%; overflow: hidden;
+      border: 3px solid transparent;
+      background:
+        linear-gradient(var(--bg-2), var(--bg-2)) padding-box,
+        linear-gradient(145deg, var(--gold-1), var(--gold-2)) border-box;
+      box-shadow: 0 0 0 6px rgba(230,200,120,.08), 0 12px 30px rgba(15,12,40,.5);
+    }
+    .welcome-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .welcome-kicker {
+      color: var(--gold-soft); font-size: 12px; font-weight: 700;
+      letter-spacing: 2px; margin-bottom: 10px;
+    }
+    .welcome-title {
+      font-size: 21px; font-weight: 900; line-height: 1.35; margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--gold-1), var(--gold-2));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .welcome-divider {
+      width: 54px; height: 3px; margin: 0 auto 16px; border-radius: 999px;
+      background: linear-gradient(90deg, var(--gold-1), var(--gold-2));
+      opacity: .85;
+    }
+    .welcome-message { color: var(--ink); font-size: 15px; font-weight: 800; line-height: 1.6; margin-bottom: 10px; }
+    .welcome-sub { color: var(--muted); font-size: 13px; font-weight: 500; line-height: 1.85; margin-bottom: 26px; }
+
+    .welcome-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 14px;
+      border: none; border-radius: 13px;
+      background: linear-gradient(145deg, #d9b75f, #c49a3f);
+      color: #2a2848; font: inherit; font-size: 15px; font-weight: 900;
+      cursor: pointer; text-decoration: none;
+      box-shadow: 0 10px 26px rgba(196,154,63,.32);
+      transition: transform .12s, box-shadow .18s, filter .18s;
+    }
+    .welcome-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(196,154,63,.42); filter: brightness(1.04); }
+    .welcome-btn:active { transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <main class="welcome-card" id="welcome-card" hidden>
+    <div class="welcome-avatar"><img id="welcome-img" src="" alt=""></div>
+    <p class="welcome-kicker">أهلاً وسهلاً</p>
+    <h1 class="welcome-title" id="welcome-title"></h1>
+    <div class="welcome-divider"></div>
+    <p class="welcome-message" id="welcome-message"></p>
+    <p class="welcome-sub">نتشرف بتشريفكم في منصتنا. جميع بيانات المناقصات والتحليلات في خدمتكم.</p>
+    <a class="welcome-btn" href="/tenders/">الدخول إلى لوحة التحكم ◀</a>
+  </main>
+
+  <script src="./config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="./auth-guard.js"></script>
+  <script>
+    // الشخصيات المميّزة — تُعرّف بالبريد مباشرة (لا تعتمد على ملف الصلاحيات)
+    const PORTAL_VIPS = {
+      "alaaaboelnaja@alrawaf.com.sa": {
+        title: "مدير الإدارة العامة للمناقصات",
+        message: "مرحباً بك سعادة مدير الإدارة العامة للمناقصات",
+        avatar: "./portfolio/assets/manager-avatar.jpg"
+      },
+      "abdullah@alrawaf.com.sa": {
+        title: "سعادة نائب الرئيس التنفيذي",
+        message: "مرحباً بك سعادة نائب الرئيس التنفيذي",
+        avatar: "./portfolio/assets/vp-avatar.jpg"
+      }
+    };
+
+    (function () {
+      let email = "";
+      try { email = (sessionStorage.getItem("alrawafUserEmail") || "").trim().toLowerCase(); } catch {}
+      const vip = PORTAL_VIPS[email];
+      // من ليس شخصية مميّزة يُنقل مباشرة إلى لوحة التحكم
+      if (!vip) { window.location.replace("/tenders/"); return; }
+      document.getElementById("welcome-img").src = vip.avatar;
+      document.getElementById("welcome-img").alt = vip.title;
+      document.getElementById("welcome-title").textContent = vip.title;
+      document.getElementById("welcome-message").textContent = vip.message;
+      document.getElementById("welcome-card").hidden = false;
+    })();
+  </script>
+</body>
+</html>

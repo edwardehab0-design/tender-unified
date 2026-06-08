@@ -1,0 +1,232 @@
+/* ============================================================
+   الرواف — نظام التصميم الموحَّد (Design System)
+   مصدر الحقيقة الوحيد لكل الصفحات. استورده بعد الخطوط مباشرة.
+   الهوية: Navy + ذهبي | شريط جانبي داكن | كثافة متوازنة (44px)
+   ============================================================ */
+
+:root {
+  /* ---- اللون الأساسي (العلامة) ---- */
+  --ds-navy-900:#15294d;
+  --ds-navy-800:#1a2e54;
+  --ds-navy-700:#1b3a6b;   /* primary */
+  --ds-navy-600:#254d8f;
+  --ds-navy-500:#3a6fc4;
+  --ds-gold:#d4a017;
+  --ds-gold-soft:#b8860b;
+  --ds-gold-bright:#f0c040;
+
+  /* ---- سطح التنقل الداكن (sidebar) ---- */
+  --ds-side-1:#1a0f2e;
+  --ds-side-2:#2a1b47;
+  --ds-side-3:#173128;
+
+  /* ---- المحايدات (سائدة) ---- */
+  --ds-bg:#f4f6fb;          /* خلفية الصفحة */
+  --ds-surface:#ffffff;     /* الكروت والجداول */
+  --ds-surface-2:#f7f9fc;   /* صف متناوب / hover خفيف */
+  --ds-surface-3:#eef2f8;
+  --ds-border:#e2e7f1;      /* فواصل وحدود */
+  --ds-border-strong:#cdd6e6;
+
+  /* ---- النص ---- */
+  --ds-text:#1a2332;        /* أساسي */
+  --ds-text-2:#4a5568;      /* ثانوي */
+  --ds-text-3:#8a96a8;      /* خافت / meta */
+  --ds-text-on-dark:#ffffff;
+
+  /* ---- ألوان الحالة (4 فقط) ---- */
+  --ds-green:#16a34a;  --ds-green-bg:#eaf7ef;  --ds-green-bd:#bce6cd;
+  --ds-amber:#d97706;  --ds-amber-bg:#fdf4e7;  --ds-amber-bd:#f6dcae;
+  --ds-red:#dc2626;    --ds-red-bg:#fdecec;    --ds-red-bd:#f6c6c6;
+  --ds-blue:#2563eb;   --ds-blue-bg:#eaf0fe;   --ds-blue-bd:#c2d6fb;
+  --ds-slate:#6b7280;  --ds-slate-bg:#f1f3f6;  --ds-slate-bd:#d9dee7;
+
+  /* ---- المقاييس ---- */
+  --ds-r-sm:6px;        /* عناصر صغيرة */
+  --ds-r:8px;           /* كروت */
+  --ds-r-lg:10px;       /* حاويات كبيرة */
+  --ds-gap:16px;
+  --ds-pad:18px;
+  --ds-row-h:44px;      /* كثافة متوازنة */
+
+  --ds-shadow-sm:0 1px 2px rgba(20,41,77,.06);
+  --ds-shadow:0 2px 10px rgba(20,41,77,.08);
+  --ds-shadow-md:0 6px 22px rgba(20,41,77,.12);
+
+  /* ---- التايبوغرافي ---- */
+  --ds-font:'Tajawal','Cairo',system-ui,Arial,sans-serif;
+  --ds-fs-meta:12px;
+  --ds-fs-body:14px;
+  --ds-fs-title:16px;
+  --ds-fs-num:22px;
+}
+
+/* ============================================================
+   الأساسيات
+   ============================================================ */
+.ds * { box-sizing:border-box; }
+.ds {
+  font-family:var(--ds-font);
+  background:var(--ds-bg);
+  color:var(--ds-text);
+}
+
+/* ============================================================
+   الهيدر الموحَّد — ارتفاع ثابت 64px
+   البنية: <header class="ds-header"> شعار | عنوان | أدوات
+   ============================================================ */
+.ds-header {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px; height:64px; padding:0 26px;
+  position:sticky; top:0; z-index:100; width:100%;
+  background:linear-gradient(105deg,var(--ds-navy-800) 0%,var(--ds-navy-700) 55%,var(--ds-navy-600) 100%);
+  border-bottom:2px solid var(--ds-gold);
+  box-shadow:0 2px 12px rgba(20,41,77,.22);
+}
+.ds-header__brand { display:flex; align-items:center; gap:13px; min-width:0; }
+.ds-header__brand img { height:42px; width:auto; object-fit:contain; }
+.ds-header__titles { min-width:0; }
+.ds-header__title { font-size:15px; font-weight:800; color:var(--ds-gold-bright); line-height:1.2; white-space:nowrap; }
+.ds-header__sub { font-size:10.5px; color:rgba(255,255,255,.55); white-space:nowrap; }
+.ds-header__actions { display:flex; align-items:center; gap:9px; flex-wrap:nowrap; }
+
+/* أزرار الهيدر */
+.ds-hbtn {
+  display:inline-flex; align-items:center; gap:6px; cursor:pointer;
+  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.24);
+  color:#fff; font-family:inherit; font-size:13px; font-weight:700;
+  padding:8px 14px; border-radius:var(--ds-r-sm); transition:.15s; white-space:nowrap;
+}
+.ds-hbtn:hover { background:rgba(255,255,255,.22); }
+.ds-hbtn--solid { background:var(--ds-gold); border-color:var(--ds-gold); color:var(--ds-navy-900); }
+.ds-hbtn--solid:hover { background:var(--ds-gold-bright); }
+.ds-header__meta { font-size:12px; color:rgba(255,255,255,.65); white-space:nowrap; }
+
+/* ============================================================
+   منطقة المحتوى
+   ============================================================ */
+.ds-main { padding:20px 24px 64px; max-width:1560px; margin:0 auto; }
+.ds-page-head { margin:2px 0 16px; }
+.ds-page-head h1 { font-size:22px; font-weight:800; color:var(--ds-navy-700); }
+.ds-page-head p { color:var(--ds-text-3); font-size:13px; margin-top:4px; font-weight:600; }
+
+/* ============================================================
+   بطاقات KPI — مسطّحة بحافة لونية (لا تدرج لا دائرة)
+   ============================================================ */
+.ds-kpis { display:grid; gap:12px; margin:16px 0 22px;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); }
+.ds-kpi {
+  background:var(--ds-surface); border:1px solid var(--ds-border);
+  border-inline-start:4px solid var(--accent,var(--ds-navy-700));
+  border-radius:var(--ds-r); padding:14px 16px; transition:.15s;
+}
+.ds-kpi:hover { box-shadow:var(--ds-shadow); }
+.ds-kpi__num { font-size:var(--ds-fs-num); font-weight:800; line-height:1; color:var(--ds-text); }
+.ds-kpi__lbl { font-size:var(--ds-fs-meta); color:var(--ds-text-3); font-weight:600; margin-top:6px; }
+.ds-kpi.is-green  { --accent:var(--ds-green); }
+.ds-kpi.is-amber  { --accent:var(--ds-amber); }
+.ds-kpi.is-red    { --accent:var(--ds-red); }
+.ds-kpi.is-blue   { --accent:var(--ds-blue); }
+.ds-kpi.is-gold   { --accent:var(--ds-gold); }
+.ds-kpi.is-slate  { --accent:var(--ds-slate); }
+
+/* ============================================================
+   البطاقة العامة (Panel)
+   ============================================================ */
+.ds-card {
+  background:var(--ds-surface); border:1px solid var(--ds-border);
+  border-radius:var(--ds-r-lg); box-shadow:var(--ds-shadow-sm); overflow:hidden;
+}
+.ds-card__head {
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:14px 18px; border-bottom:1px solid var(--ds-border);
+}
+.ds-card__title { font-size:var(--ds-fs-title); font-weight:800; color:var(--ds-text); }
+.ds-card__body { padding:16px 18px; }
+
+/* ============================================================
+   الجدول الموحَّد — كثافة متوازنة 44px
+   ============================================================ */
+.ds-table { width:100%; border-collapse:collapse; font-size:var(--ds-fs-body); }
+.ds-table thead th {
+  text-align:start; font-weight:800; font-size:12.5px; color:var(--ds-text-2);
+  background:var(--ds-surface-3); padding:0 14px; height:42px;
+  border-bottom:1px solid var(--ds-border); white-space:nowrap; position:sticky; top:0;
+}
+.ds-table tbody td { padding:0 14px; height:var(--ds-row-h);
+  border-bottom:1px solid var(--ds-border); color:var(--ds-text); }
+.ds-table tbody tr:nth-child(even) { background:var(--ds-surface-2); }
+.ds-table tbody tr:hover { background:var(--ds-surface-3); }
+.ds-table tbody tr:last-child td { border-bottom:0; }
+
+/* ============================================================
+   شارات الحالة — pill صغيرة (نمط Monday)
+   ============================================================ */
+.ds-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:11.5px; font-weight:700; padding:3px 10px; border-radius:999px;
+  border:1px solid transparent; white-space:nowrap;
+}
+.ds-badge::before { content:''; width:7px; height:7px; border-radius:50%; background:currentColor; flex:none; }
+.ds-badge.is-green { color:var(--ds-green); background:var(--ds-green-bg); border-color:var(--ds-green-bd); }
+.ds-badge.is-amber { color:var(--ds-amber); background:var(--ds-amber-bg); border-color:var(--ds-amber-bd); }
+.ds-badge.is-red   { color:var(--ds-red);   background:var(--ds-red-bg);   border-color:var(--ds-red-bd); }
+.ds-badge.is-blue  { color:var(--ds-blue);  background:var(--ds-blue-bg);  border-color:var(--ds-blue-bd); }
+.ds-badge.is-slate { color:var(--ds-slate); background:var(--ds-slate-bg); border-color:var(--ds-slate-bd); }
+
+/* ============================================================
+   الأزرار والحقول
+   ============================================================ */
+.ds-btn {
+  display:inline-flex; align-items:center; gap:7px; cursor:pointer;
+  font-family:inherit; font-size:13.5px; font-weight:700; padding:9px 16px;
+  border-radius:var(--ds-r-sm); border:1px solid var(--ds-border-strong);
+  background:var(--ds-surface); color:var(--ds-text); transition:.15s;
+}
+.ds-btn:hover { background:var(--ds-surface-3); }
+.ds-btn--primary { background:var(--ds-navy-700); border-color:var(--ds-navy-700); color:#fff; }
+.ds-btn--primary:hover { background:var(--ds-navy-600); }
+.ds-btn--gold { background:var(--ds-gold); border-color:var(--ds-gold); color:var(--ds-navy-900); }
+.ds-btn--gold:hover { background:var(--ds-gold-bright); }
+
+.ds-field {
+  width:100%; padding:10px 14px; border:1px solid var(--ds-border-strong);
+  border-radius:var(--ds-r-sm); font-family:inherit; font-size:14px; font-weight:600;
+  background:var(--ds-surface); color:var(--ds-text); outline:none; transition:.15s;
+}
+.ds-field:focus { border-color:var(--ds-navy-600); box-shadow:0 0 0 3px rgba(37,77,143,.12); }
+
+.ds-search { position:relative; }
+.ds-search svg { position:absolute; inset-inline-start:13px; top:50%; transform:translateY(-50%);
+  width:17px; height:17px; fill:var(--ds-text-3); }
+.ds-search .ds-field { padding-inline-start:42px; }
+
+/* ============================================================
+   Tabs
+   ============================================================ */
+.ds-tabs { display:flex; gap:4px; border-bottom:1px solid var(--ds-border); }
+.ds-tab {
+  padding:10px 16px; font-size:13.5px; font-weight:700; cursor:pointer;
+  color:var(--ds-text-2); border-bottom:2px solid transparent; background:none; border-top:0; border-inline:0;
+  font-family:inherit; transition:.15s;
+}
+.ds-tab:hover { color:var(--ds-text); }
+.ds-tab.is-active { color:var(--ds-navy-700); border-bottom-color:var(--ds-gold); }
+
+/* ============================================================
+   استجابة
+   ============================================================ */
+@media (max-width:640px) {
+  .ds-header { padding:0 14px; }
+  .ds-header__title { font-size:13px; }
+  .ds-main { padding:14px 12px 56px; }
+}
+
+/* ============================================================
+   طباعة
+   ============================================================ */
+@media print {
+  .ds-header__actions, .control-sidebar, #control-sidebar { display:none !important; }
+  .ds { background:#fff; }
+  body.has-control-sidebar { padding-right:0 !important; }
+}

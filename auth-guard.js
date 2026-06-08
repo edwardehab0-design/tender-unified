@@ -1,17 +1,6 @@
 // auth-guard.js — أضِف هذا السكريبت في <head> كل صفحة محمية
 // يُعيد توجيه المستخدم لـ /login.html إن لم يكن مسجّل دخوله
 (async () => {
-  const cfg = window.APP_CONFIG || {};
-  const isLocalHost = ["127.0.0.1", "localhost", "::1"].includes(window.location.hostname);
-  if (cfg.localAuthBypass && isLocalHost) {
-    const localUser = cfg.localUser || {};
-    try {
-      sessionStorage.setItem("alrawafPortalRole", localUser.role === "executive" ? "manager" : "department");
-      sessionStorage.setItem("alrawafDepartmentKey", localUser.departmentKey || "BS");
-    } catch {}
-    return;
-  }
-
   const SUPABASE_URL = window.APP_CONFIG?.supabaseUrl;
   const SUPABASE_KEY = window.APP_CONFIG?.supabaseKey;
   // إن لم تُحقن المفاتيح بعد (placeholder ما زال يحوي "__") نتخطّى الحارس
@@ -31,12 +20,17 @@
     window.location.replace("/login.html");
   } else {
     // حدّث sessionStorage للتوافق مع الكود الحالي
+    // الشخصيات التنفيذية المميّزة — صلاحية شاملة حتى لو كان ملفها ناقصاً
+    const VIP_EMAILS = ["alaaaboelnaja@alrawaf.com.sa", "abdullah@alrawaf.com.sa"];
+    const email = (data.session.user.email || "").trim().toLowerCase();
+    const isVip = VIP_EMAILS.includes(email);
     const { data: profile } = await sb.from("profiles")
-      .select("role, department_key").eq("id", data.session.user.id).single();
-    if (profile) {
-      sessionStorage.setItem("alrawafPortalRole", profile.role === "executive" ? "manager" : "department");
-      if (profile.department_key)
-        sessionStorage.setItem("alrawafDepartmentKey", profile.department_key);
-    }
+      .select("role, department_key, full_name").eq("id", data.session.user.id).single();
+    const executive = isVip || profile?.role === "executive";
+    sessionStorage.setItem("alrawafPortalRole", executive ? "manager" : "department");
+    if (profile?.department_key)
+      sessionStorage.setItem("alrawafDepartmentKey", profile.department_key);
+    if (profile?.full_name) sessionStorage.setItem("alrawafUserName", profile.full_name);
+    sessionStorage.setItem("alrawafUserEmail", data.session.user.email || "");
   }
 })();

@@ -130,7 +130,7 @@ body * {
 .main,
 .report-page,
 .page {
-  max-width: 1480px !important;
+  max-width: 100% !important;
   margin-inline: auto !important;
 }
 
@@ -713,7 +713,7 @@ body.iu-meeting-mode .an-kpi-num {
 }
 
 .iu-smart-header {
-  max-width: 1480px;
+  max-width: 100%;
   margin: 14px auto 16px;
   padding: 14px;
   display: grid;
@@ -1198,7 +1198,7 @@ body.iu-mode-executive .iu-row-openable:nth-child(n+13) td {
 
 .report-page .hero,
 .hero {
-  width: min(1480px, 100%) !important;
+  width: 100% !important;
   min-height: 184px !important;
   margin: 0 auto !important;
   padding: 58px 30px 30px !important;
@@ -1662,3 +1662,64 @@ body .kpis .kpi:nth-child(5n + 4) {
     linear-gradient(135deg, #2a1b47, #5b3a8c) !important;
   border-color: rgba(232, 181, 71, .70) !important;
 }
+
+/* ═══════════════════════════════════════════════════
+   GLOBAL DENSITY — تقليل الفراغات في جميع الصفحات
+   يجب أن تكون في نهاية الملف لتتغلب على كل القواعد
+   ═══════════════════════════════════════════════════ */
+
+/* الهيدر */
+body .header { height: 60px !important; padding: 0 22px !important; }
+body .header .logo-text { font-size: 17px !important; }
+body .header .logo-sub  { font-size: 10px !important; }
+
+/* كروت الإحصائيات — tenders */
+body .stat-card  { padding: 14px 16px !important; border-radius: 14px !important; }
+body .stat-num   { font-size: 28px !important; line-height: 1 !important; margin-bottom: 2px !important; }
+body .stat-label { font-size: 12px !important; }
+body .stat-sub   { font-size: 10px !important; margin-top: 2px !important; }
+body .stats-grid { gap: 12px !important; margin-bottom: 14px !important; }
+
+/* كروت KPI — clients / analytics */
+body .kpi        { padding: 14px 16px !important; border-radius: 14px !important; }
+body .kpi-num,
+body .kpi-val    { font-size: 26px !important; line-height: 1 !important; }
+body .kpi-label,
+body .kpi-lbl    { font-size: 11px !important; }
+body .kpis       { gap: 12px !important; margin-bottom: 14px !important; }
+
+/* clients */
+body .client-kpi     { padding: 14px 16px !important; border-radius: 14px !important; }
+body .client-kpi-num { font-size: 26px !important; line-height: 1 !important; }
+body .client-kpi-lbl { font-size: 11px !important; }
+body .client-kpi-row { gap: 12px !important; margin-bottom: 14px !important; }
+
+/* executive-report */
+body .exec-kpi       { padding: 14px 16px !important; border-radius: 14px !important; }
+body .exec-kpi-num   { font-size: 26px !important; line-height: 1 !important; }
+body .exec-kpi-label { font-size: 11px !important; }
+
+/* جدول — tenders & clients */
+body thead th { padding: 8px 12px !important; font-size: 10px !important; }
+body tbody td { padding: 9px 12px !important; font-size: 12px !important; }
+
+/* مؤقت العد التنازلي */
+body .countdown-banner { padding: 12px 22px !important; border-radius: 14px !important; margin-bottom: 14px !important; }
+body .countdown-unit   { padding: 7px 12px !important; min-width: 50px !important; }
+body .countdown-num    { font-size: 22px !important; }
+body .countdown-label  { font-size: 9px !important; }
+body .countdown-sep    { font-size: 18px !important; }
+body .countdown-name   { font-size: 14px !important; }
+
+/* رأس القسم والفلاتر */
+body .section-header { padding: 11px 18px !important; }
+body .section-title  { font-size: 14px !important; }
+body .filters        { padding: 9px 18px !important; gap: 6px !important; }
+body .filter-btn     { padding: 5px 11px !important; font-size: 11px !important; }
+
+/* المحتوى الرئيسي */
+body .main           { padding: 14px 20px !important; }
+body .content-grid   { gap: 14px !important; }
+body .alert-banner   { padding: 10px 18px !important; margin-bottom: 14px !important; }
+body .alert-title    { font-size: 13px !important; }
+body .alert-sub      { font-size: 11px !important; }

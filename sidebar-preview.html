@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>معاينة ألوان الشريط الجانبي</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Tajawal", Arial, sans-serif;
+      background: #e8eaf4;
+      min-height: 100vh;
+      padding: 40px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+    h1 {
+      font-size: 22px; font-weight: 900; color: #1a2340;
+      text-align: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 224px);
+      gap: 28px;
+      justify-content: center;
+    }
+    .option { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+    .label {
+      font-size: 15px; font-weight: 900; color: #1a2340; text-align: center;
+    }
+    .sub { font-size: 12px; color: #6b7a99; text-align: center; margin-top: -8px; }
+
+    /* ── هيكل السايدبار المشترك ── */
+    .sb {
+      width: 224px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 14px;
+      padding: 14px;
+      border-radius: 18px;
+      box-shadow: 0 28px 70px rgba(0,0,0,.30);
+    }
+    .sb-brand {
+      display: grid; gap: 8px;
+      padding: 10px 10px 12px;
+      border-radius: 14px;
+    }
+    .sb-brand span { font-size: 11px; font-weight: 800; }
+    .sb-brand strong { font-size: 17px; font-weight: 900; color: #fff; line-height: 1.35; }
+    .sb-brand small { font-size: 12px; font-weight: 900; }
+    .sb-nav { display: grid; gap: 8px; }
+    .sb-link {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 10px 12px; border-radius: 12px;
+      font-size: 13px; font-weight: 900; text-decoration: none;
+      min-height: 46px; border: 1px solid transparent;
+      transition: none;
+    }
+    .sb-link::before {
+      content: ""; width: 8px; height: 8px; flex: 0 0 auto;
+      border-radius: 50%;
+    }
+    .ps-code {
+      font-size: 11px; font-weight: 900; padding: 2px 6px;
+      border-radius: 6px; letter-spacing: .5px;
+    }
+    .ps-texts { display: flex; flex-direction: column; flex: 1; }
+    .ps-label { font-size: 13px; font-weight: 900; }
+    .ps-sub { font-size: 10px; font-weight: 700; opacity: .7; }
+    .sb-logout {
+      padding: 12px; border-radius: 12px; text-align: center;
+      font-size: 13px; font-weight: 900; cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    /* ── ثيم 1: البنفسجي الذهبي (الحالي) ── */
+    .t1 {
+      background: linear-gradient(180deg, rgba(26,15,46,.96), rgba(42,27,71,.94) 44%, rgba(23,49,40,.94));
+      border: 1px solid rgba(232,181,71,.62);
+    }
+    .t1 .sb-brand { background: rgba(255,255,255,.06); border: 1px solid rgba(232,181,71,.24); }
+    .t1 .sb-brand span { color: rgba(255,255,255,.64); }
+    .t1 .sb-brand small { color: #e8b547; }
+    .t1 .sb-link { background: rgba(255,255,255,.065); color: rgba(255,255,255,.84); border-color: rgba(255,255,255,.10); }
+    .t1 .sb-link::before { background: rgba(232,181,71,.64); }
+    .t1 .sb-link.active { background: linear-gradient(135deg,#c9a227,#e8b547); color: #1a0f2e; border-color: rgba(232,181,71,.52); }
+    .t1 .sb-link.active::before { background: #2a1b47; }
+    .t1 .ps-code { background: rgba(232,181,71,.18); color: #e8b547; }
+    .t1 .sb-link.active .ps-code { background: rgba(42,27,71,.22); color: #1a0f2e; }
+    .t1 .sb-logout { background: rgba(26,15,46,.44); color: #e8b547; border-color: rgba(232,181,71,.42); }
+
+    /* ── ثيم 2: كحلي + سماوي ── */
+    .t2 {
+      background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+      border: 1px solid rgba(56,189,248,.35);
+    }
+    .t2 .sb-brand { background: rgba(255,255,255,.05); border: 1px solid rgba(56,189,248,.20); }
+    .t2 .sb-brand span { color: rgba(255,255,255,.55); }
+    .t2 .sb-brand small { color: #38bdf8; }
+    .t2 .sb-link { background: rgba(255,255,255,.06); color: rgba(255,255,255,.80); border-color: rgba(255,255,255,.09); }
+    .t2 .sb-link::before { background: rgba(56,189,248,.70); }
+    .t2 .sb-link.active { background: linear-gradient(135deg,#0284c7,#38bdf8); color: #fff; border-color: rgba(56,189,248,.60); }
+    .t2 .sb-link.active::before { background: rgba(255,255,255,.90); }
+    .t2 .ps-code { background: rgba(56,189,248,.15); color: #38bdf8; }
+    .t2 .sb-link.active .ps-code { background: rgba(255,255,255,.20); color: #fff; }
+    .t2 .sb-logout { background: rgba(15,23,42,.50); color: #38bdf8; border-color: rgba(56,189,248,.30); }
+
+    /* ── ثيم 3: فحمي + ذهبي دافئ ── */
+    .t3 {
+      background: linear-gradient(180deg, #1c1c2e 0%, #2d2d44 60%, #1e2a20 100%);
+      border: 1px solid rgba(245,158,11,.40);
+    }
+    .t3 .sb-brand { background: rgba(255,255,255,.05); border: 1px solid rgba(245,158,11,.20); }
+    .t3 .sb-brand span { color: rgba(255,255,255,.55); }
+    .t3 .sb-brand small { color: #fbbf24; }
+    .t3 .sb-link { background: rgba(255,255,255,.06); color: rgba(255,255,255,.82); border-color: rgba(255,255,255,.09); }
+    .t3 .sb-link::before { background: rgba(245,158,11,.70); }
+    .t3 .sb-link.active { background: linear-gradient(135deg,#d97706,#f59e0b); color: #1c1c2e; border-color: rgba(245,158,11,.60); }
+    .t3 .sb-link.active::before { background: #1c1c2e; }
+    .t3 .ps-code { background: rgba(245,158,11,.15); color: #fbbf24; }
+    .t3 .sb-link.active .ps-code { background: rgba(28,28,46,.20); color: #1c1c2e; }
+    .t3 .sb-logout { background: rgba(28,28,46,.50); color: #fbbf24; border-color: rgba(245,158,11,.35); }
+
+    /* ── ثيم 4: أخضر عميق + زمردي ── */
+    .t4 {
+      background: linear-gradient(180deg, #0d1f18 0%, #163028 60%, #0f1f2a 100%);
+      border: 1px solid rgba(52,211,153,.30);
+    }
+    .t4 .sb-brand { background: rgba(255,255,255,.05); border: 1px solid rgba(52,211,153,.18); }
+    .t4 .sb-brand span { color: rgba(255,255,255,.55); }
+    .t4 .sb-brand small { color: #34d399; }
+    .t4 .sb-link { background: rgba(255,255,255,.05); color: rgba(255,255,255,.80); border-color: rgba(255,255,255,.08); }
+    .t4 .sb-link::before { background: rgba(52,211,153,.70); }
+    .t4 .sb-link.active { background: linear-gradient(135deg,#059669,#34d399); color: #0d1f18; border-color: rgba(52,211,153,.60); }
+    .t4 .sb-link.active::before { background: #0d1f18; }
+    .t4 .ps-code { background: rgba(52,211,153,.14); color: #34d399; }
+    .t4 .sb-link.active .ps-code { background: rgba(13,31,24,.22); color: #0d1f18; }
+    .t4 .sb-logout { background: rgba(13,31,24,.50); color: #34d399; border-color: rgba(52,211,153,.28); }
+
+    @media (max-width: 1000px) {
+      .grid { grid-template-columns: repeat(2, 224px); }
+    }
+    @media (max-width: 520px) {
+      .grid { grid-template-columns: 224px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>معاينة خيارات ألوان الشريط الجانبي</h1>
+
+  <div class="grid">
+
+    <!-- ثيم 1: الحالي -->
+    <div class="option">
+      <div class="label">① الحالي — بنفسجي + ذهبي</div>
+      <div class="sub">راقٍ وكلاسيكي</div>
+      <div class="sb t1">
+        <div class="sb-brand">
+          <span>ENTERPRISE</span>
+          <strong>إدارة المناقصات</strong>
+          <small>صلاحية تنفيذية</small>
+        </div>
+        <nav class="sb-nav">
+          <a class="sb-link active"><span class="ps-code">TN</span><span class="ps-texts"><span class="ps-label">المناقصات</span><span class="ps-sub">الرصد والمتابعة</span></span></a>
+          <a class="sb-link"><span class="ps-code">OP</span><span class="ps-texts"><span class="ps-label">العمليات</span><span class="ps-sub">التنسيق الداخلي</span></span></a>
+          <a class="sb-link"><span class="ps-code">CL</span><span class="ps-texts"><span class="ps-label">العملاء</span><span class="ps-sub">العلاقات والجهات</span></span></a>
+          <a class="sb-link"><span class="ps-code">AN</span><span class="ps-texts"><span class="ps-label">التحليلات</span><span class="ps-sub">المؤشرات</span></span></a>
+          <a class="sb-link"><span class="ps-code">OR</span><span class="ps-texts"><span class="ps-label">الهيكل</span><span class="ps-sub">الهيكل التنظيمي</span></span></a>
+          <a class="sb-link"><span class="ps-code">PF</span><span class="ps-texts"><span class="ps-label">المحفظة</span><span class="ps-sub">محفظة المناقصات</span></span></a>
+          <a class="sb-link"><span class="ps-code">RP</span><span class="ps-texts"><span class="ps-label">التقارير</span><span class="ps-sub">تقارير الإدارة</span></span></a>
+        </nav>
+        <div class="sb-logout">خروج</div>
+      </div>
+    </div>
+
+    <!-- ثيم 2: كحلي + سماوي -->
+    <div class="option">
+      <div class="label">② كحلي + أزرق سماوي</div>
+      <div class="sub">عصري ومؤسسي</div>
+      <div class="sb t2">
+        <div class="sb-brand">
+          <span>ENTERPRISE</span>
+          <strong>إدارة المناقصات</strong>
+          <small>صلاحية تنفيذية</small>
+        </div>
+        <nav class="sb-nav">
+          <a class="sb-link active"><span class="ps-code">TN</span><span class="ps-texts"><span class="ps-label">المناقصات</span><span class="ps-sub">الرصد والمتابعة</span></span></a>
+          <a class="sb-link"><span class="ps-code">OP</span><span class="ps-texts"><span class="ps-label">العمليات</span><span class="ps-sub">التنسيق الداخلي</span></span></a>
+          <a class="sb-link"><span class="ps-code">CL</span><span class="ps-texts"><span class="ps-label">العملاء</span><span class="ps-sub">العلاقات والجهات</span></span></a>
+          <a class="sb-link"><span class="ps-code">AN</span><span class="ps-texts"><span class="ps-label">التحليلات</span><span class="ps-sub">المؤشرات</span></span></a>
+          <a class="sb-link"><span class="ps-code">OR</span><span class="ps-texts"><span class="ps-label">الهيكل</span><span class="ps-sub">الهيكل التنظيمي</span></span></a>
+          <a class="sb-link"><span class="ps-code">PF</span><span class="ps-texts"><span class="ps-label">المحفظة</span><span class="ps-sub">محفظة المناقصات</span></span></a>
+          <a class="sb-link"><span class="ps-code">RP</span><span class="ps-texts"><span class="ps-label">التقارير</span><span class="ps-sub">تقارير الإدارة</span></span></a>
+        </nav>
+        <div class="sb-logout">خروج</div>
+      </div>
+    </div>
+
+    <!-- ثيم 3: فحمي + ذهبي دافئ -->
+    <div class="option">
+      <div class="label">③ فحمي + ذهبي دافئ</div>
+      <div class="sub">هادئ وأنيق</div>
+      <div class="sb t3">
+        <div class="sb-brand">
+          <span>ENTERPRISE</span>
+          <strong>إدارة المناقصات</strong>
+          <small>صلاحية تنفيذية</small>
+        </div>
+        <nav class="sb-nav">
+          <a class="sb-link active"><span class="ps-code">TN</span><span class="ps-texts"><span class="ps-label">المناقصات</span><span class="ps-sub">الرصد والمتابعة</span></span></a>
+          <a class="sb-link"><span class="ps-code">OP</span><span class="ps-texts"><span class="ps-label">العمليات</span><span class="ps-sub">التنسيق الداخلي</span></span></a>
+          <a class="sb-link"><span class="ps-code">CL</span><span class="ps-texts"><span class="ps-label">العملاء</span><span class="ps-sub">العلاقات والجهات</span></span></a>
+          <a class="sb-link"><span class="ps-code">AN</span><span class="ps-texts"><span class="ps-label">التحليلات</span><span class="ps-sub">المؤشرات</span></span></a>
+          <a class="sb-link"><span class="ps-code">OR</span><span class="ps-texts"><span class="ps-label">الهيكل</span><span class="ps-sub">الهيكل التنظيمي</span></span></a>
+          <a class="sb-link"><span class="ps-code">PF</span><span class="ps-texts"><span class="ps-label">المحفظة</span><span class="ps-sub">محفظة المناقصات</span></span></a>
+          <a class="sb-link"><span class="ps-code">RP</span><span class="ps-texts"><span class="ps-label">التقارير</span><span class="ps-sub">تقارير الإدارة</span></span></a>
+        </nav>
+        <div class="sb-logout">خروج</div>
+      </div>
+    </div>
+
+    <!-- ثيم 4: أخضر + زمردي -->
+    <div class="option">
+      <div class="label">④ أخضر عميق + زمردي</div>
+      <div class="sub">فريد ومميز</div>
+      <div class="sb t4">
+        <div class="sb-brand">
+          <span>ENTERPRISE</span>
+          <strong>إدارة المناقصات</strong>
+          <small>صلاحية تنفيذية</small>
+        </div>
+        <nav class="sb-nav">
+          <a class="sb-link active"><span class="ps-code">TN</span><span class="ps-texts"><span class="ps-label">المناقصات</span><span class="ps-sub">الرصد والمتابعة</span></span></a>
+          <a class="sb-link"><span class="ps-code">OP</span><span class="ps-texts"><span class="ps-label">العمليات</span><span class="ps-sub">التنسيق الداخلي</span></span></a>
+          <a class="sb-link"><span class="ps-code">CL</span><span class="ps-texts"><span class="ps-label">العملاء</span><span class="ps-sub">العلاقات والجهات</span></span></a>
+          <a class="sb-link"><span class="ps-code">AN</span><span class="ps-texts"><span class="ps-label">التحليلات</span><span class="ps-sub">المؤشرات</span></span></a>
+          <a class="sb-link"><span class="ps-code">OR</span><span class="ps-texts"><span class="ps-label">الهيكل</span><span class="ps-sub">الهيكل التنظيمي</span></span></a>
+          <a class="sb-link"><span class="ps-code">PF</span><span class="ps-texts"><span class="ps-label">المحفظة</span><span class="ps-sub">محفظة المناقصات</span></span></a>
+          <a class="sb-link"><span class="ps-code">RP</span><span class="ps-texts"><span class="ps-label">التقارير</span><span class="ps-sub">تقارير الإدارة</span></span></a>
+        </nav>
+        <div class="sb-logout">خروج</div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

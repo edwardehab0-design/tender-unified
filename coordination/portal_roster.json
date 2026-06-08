@@ -1,0 +1,420 @@
+{
+  "generatedFrom": "الهيكل التنظيمي بالإيميلات (PDF) + employees.json",
+  "totalEmployees": 59,
+  "roster": [
+    {
+      "email": "ehab.edward@alrawaf.com.sa",
+      "name": "إيهاب ادوارد عزيز",
+      "role": "executive",
+      "department_key": null,
+      "source": "existing"
+    },
+    {
+      "email": "ahmedaboelmakarem@alrawaf.com.sa",
+      "name": "احمد محمد ابو المكارم مصطفى",
+      "role": "executive",
+      "department_key": null,
+      "source": "existing"
+    },
+    {
+      "email": "raghad.alaftan@alrawaf.com.sa",
+      "name": "رغد منيف منسي العفتان",
+      "role": "executive",
+      "department_key": null,
+      "source": "existing"
+    },
+    {
+      "email": "samy.alsudayri@alrawaf.com.sa",
+      "name": "سامى سليمان",
+      "role": "executive",
+      "department_key": null,
+      "source": "existing"
+    },
+    {
+      "email": "alaaaboelnaja@alrawaf.com.sa",
+      "name": "علاء أبو النجا",
+      "role": "executive",
+      "department_key": null,
+      "source": "existing"
+    },
+    {
+      "email": "m.abouelnaga@alrawaf.com.sa",
+      "name": "محمد عبدالعزيز عباده ابو النجا",
+      "role": "executive",
+      "department_key": null,
+      "source": "existing"
+    },
+    {
+      "email": "musaad.abdullah@alrawaf.com.sa",
+      "name": "مساعد عبدالله عقلاء الحسين",
+      "role": "executive",
+      "department_key": null,
+      "source": "existing"
+    },
+    {
+      "email": "ahmed.shaaban@alrawaf.com.sa",
+      "name": "أحمد شعبان الجمل",
+      "role": "department",
+      "department_key": "BS",
+      "source": "existing"
+    },
+    {
+      "email": "ahmed.abdalrijal@alrawaf.com.sa",
+      "name": "احمد محمد عبدالرجال اسماعيل",
+      "role": "department",
+      "department_key": "BS",
+      "source": "existing"
+    },
+    {
+      "email": "eslam.samy@alrawaf.com.sa",
+      "name": "اسلام سامي رجب عطاالله",
+      "role": "department",
+      "department_key": "BS",
+      "source": "existing"
+    },
+    {
+      "email": "amir.ragab@alrawaf.com.sa",
+      "name": "امير رجب ابراهيم عبدربه",
+      "role": "department",
+      "department_key": "BS",
+      "source": "existing"
+    },
+    {
+      "email": "atef.salah@alrawaf.com.sa",
+      "name": "عاطف صلاح الدين عقل ابراهيم",
+      "role": "department",
+      "department_key": "BS",
+      "source": "existing"
+    },
+    {
+      "email": "amr.atitou@alrawaf.com.sa",
+      "name": "عمرو عطيتو محمد قمصان",
+      "role": "department",
+      "department_key": "BS",
+      "source": "existing"
+    },
+    {
+      "email": "varianrubio3557@alrawaf.com.sa",
+      "name": "فاريان ديانيتو روبيو",
+      "role": "department",
+      "department_key": "BS",
+      "source": "existing"
+    },
+    {
+      "email": "mohamed.abdelkhalek@alrawaf.com.sa",
+      "name": "محمد إبراهيم",
+      "role": "department",
+      "department_key": "BS",
+      "source": "existing"
+    },
+    {
+      "email": "mohamed.sayed@alrawaf.com.sa",
+      "name": "محمد الرفاعي",
+      "role": "department",
+      "department_key": "BS",
+      "source": "new"
+    },
+    {
+      "email": "mohamed.samaha@alrawaf.com.sa",
+      "name": "محمد سماحة",
+      "role": "department",
+      "department_key": "BS",
+      "source": "new"
+    },
+    {
+      "email": "mohamed.selim@alrawaf.com.sa",
+      "name": "محمد محمود عبدالوهاب سليم",
+      "role": "department",
+      "department_key": "BS",
+      "source": "existing"
+    },
+    {
+      "email": "mahmoud.a.abdelghany@alrawaf.com.sa",
+      "name": "محمود احمد عبدالغني جاد المولى",
+      "role": "department",
+      "department_key": "BS",
+      "source": "existing"
+    },
+    {
+      "email": "youssef.yasser@alrawaf.com.sa",
+      "name": "يوسف أحمد شلبى",
+      "role": "department",
+      "department_key": "BS",
+      "source": "existing"
+    },
+    {
+      "email": "a.younes@alrawaf.com.sa",
+      "name": "احمد محمد يونس",
+      "role": "department",
+      "department_key": "DESIGN",
+      "source": "existing"
+    },
+    {
+      "email": "ayman.alshamaj@alrawaf.com.sa",
+      "name": "ايمن حمود صالح الشمج",
+      "role": "department",
+      "department_key": "DESIGN",
+      "source": "existing"
+    },
+    {
+      "email": "hamdy.fahmy@alrawaf.com.sa",
+      "name": "حمدي رفعت",
+      "role": "department",
+      "department_key": "DESIGN",
+      "source": "new"
+    },
+    {
+      "email": "rahish.khan@alrawaf.com.sa",
+      "name": "راهيش خان خان",
+      "role": "department",
+      "department_key": "DESIGN",
+      "source": "existing"
+    },
+    {
+      "email": "ramadan.abdou20405@alrawaf.com.sa",
+      "name": "رمضان عبده",
+      "role": "department",
+      "department_key": "DESIGN",
+      "source": "existing"
+    },
+    {
+      "email": "ronnie@alrawaf.com.sa",
+      "name": "روني تابون",
+      "role": "department",
+      "department_key": "DESIGN",
+      "source": "new"
+    },
+    {
+      "email": "shehta.sobhy@alrawaf.com.sa",
+      "name": "شحته صبحى",
+      "role": "department",
+      "department_key": "DESIGN",
+      "source": "existing"
+    },
+    {
+      "email": "maged.elshaer@alrawaf.com.sa",
+      "name": "ماجد نجاح الشاعر",
+      "role": "department",
+      "department_key": "DESIGN",
+      "source": "existing"
+    },
+    {
+      "email": "mohamed.moharm@alrawaf.com.sa",
+      "name": "محمد طارق",
+      "role": "department",
+      "department_key": "DESIGN",
+      "source": "new"
+    },
+    {
+      "email": "mahmoud.sayed@alrawaf.com.sa",
+      "name": "محمود سيد رمضان صالح",
+      "role": "department",
+      "department_key": "DESIGN",
+      "source": "existing"
+    },
+    {
+      "email": "mahmoud.abdulghani@alrawaf.com.sa",
+      "name": "محمود محمد إسماعيل عبد الغنى",
+      "role": "department",
+      "department_key": "DESIGN",
+      "source": "existing"
+    },
+    {
+      "email": "mostafa.moawed@alrawaf.com.sa",
+      "name": "مصطفى معوض مصطفى",
+      "role": "department",
+      "department_key": "DESIGN",
+      "source": "existing"
+    },
+    {
+      "email": "yasir.zain@alrawaf.com.sa",
+      "name": "ياسر زين العابدين الحاج",
+      "role": "department",
+      "department_key": "DESIGN",
+      "source": "existing"
+    },
+    {
+      "email": "ahmed.khalaf@alrawaf.com.sa",
+      "name": "أحمد خلف جودة عبدالغنى",
+      "role": "department",
+      "department_key": "INF",
+      "source": "existing"
+    },
+    {
+      "email": "ehab.mohamed8100@alrawaf.com.sa",
+      "name": "إيهاب محمد سيد احمد أبو غزاله",
+      "role": "department",
+      "department_key": "INF",
+      "source": "existing"
+    },
+    {
+      "email": "ahmed.saif@alrawaf.com.sa",
+      "name": "احمد حامد سيف",
+      "role": "department",
+      "department_key": "INF",
+      "source": "existing"
+    },
+    {
+      "email": "bahaaeldin.hussein@alrawaf.com.sa",
+      "name": "بهاء الدين حباشى حسين عبدالرحيم",
+      "role": "department",
+      "department_key": "INF",
+      "source": "existing"
+    },
+    {
+      "email": "huzaifa.alanesi@alrawaf.com.sa",
+      "name": "حذيفة احمد احمد الانسى",
+      "role": "department",
+      "department_key": "INF",
+      "source": "existing"
+    },
+    {
+      "email": "abdulrahman.almuafa@alrawaf.com.sa",
+      "name": "عبدالرحمن محمد قناف المعافا",
+      "role": "department",
+      "department_key": "INF",
+      "source": "existing"
+    },
+    {
+      "email": "abdullah.aldhaheri@alrawaf.com.sa",
+      "name": "عبدالله غريب الظاهرى",
+      "role": "department",
+      "department_key": "INF",
+      "source": "existing"
+    },
+    {
+      "email": "fath.saif8653@alrawaf.com.sa",
+      "name": "فتح سيف سعيد على",
+      "role": "department",
+      "department_key": "INF",
+      "source": "existing"
+    },
+    {
+      "email": "mohamed.alahmadi@alrawaf.com.sa",
+      "name": "محمد احمد على احمد",
+      "role": "department",
+      "department_key": "INF",
+      "source": "existing"
+    },
+    {
+      "email": "mohamed.eid@alrawaf.com.sa",
+      "name": "محمد جمال محمود محمد عيد",
+      "role": "department",
+      "department_key": "INF",
+      "source": "existing"
+    },
+    {
+      "email": "mohamed.alkabos@alrawaf.com.sa",
+      "name": "محمد محمد حسين الكبوس",
+      "role": "department",
+      "department_key": "INF",
+      "source": "existing"
+    },
+    {
+      "email": "murad.alahdal@alrawaf.com.sa",
+      "name": "مراد على عبده الاهدل",
+      "role": "department",
+      "department_key": "INF",
+      "source": "existing"
+    },
+    {
+      "email": "nassersonbl2017@alrawaf.com.sa",
+      "name": "ناصر علي عبدو سنبل",
+      "role": "department",
+      "department_key": "INF",
+      "source": "existing"
+    },
+    {
+      "email": "wael.salah@alrawaf.com.sa",
+      "name": "وائل صلاح عبد الحميد عبد الرحمن",
+      "role": "department",
+      "department_key": "INF",
+      "source": "existing"
+    },
+    {
+      "email": "ahmed.radwan@alrawaf.com.sa",
+      "name": "احمد رضوان",
+      "role": "department",
+      "department_key": "TECH",
+      "source": "existing"
+    },
+    {
+      "email": "ahmed.elantary@alrawaf.com.sa",
+      "name": "احمد سعد ابراهيم العنترى",
+      "role": "department",
+      "department_key": "TECH",
+      "source": "existing"
+    },
+    {
+      "email": "ahmed.almaamari@alrawaf.com.sa",
+      "name": "احمد محمد رضا محمد ربيع",
+      "role": "department",
+      "department_key": "TECH",
+      "source": "existing"
+    },
+    {
+      "email": "ahmed.nabil@alrawaf.com.sa",
+      "name": "احمد نبيل محمد حسن",
+      "role": "department",
+      "department_key": "TECH",
+      "source": "existing"
+    },
+    {
+      "email": "anas.shehab@alrawaf.com.sa",
+      "name": "انس محمد امين شهاب الدين",
+      "role": "department",
+      "department_key": "TECH",
+      "source": "existing"
+    },
+    {
+      "email": "shehab.youssef@alrawaf.com.sa",
+      "name": "شهاب عماد محمد يوسف يوسف",
+      "role": "department",
+      "department_key": "TECH",
+      "source": "existing"
+    },
+    {
+      "email": "ali.aladawi@alrawaf.com.sa",
+      "name": "على العدوى الشربينى",
+      "role": "department",
+      "department_key": "TECH",
+      "source": "existing"
+    },
+    {
+      "email": "mohamed.salama@alrawaf.com.sa",
+      "name": "محمد سلامة على جابر",
+      "role": "department",
+      "department_key": "TECH",
+      "source": "existing"
+    },
+    {
+      "email": "m.nasef@alrawaf.com.sa",
+      "name": "محمد عبد المحفوظ محمد ناصف",
+      "role": "department",
+      "department_key": "TECH",
+      "source": "existing"
+    },
+    {
+      "email": "wasem.saed@alrawaf.com.sa",
+      "name": "وسيم سعيد محمود العجمى",
+      "role": "department",
+      "department_key": "TECH",
+      "source": "existing"
+    },
+    {
+      "email": "yousef.afifi@alrawaf.com.sa",
+      "name": "يوسف عفيفى أحمد سليم",
+      "role": "department",
+      "department_key": "TECH",
+      "source": "existing"
+    },
+    {
+      "email": "abdullah@alrawaf.com.sa",
+      "name": "سعادة نائب الرئيس التنفيذي",
+      "role": "executive",
+      "department_key": null,
+      "source": "added"
+    }
+  ],
+  "security": "لا تُخزَّن كلمات المرور أو الأرقام الوظيفية هنا. تُنشأ كلمات مرور عشوائية وقت الإنشاء وتُصدَّر إلى users_created.csv فقط."
+}

@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>معاينة الثيمات الأربعة الجديدة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Tajawal", Arial, sans-serif;
+      background: #c8ccd8;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 60px;
+    }
+    h1 { font-size: 22px; font-weight: 900; color: #1a2340; }
+
+    .section { width: 100%; max-width: 1100px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .badge { font-size: 15px; font-weight: 900; padding: 9px 26px; border-radius: 50px; }
+
+    .page {
+      width: 100%; border-radius: 20px; overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,.28);
+      display: flex; min-height: 560px;
+    }
+
+    /* ── هيكل مشترك ── */
+    .sb { width: 220px; flex: 0 0 220px; display: flex; flex-direction: column; gap: 10px; padding: 14px 11px; }
+    .sb-brand { padding: 11px; border-radius: 11px; display: flex; flex-direction: column; gap: 5px; }
+    .sb-top { font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+    .sb-name { font-size: 15px; font-weight: 900; line-height: 1.3; }
+    .sb-role { font-size: 11px; font-weight: 900; }
+    .sb-nav { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+    .sb-link { display: flex; align-items: center; gap: 9px; padding: 9px 11px; border-radius: 9px; font-size: 12px; font-weight: 900; border: 1px solid transparent; }
+    .sb-code { font-size: 10px; font-weight: 900; padding: 2px 5px; border-radius: 5px; flex: 0 0 auto; }
+    .sb-txt { display: flex; flex-direction: column; flex: 1; }
+    .sb-lbl { font-size: 12px; font-weight: 900; }
+    .sb-sub { font-size: 10px; opacity: .60; font-weight: 700; }
+    .sb-dot { width: 6px; height: 6px; border-radius: 50%; flex: 0 0 auto; }
+    .sb-out { padding: 10px; border-radius: 9px; text-align: center; font-size: 12px; font-weight: 900; border: 1px solid transparent; }
+
+    .content { flex: 1; display: flex; flex-direction: column; }
+    .topbar { padding: 15px 22px; display: flex; align-items: center; justify-content: space-between; }
+    .tb-left h2 { font-size: 15px; font-weight: 900; }
+    .tb-left p { font-size: 11px; font-weight: 700; opacity: .55; margin-top: 2px; }
+    .tb-badge { font-size: 11px; font-weight: 900; padding: 4px 13px; border-radius: 18px; }
+    .main { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+    .kpi { border-radius: 13px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; border: 1px solid transparent; }
+    .kpi-dot { width: 7px; height: 7px; border-radius: 50%; margin-bottom: 2px; }
+    .kpi b { font-size: 26px; font-weight: 900; }
+    .kpi span { font-size: 11px; font-weight: 700; }
+    .cards { display: flex; flex-direction: column; gap: 8px; }
+    .tc { border-radius: 11px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; border: 1px solid transparent; }
+    .tc-st { font-size: 10px; font-weight: 900; padding: 3px 10px; border-radius: 7px; white-space: nowrap; flex: 0 0 auto; border: 1px solid transparent; }
+    .tc-nm { flex: 1; font-size: 12px; font-weight: 900; line-height: 1.4; }
+    .tc-dt { font-size: 11px; font-weight: 700; white-space: nowrap; opacity: .65; }
+
+    /* ══════════════════════════
+       ثيم 5 — أبيض + ذهبي ملكي
+    ══════════════════════════ */
+    .t5-page { background: #f5f0e8; }
+    .t5-sb { background: linear-gradient(180deg, #1a1408 0%, #2a2010 55%, #1e1a0a 100%); border-left: 1px solid rgba(184,134,11,.30); }
+    .t5-brand { background: rgba(255,255,255,.06); border: 1px solid rgba(184,134,11,.22); }
+    .t5-top { color: rgba(255,255,255,.45); }
+    .t5-name { color: #fff; }
+    .t5-role { color: #d4a853; }
+    .t5-link { background: rgba(255,255,255,.05); color: rgba(255,255,255,.72); border-color: rgba(255,255,255,.07); }
+    .t5-link.active { background: linear-gradient(135deg, #92680a, #b8860b); color: #fff; border-color: rgba(184,134,11,.55); box-shadow: 0 4px 14px rgba(184,134,11,.25); }
+    .t5-code { background: rgba(184,134,11,.18); color: #d4a853; }
+    .t5-link.active .t5-code { background: rgba(255,255,255,.20); color: #fff; }
+    .t5-dot { background: rgba(184,134,11,.65); }
+    .t5-link.active .t5-dot { background: rgba(255,255,255,.85); }
+    .t5-out { background: rgba(26,20,8,.50); color: #d4a853; border-color: rgba(184,134,11,.28); }
+    .t5-topbar { background: linear-gradient(135deg, #1a1408, #2e2210); border-bottom: 1px solid rgba(184,134,11,.18); }
+    .t5-tbh { color: #fff; }
+    .t5-tbp { color: rgba(255,255,255,.45) !important; opacity: 1 !important; }
+    .t5-badge { background: rgba(184,134,11,.18); color: #d4a853; border: 1px solid rgba(184,134,11,.30); }
+    .t5-kpi { background: linear-gradient(150deg, rgba(255,255,255,.96), rgba(255,245,220,.86)); border-color: rgba(255,255,255,.95); box-shadow: 0 4px 16px rgba(120,90,10,.10), inset 0 1px 0 #fff; }
+    .t5-kpi b { color: #1a1408; }
+    .t5-kpi b.a { color: #92680a; }
+    .t5-kpi b.r { color: #dc2626; }
+    .t5-kpi span { color: #6b5020; }
+    .t5-dot-g { background: #b8860b; }
+    .t5-dot-r { background: #f87171; }
+    .t5-dot-m { background: #94a3b8; }
+    .t5-tc { background: linear-gradient(150deg, rgba(255,255,255,.96), rgba(255,245,220,.86)); border-color: rgba(255,255,255,.95); box-shadow: 0 3px 10px rgba(120,90,10,.09), inset 0 1px 0 #fff; }
+    .t5-st { background: rgba(146,104,10,.13); color: #92680a; border-color: rgba(146,104,10,.22); }
+    .t5-st.late { background: rgba(220,38,38,.11); color: #dc2626; border-color: rgba(220,38,38,.22); }
+    .t5-nm { color: #1a1408; }
+
+    /* ══════════════════════════
+       ثيم 6 — أسود + ياقوتي
+    ══════════════════════════ */
+    .t6-page { background: #1a0a12; }
+    .t6-sb { background: linear-gradient(180deg, #0a0a0f 0%, #141420 60%, #100a14 100%); border-left: 1px solid rgba(225,29,72,.22); }
+    .t6-brand { background: rgba(255,255,255,.04); border: 1px solid rgba(225,29,72,.18); }
+    .t6-top { color: rgba(255,255,255,.40); }
+    .t6-name { color: #fff; }
+    .t6-role { color: #fb7185; }
+    .t6-link { background: rgba(255,255,255,.04); color: rgba(255,255,255,.65); border-color: rgba(255,255,255,.06); }
+    .t6-link.active { background: linear-gradient(135deg, #be123c, #e11d48); color: #fff; border-color: rgba(225,29,72,.55); box-shadow: 0 4px 16px rgba(225,29,72,.30); }
+    .t6-code { background: rgba(225,29,72,.16); color: #fb7185; }
+    .t6-link.active .t6-code { background: rgba(255,255,255,.20); color: #fff; }
+    .t6-dot { background: rgba(225,29,72,.65); }
+    .t6-link.active .t6-dot { background: rgba(255,255,255,.85); }
+    .t6-out { background: rgba(10,10,15,.55); color: #fb7185; border-color: rgba(225,29,72,.25); }
+    .t6-topbar { background: linear-gradient(135deg, #0a0a0f, #1a0a1a); border-bottom: 1px solid rgba(225,29,72,.15); }
+    .t6-tbh { color: #fff; }
+    .t6-badge { background: rgba(225,29,72,.16); color: #fb7185; border: 1px solid rgba(225,29,72,.28); }
+    .t6-content { background: #12080e; }
+    .t6-kpi { background: linear-gradient(150deg, rgba(30,15,25,.95), rgba(40,15,30,.90)); border-color: rgba(225,29,72,.15); box-shadow: 0 4px 16px rgba(0,0,0,.30); }
+    .t6-kpi b { color: #fff; }
+    .t6-kpi b.a { color: #fb7185; }
+    .t6-kpi b.r { color: #fca5a5; }
+    .t6-kpi span { color: #9f6070; }
+    .t6-dot-g { background: #e11d48; }
+    .t6-dot-r { background: #fca5a5; }
+    .t6-dot-m { background: #4b5563; }
+    .t6-tc { background: linear-gradient(150deg, rgba(30,15,25,.95), rgba(40,15,30,.90)); border-color: rgba(225,29,72,.14); box-shadow: 0 3px 10px rgba(0,0,0,.25); }
+    .t6-st { background: rgba(225,29,72,.14); color: #fb7185; border-color: rgba(225,29,72,.22); }
+    .t6-st.late { background: rgba(252,165,165,.10); color: #fca5a5; border-color: rgba(252,165,165,.22); }
+    .t6-nm { color: #f1d0d8; }
+
+    /* ══════════════════════════
+       ثيم 7 — بيج + بني ذهبي
+    ══════════════════════════ */
+    .t7-page { background: #f2ede4; }
+    .t7-sb { background: linear-gradient(180deg, #1c1814 0%, #2a2218 55%, #1e1c12 100%); border-left: 1px solid rgba(212,168,83,.28); }
+    .t7-brand { background: rgba(255,255,255,.05); border: 1px solid rgba(212,168,83,.20); }
+    .t7-top { color: rgba(255,255,255,.42); }
+    .t7-name { color: #fff; }
+    .t7-role { color: #e0b96a; }
+    .t7-link { background: rgba(255,255,255,.04); color: rgba(255,255,255,.68); border-color: rgba(255,255,255,.06); }
+    .t7-link.active { background: linear-gradient(135deg, #a07828, #d4a853); color: #1c1814; border-color: rgba(212,168,83,.55); box-shadow: 0 4px 14px rgba(160,120,40,.28); }
+    .t7-code { background: rgba(212,168,83,.18); color: #e0b96a; }
+    .t7-link.active .t7-code { background: rgba(28,24,20,.22); color: #1c1814; }
+    .t7-dot { background: rgba(212,168,83,.65); }
+    .t7-link.active .t7-dot { background: rgba(28,24,20,.70); }
+    .t7-out { background: rgba(28,24,20,.50); color: #e0b96a; border-color: rgba(212,168,83,.26); }
+    .t7-topbar { background: linear-gradient(135deg, #1c1814, #2e2416); border-bottom: 1px solid rgba(212,168,83,.16); }
+    .t7-tbh { color: #fff; }
+    .t7-badge { background: rgba(212,168,83,.18); color: #d4a853; border: 1px solid rgba(212,168,83,.30); }
+    .t7-kpi { background: linear-gradient(150deg, rgba(255,255,255,.95), rgba(255,248,230,.88)); border-color: rgba(255,255,255,.95); box-shadow: 0 4px 16px rgba(100,70,10,.09), inset 0 1px 0 #fff; }
+    .t7-kpi b { color: #1c1814; }
+    .t7-kpi b.a { color: #a07828; }
+    .t7-kpi b.r { color: #dc2626; }
+    .t7-kpi span { color: #6b5020; }
+    .t7-dot-g { background: #d4a853; }
+    .t7-dot-r { background: #f87171; }
+    .t7-dot-m { background: #94a3b8; }
+    .t7-tc { background: linear-gradient(150deg, rgba(255,255,255,.95), rgba(255,248,230,.88)); border-color: rgba(255,255,255,.95); box-shadow: 0 3px 10px rgba(100,70,10,.08), inset 0 1px 0 #fff; }
+    .t7-st { background: rgba(160,120,40,.13); color: #a07828; border-color: rgba(160,120,40,.22); }
+    .t7-st.late { background: rgba(220,38,38,.11); color: #dc2626; border-color: rgba(220,38,38,.22); }
+    .t7-nm { color: #1c1814; }
+
+    /* ══════════════════════════
+       ثيم 8 — أزرق بحري + فيروزي
+    ══════════════════════════ */
+    .t8-page { background: #e4eff5; }
+    .t8-sb { background: linear-gradient(180deg, #0c1a2e 0%, #0e2340 60%, #0a1e38 100%); border-left: 1px solid rgba(6,182,212,.22); }
+    .t8-brand { background: rgba(255,255,255,.05); border: 1px solid rgba(6,182,212,.17); }
+    .t8-top { color: rgba(255,255,255,.42); }
+    .t8-name { color: #fff; }
+    .t8-role { color: #22d3ee; }
+    .t8-link { background: rgba(255,255,255,.05); color: rgba(255,255,255,.68); border-color: rgba(255,255,255,.07); }
+    .t8-link.active { background: linear-gradient(135deg, #0891b2, #06b6d4); color: #fff; border-color: rgba(6,182,212,.55); box-shadow: 0 4px 14px rgba(6,182,212,.28); }
+    .t8-code { background: rgba(6,182,212,.16); color: #22d3ee; }
+    .t8-link.active .t8-code { background: rgba(255,255,255,.22); color: #fff; }
+    .t8-dot { background: rgba(6,182,212,.65); }
+    .t8-link.active .t8-dot { background: rgba(255,255,255,.85); }
+    .t8-out { background: rgba(12,26,46,.55); color: #22d3ee; border-color: rgba(6,182,212,.25); }
+    .t8-topbar { background: linear-gradient(135deg, #0c1a2e, #0e2a4a); border-bottom: 1px solid rgba(6,182,212,.16); }
+    .t8-tbh { color: #fff; }
+    .t8-badge { background: rgba(6,182,212,.18); color: #22d3ee; border: 1px solid rgba(6,182,212,.30); }
+    .t8-kpi { background: linear-gradient(150deg, rgba(255,255,255,.94), rgba(210,240,248,.84)); border-color: rgba(255,255,255,.95); box-shadow: 0 4px 16px rgba(6,100,140,.10), inset 0 1px 0 #fff; }
+    .t8-kpi b { color: #0c1a2e; }
+    .t8-kpi b.a { color: #0891b2; }
+    .t8-kpi b.r { color: #dc2626; }
+    .t8-kpi span { color: #1a5068; }
+    .t8-dot-g { background: #06b6d4; }
+    .t8-dot-r { background: #f87171; }
+    .t8-dot-m { background: #94a3b8; }
+    .t8-tc { background: linear-gradient(150deg, rgba(255,255,255,.94), rgba(210,240,248,.84)); border-color: rgba(255,255,255,.95); box-shadow: 0 3px 10px rgba(6,100,140,.09), inset 0 1px 0 #fff; }
+    .t8-st { background: rgba(8,145,178,.13); color: #0891b2; border-color: rgba(8,145,178,.22); }
+    .t8-st.late { background: rgba(220,38,38,.11); color: #dc2626; border-color: rgba(220,38,38,.22); }
+    .t8-nm { color: #0c1a2e; }
+  </style>
+</head>
+<body>
+  <h1>معاينة الثيمات الأربعة الجديدة</h1>
+
+  <!-- مساعد لإنشاء الروابط -->
+  <script>
+    function links(prefix, active) {
+      const pages = [
+        ["TN","المناقصات","الرصد والمتابعة"],
+        ["OP","العمليات","التنسيق الداخلي"],
+        ["CL","العملاء","العلاقات والجهات"],
+        ["AN","التحليلات","المؤشرات"],
+        ["OR","الهيكل","الهيكل التنظيمي"],
+        ["PF","المحفظة","محفظة المناقصات"],
+        ["RP","التقارير","تقارير الإدارة"],
+      ];
+      return pages.map(([c,l,s],i) => `
+        <a class="sb-link ${prefix}-link${i===active?" active":""}">
+          <span class="sb-code ${prefix}-code">${c}</span>
+          <span class="sb-txt"><span class="sb-lbl">${l}</span><span class="sb-sub">${s}</span></span>
+          <span class="sb-dot ${prefix}-dot"></span>
+        </a>`).join("");
+    }
+    function tenders(prefix, stCls) {
+      const rows = [
+        ["جارية","","مشروع صيانة وتأهيل طريق الأمير سلطان بمدينة الظهران","2026-06-08"],
+        ["1 يوم","late","مشروع صيانة وتأهيل مواقع متفرقة بحي الدانة الشمالية","2026-06-09"],
+        ["جارية","","مشروع طريق جدة - مكة","2026-06-09"],
+        ["2 أيام","late","تنفيذ حلول لتصريف مياه الأمطار للمنطقة H","2026-06-10"],
+        ["جارية","","مشروع صيانة وتأهيل مواقع بحي الجامعة بمدينة الظهران","2026-06-12"],
+      ];
+      return rows.map(([st,cls,nm,dt]) => `
+        <div class="tc ${prefix}-tc">
+          <span class="tc-st ${prefix}-st${cls?" "+stCls:""}${cls?" late":""}">${st}</span>
+          <span class="tc-nm ${prefix}-nm">${nm}</span>
+          <span class="tc-dt">${dt}</span>
+        </div>`).join("");
+    }
+  </script>
+
+  <!-- ثيم 5 -->
+  <div class="section">
+    <span class="badge" style="background:linear-gradient(135deg,#92680a,#d4a853);color:#fff">⑤ أبيض ناصع + ذهبي ملكي — فاخر ونظيف</span>
+    <div class="page t5-page">
+      <div class="sb t5-sb">
+        <div class="sb-brand t5-brand"><div class="sb-top t5-top">ENTERPRISE</div><div class="sb-name t5-name">إدارة المناقصات</div><div class="sb-role t5-role">صلاحية تنفيذية</div></div>
+        <nav class="sb-nav" id="nav5"></nav>
+        <div class="sb-out t5-out">خروج</div>
+      </div>
+      <div class="content" style="background:#f5f0e8">
+        <div class="topbar t5-topbar">
+          <div class="tb-left"><h2 class="t5-tbh">المناقصات الجارية</h2><p class="t5-tbp">الرواف للمقاولات — الإدارة العامة للمناقصات</p></div>
+          <span class="tb-badge t5-badge">21 مناقصة نشطة</span>
+        </div>
+        <div class="main">
+          <div class="kpis">
+            <div class="kpi t5-kpi"><div class="kpi-dot t5-dot-g"></div><b class="a">21</b><span>المناقصات الجارية</span></div>
+            <div class="kpi t5-kpi"><div class="kpi-dot t5-dot-m"></div><b>4</b><span>باقي 3 أيام</span></div>
+            <div class="kpi t5-kpi"><div class="kpi-dot t5-dot-r"></div><b class="r">1</b><span>مستحق اليوم</span></div>
+            <div class="kpi t5-kpi"><div class="kpi-dot t5-dot-m"></div><b>0</b><span>تنتهي اليوم</span></div>
+          </div>
+          <div class="cards" id="cards5"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ثيم 6 -->
+  <div class="section">
+    <span class="badge" style="background:linear-gradient(135deg,#be123c,#e11d48);color:#fff">⑥ أسود عميق + ياقوتي — جريء وقوي</span>
+    <div class="page">
+      <div class="sb t6-sb">
+        <div class="sb-brand t6-brand"><div class="sb-top t6-top">ENTERPRISE</div><div class="sb-name t6-name">إدارة المناقصات</div><div class="sb-role t6-role">صلاحية تنفيذية</div></div>
+        <nav class="sb-nav" id="nav6"></nav>
+        <div class="sb-out t6-out">خروج</div>
+      </div>
+      <div class="content t6-content">
+        <div class="topbar t6-topbar">
+          <div class="tb-left"><h2 class="t6-tbh">المناقصات الجارية</h2><p style="color:rgba(255,255,255,.42);font-size:11px;font-weight:700;margin-top:2px">الرواف للمقاولات — الإدارة العامة للمناقصات</p></div>
+          <span class="tb-badge t6-badge">21 مناقصة نشطة</span>
+        </div>
+        <div class="main">
+          <div class="kpis">
+            <div class="kpi t6-kpi"><div class="kpi-dot t6-dot-g"></div><b class="a" style="color:#fb7185">21</b><span style="color:#9f6070">المناقصات الجارية</span></div>
+            <div class="kpi t6-kpi"><div class="kpi-dot t6-dot-m"></div><b style="color:#fff">4</b><span style="color:#9f6070">باقي 3 أيام</span></div>
+            <div class="kpi t6-kpi"><div class="kpi-dot t6-dot-r"></div><b style="color:#fca5a5">1</b><span style="color:#9f6070">مستحق اليوم</span></div>
+            <div class="kpi t6-kpi"><div class="kpi-dot t6-dot-m"></div><b style="color:#fff">0</b><span style="color:#9f6070">تنتهي اليوم</span></div>
+          </div>
+          <div class="cards" id="cards6"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ثيم 7 -->
+  <div class="section">
+    <span class="badge" style="background:linear-gradient(135deg,#a07828,#d4a853);color:#fff">⑦ بيج فاتح + بني ذهبي — دافئ وراقٍ</span>
+    <div class="page t7-page">
+      <div class="sb t7-sb">
+        <div class="sb-brand t7-brand"><div class="sb-top t7-top">ENTERPRISE</div><div class="sb-name t7-name">إدارة المناقصات</div><div class="sb-role t7-role">صلاحية تنفيذية</div></div>
+        <nav class="sb-nav" id="nav7"></nav>
+        <div class="sb-out t7-out">خروج</div>
+      </div>
+      <div class="content" style="background:#f2ede4">
+        <div class="topbar t7-topbar">
+          <div class="tb-left"><h2 class="t7-tbh">المناقصات الجارية</h2><p style="color:rgba(255,255,255,.42);font-size:11px;font-weight:700;margin-top:2px">الرواف للمقاولات — الإدارة العامة للمناقصات</p></div>
+          <span class="tb-badge t7-badge">21 مناقصة نشطة</span>
+        </div>
+        <div class="main">
+          <div class="kpis">
+            <div class="kpi t7-kpi"><div class="kpi-dot t7-dot-g"></div><b class="a" style="color:#a07828">21</b><span style="color:#6b5020">المناقصات الجارية</span></div>
+            <div class="kpi t7-kpi"><div class="kpi-dot t7-dot-m"></div><b style="color:#1c1814">4</b><span style="color:#6b5020">باقي 3 أيام</span></div>
+            <div class="kpi t7-kpi"><div class="kpi-dot t7-dot-r"></div><b style="color:#dc2626">1</b><span style="color:#6b5020">مستحق اليوم</span></div>
+            <div class="kpi t7-kpi"><div class="kpi-dot t7-dot-m"></div><b style="color:#1c1814">0</b><span style="color:#6b5020">تنتهي اليوم</span></div>
+          </div>
+          <div class="cards" id="cards7"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ثيم 8 -->
+  <div class="section">
+    <span class="badge" style="background:linear-gradient(135deg,#0891b2,#06b6d4);color:#fff">⑧ أزرق بحري + فيروزي — منعش وهندسي</span>
+    <div class="page t8-page">
+      <div class="sb t8-sb">
+        <div class="sb-brand t8-brand"><div class="sb-top t8-top">ENTERPRISE</div><div class="sb-name t8-name">إدارة المناقصات</div><div class="sb-role t8-role">صلاحية تنفيذية</div></div>
+        <nav class="sb-nav" id="nav8"></nav>
+        <div class="sb-out t8-out">خروج</div>
+      </div>
+      <div class="content" style="background:#e4eff5">
+        <div class="topbar t8-topbar">
+          <div class="tb-left"><h2 class="t8-tbh">المناقصات الجارية</h2><p style="color:rgba(255,255,255,.42);font-size:11px;font-weight:700;margin-top:2px">الرواف للمقاولات — الإدارة العامة للمناقصات</p></div>
+          <span class="tb-badge t8-badge">21 مناقصة نشطة</span>
+        </div>
+        <div class="main">
+          <div class="kpis">
+            <div class="kpi t8-kpi"><div class="kpi-dot t8-dot-g"></div><b style="color:#0891b2">21</b><span style="color:#1a5068">المناقصات الجارية</span></div>
+            <div class="kpi t8-kpi"><div class="kpi-dot t8-dot-m"></div><b style="color:#0c1a2e">4</b><span style="color:#1a5068">باقي 3 أيام</span></div>
+            <div class="kpi t8-kpi"><div class="kpi-dot t8-dot-r"></div><b style="color:#dc2626">1</b><span style="color:#1a5068">مستحق اليوم</span></div>
+            <div class="kpi t8-kpi"><div class="kpi-dot t8-dot-m"></div><b style="color:#0c1a2e">0</b><span style="color:#1a5068">تنتهي اليوم</span></div>
+          </div>
+          <div class="cards" id="cards8"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("nav5").innerHTML = links("t5", 0);
+    document.getElementById("nav6").innerHTML = links("t6", 0);
+    document.getElementById("nav7").innerHTML = links("t7", 0);
+    document.getElementById("nav8").innerHTML = links("t8", 0);
+    document.getElementById("cards5").innerHTML = tenders("t5","t5-st");
+    document.getElementById("cards6").innerHTML = tenders("t6","t6-st");
+    document.getElementById("cards7").innerHTML = tenders("t7","t7-st");
+    document.getElementById("cards8").innerHTML = tenders("t8","t8-st");
+  </script>
+</body>
+</html>

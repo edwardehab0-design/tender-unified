@@ -5,10 +5,7 @@
 // تلقائياً على data.json + localStorage كما كان.
 (function () {
   const cfg = window.APP_CONFIG || {};
-  const isLocalHost = ["127.0.0.1", "localhost", "::1"].includes(window.location.hostname);
-  const localAuthBypass = !!(cfg.localAuthBypass && isLocalHost);
   const configured = !!(
-    !localAuthBypass &&
     cfg.supabaseUrl && cfg.supabaseKey &&
     !cfg.supabaseUrl.includes("__") && !cfg.supabaseKey.includes("__")
   );
@@ -167,6 +164,25 @@
     if (error) console.warn("[db] setStageOverride:", error.message);
   }
 
+  // ── تصفير شامل: حذف كل التعيينات/الحالات/المراحل/الاعتمادات ──
+  // يُبقي التعليقات (الملاحظات) كما هي. يُستخدم لبدء العمل الفعلي.
+  async function resetAllState() {
+    const c = sb();
+    if (!c) return { ok: false, reason: "not-configured" };
+    const tables = [
+      "tender_assignments",
+      "tender_dept_status",
+      "tender_stage_override",
+      "tender_approvals"
+    ];
+    const results = await Promise.all(
+      tables.map((t) => c.from(t).delete().not("tender_id", "is", null))
+    );
+    const errors = results.filter((r) => r.error).map((r) => r.error.message);
+    if (errors.length) console.warn("[db] resetAllState:", errors.join(" | "));
+    return { ok: errors.length === 0, errors };
+  }
+
   // ── التحديثات الفورية (best-effort) ──────────────────────────
   function subscribe(onChange) {
     const c = sb();
@@ -180,11 +196,97 @@
       .subscribe();
   }
 
+  // ── إشعارات بين الأقسام ──────────────────────────────────────
+
+  async function sendDeptNotification(fromDept, fromName, toDept, tenderId, tenderTitle, type, message) {
+    const c = sb();
+    if (!c) return;
+    const { error } = await c.from("dept_notifications").insert({
+      from_dept: fromDept, from_name: fromName || "",
+      to_dept: toDept, tender_id: tenderId, tender_title: tenderTitle || "",
+      type: type || "custom", message
+    });
+    if (error) console.warn("[db] sendDeptNotification:", error.message);
+  }
+
+  async function fetchDeptNotifications(deptKey) {
+    const c = sb();
+    if (!c) return [];
+    const { data, error } = await c.from("dept_notifications")
+      .select("*")
+      .eq("to_dept", deptKey)
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (error) { console.warn("[db] fetchDeptNotifications:", error.message); return []; }
+    return data || [];
+  }
+
+  async function markDeptNotifRead(id) {
+    const c = sb();
+    if (!c) return;
+    const { error } = await c.from("dept_notifications").update({ is_read: true }).eq("id", id);
+    if (error) console.warn("[db] markDeptNotifRead:", error.message);
+  }
+
+  async function markAllDeptNotifsRead(deptKey) {
+    const c = sb();
+    if (!c) return;
+    const { error } = await c.from("dept_notifications")
+      .update({ is_read: true }).eq("to_dept", deptKey).eq("is_read", false);
+    if (error) console.warn("[db] markAllDeptNotifsRead:", error.message);
+  }
+
+  function subscribeDeptNotifs(deptKey, onChange) {
+    const c = sb();
+    if (!c) return null;
+    return c.channel(`dept-notifs-${deptKey}`)
+      .on("postgres_changes", {
+        event: "INSERT", schema: "public", table: "dept_notifications",
+        filter: `to_dept=eq.${deptKey}`
+      }, onChange)
+      .subscribe();
+  }
+
+  // ── روابط مكتبات الأقسام (مخزّنة في Supabase، لا في localStorage) ──
+
+  async function fetchLibraryLinks() {
+    const c = sb();
+    if (!c) { console.warn("[db] fetchLibraryLinks: no client (SB not configured)"); return {}; }
+    const { data, error } = await c.from("dept_library_links").select("dept_key,url");
+    if (error) {
+      console.error("[db] fetchLibraryLinks ERROR:", error.message, "| code:", error.code);
+      return {};
+    }
+    const map = {};
+    (data || []).forEach((r) => { if (r.url) map[r.dept_key] = r.url; });
+    console.log("[db] fetchLibraryLinks: loaded", Object.keys(map).length, "links →", map);
+    return map;
+  }
+
+  async function setLibraryLink(deptKey, url) {
+    const c = sb();
+    if (!c) { console.warn("[db] setLibraryLink: no client"); return; }
+    if (!url) {
+      const { error } = await c.from("dept_library_links").delete().eq("dept_key", deptKey);
+      if (error) console.error("[db] setLibraryLink delete ERROR:", error.message);
+      return;
+    }
+    const { error } = await c.from("dept_library_links").upsert(
+      { dept_key: deptKey, url: url.trim(), updated_at: new Date().toISOString() },
+      { onConflict: "dept_key" }
+    );
+    if (error) console.error("[db] setLibraryLink upsert ERROR:", error.message, "| code:", error.code);
+    else console.log("[db] setLibraryLink: saved", deptKey, "→", url);
+  }
+
   window.SB = {
     get enabled() { return configured; },
     client: sb,
     fetchTenders, fetchState,
     setDeptStatus, setApproval, setAssignments, addComment, setStageOverride,
-    subscribe
+    resetAllState, subscribe,
+    sendDeptNotification, fetchDeptNotifications,
+    markDeptNotifRead, markAllDeptNotifsRead, subscribeDeptNotifs,
+    fetchLibraryLinks, setLibraryLink
   };
 })();

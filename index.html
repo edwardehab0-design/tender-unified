@@ -9,9 +9,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css?v=welcome-sage-premium-2">
   <link rel="stylesheet" href="./shared-visual.css?v=4">
-  <link rel="stylesheet" href="./landing-official.css?v=7">
-  <link rel="stylesheet" href="./generic-pages.css?v=1">
+  <link rel="stylesheet" href="./landing-official.css?v=8">
   <script src="./config.js"></script>
+  <script>
+    // إعادة التوجيه لصفحة إعادة تعيين كلمة المرور عند قدوم رابط الاسترداد
+    (function() {
+      const hash = window.location.hash;
+      if (hash && hash.includes("type=recovery")) {
+        window.location.replace("/reset-password.html" + hash);
+      }
+    })();
+  </script>
 </head>
 <body class="intro-active">
   <section class="welcome-screen" id="welcome-screen" aria-label="شاشة الترحيب">
@@ -52,8 +60,15 @@
                 <p class="official-lead">
                   بوابتك المتكاملة لإدارة دورة المناقصات بكفاءة وشفافية، من الرصد والدراسة إلى التقديم والترسية ضمن منظومة عمل واحدة موحدة.
                 </p>
-                <div class="official-actions">
-                  <button class="official-primary" id="show-login" type="button">الدخول إلى البوابة</button>
+                <div class="official-login-form">
+                  <form id="login-form" autocomplete="on" novalidate>
+                    <div class="login-fields">
+                      <input id="email" type="email" name="email" placeholder="البريد الإلكتروني" required autocomplete="email">
+                      <input id="password" type="password" name="password" placeholder="كلمة المرور" required autocomplete="current-password">
+                      <button class="official-primary" type="submit" id="login-btn">دخول</button>
+                    </div>
+                    <div class="login-error" id="login-error" role="alert"></div>
+                  </form>
                 </div>
               </div>
             </section>
@@ -84,38 +99,6 @@
               </div>
             </section>
           </main>
-          <p class="welcome-eyebrow">إدارة المناقصات</p>
-          <h1>بوابة المناقصات الموحدة</h1>
-          <p class="welcome-lead">منصة الإدارة العامة للمناقصات بشركة الرواف.</p>
-          <div class="welcome-actions">
-            <button class="enter-portal-btn" id="show-login-legacy" type="button">الدخول إلى البوابة</button>
-          </div>
-        </div>
-
-        <div class="welcome-copy login-panel" id="login-panel" hidden>
-          <p class="welcome-eyebrow">تسجيل الدخول</p>
-          <h1>مرحباً بكم</h1>
-          <p class="welcome-lead">أدخل كلمة المرور المخصصة لك للانتقال إلى لوحة التحكم.</p>
-          <form class="login-card" id="login-form">
-            <label for="portal-password">كلمة المرور</label>
-            <div class="password-row">
-              <input id="portal-password" type="password" autocomplete="current-password" placeholder="أدخل كلمة المرور">
-              <button class="enter-portal-btn" type="submit">متابعة</button>
-            </div>
-            <p class="login-error" id="login-error" role="alert"></p>
-          </form>
-        </div>
-
-        <div class="role-welcome-card" id="role-welcome-card" hidden>
-          <div class="role-avatar" id="role-avatar"></div>
-          <p class="role-kicker">أهلاً وسهلاً</p>
-          <h2 id="role-name"></h2>
-          <div class="role-divider"></div>
-          <p class="role-message" id="role-message"></p>
-          <p class="role-sub" id="role-sub"></p>
-          <button class="role-enter-btn" id="enter-portal" type="button">الدخول إلى لوحة التحكم ◀</button>
-        </div>
-
         <div class="welcome-orbit" id="welcome-orbit" aria-hidden="true">
           <div class="orbit-ring orbit-ring-one"></div>
           <div class="orbit-ring orbit-ring-two"></div>
@@ -208,160 +191,137 @@
     </main>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
-    const users = {
-      manager: {
-        password: "TDM@2026",
-        name: "مدير الإدارة العامة للمناقصات",
-        message: "مرحباً بك سعادة مدير الإدارة العامة للمناقصات",
-        sub: "نتشرف بتشريفكم في منصتنا. جميع بيانات المناقصات والتحليلات في خدمتكم.",
-        avatar: "./portfolio/assets/manager-avatar.jpg",
-        access: "executive"
-      },
-      vp: {
-        password: "EVP@2026",
-        name: "سعادة نائب الرئيس التنفيذي",
-        message: "مرحباً بك سعادة نائب الرئيس التنفيذي",
-        sub: "نتشرف بتشريفكم في منصتنا. جميع بيانات المناقصات والتحليلات في خدمتكم.",
-        avatar: "./portfolio/assets/vp-avatar.jpg",
-        access: "executive"
-      },
-      general: {
-        password: "RT2026",
-        name: "فريق العمل",
-        message: "مرحباً بكم في بوابة المناقصات",
-        sub: "يمكنكم متابعة المناقصات الجارية وأهم العملاء والتحليلات.",
-        avatar: "./portfolio/assets/tendering-logo.jpg",
-        access: "general"
-      }
-    };
+    (function () {
+      const SESSION_KEY = "alrawafPortalRole";
+      const cfg = window.APP_CONFIG || {};
+      const configured = !!(cfg.supabaseUrl && cfg.supabaseKey
+        && !cfg.supabaseUrl.includes("__") && !cfg.supabaseKey.includes("__"));
+      const sb = (configured && window.supabase)
+        ? window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseKey,
+            { auth: { persistSession: true, autoRefreshToken: true } })
+        : null;
 
-    const SESSION_KEY = "alrawafPortalRole";
-    let currentUser = null;
-    const introPanel = document.getElementById("intro-panel");
-    const showLoginButton = document.getElementById("show-login");
-    const loginForm = document.getElementById("login-form");
-    const passwordInput = document.getElementById("portal-password");
-    const loginError = document.getElementById("login-error");
-    const loginPanel = document.getElementById("login-panel");
-    const welcomeOrbit = document.getElementById("welcome-orbit");
-    const roleWelcomeCard = document.getElementById("role-welcome-card");
-    const enterPortalButton = document.getElementById("enter-portal");
-    const logoutPortalButton = document.getElementById("portal-logout");
-    const portalDashboard = document.getElementById("portal-dashboard");
-    const welcomeScreen = document.getElementById("welcome-screen");
-    const getUserByKey = (key) => {
-      return users[key] ? { ...users[key], key } : null;
-    };
-    const findUserByPassword = (password) => {
-      const found = Object.entries(users).find(([, user]) => user.password === password.trim());
-      return found ? { ...found[1], key: found[0] } : null;
-    };
-    const getSavedUser = () => {
-      try {
-        return getUserByKey(sessionStorage.getItem(SESSION_KEY));
-      } catch {
-        return null;
+      const welcomeScreen   = document.getElementById("welcome-screen");
+      const portalDashboard = document.getElementById("portal-dashboard");
+      const loginBtn        = document.getElementById("login-btn");
+      const errEl           = document.getElementById("login-error");
+
+      const VIP_EMAILS = ["alaaaboelnaja@alrawaf.com.sa", "abdullah@alrawaf.com.sa"];
+
+      function applyAccess(role) {
+        document.querySelectorAll("[data-role-scope='executive']").forEach((el) => {
+          el.hidden = role !== "executive";
+        });
       }
-    };
-    const saveUserSession = () => {
-      try {
-        if (currentUser?.key) sessionStorage.setItem(SESSION_KEY, currentUser.key);
-      } catch {}
-    };
-    const clearUserSession = () => {
-      try {
-        sessionStorage.removeItem(SESSION_KEY);
-      } catch {}
-    };
-    const applyAccess = () => {
-      const isExecutive = currentUser?.access === "executive";
-      document.querySelectorAll("[data-role-scope='executive']").forEach((item) => {
-        item.hidden = !isExecutive;
+
+      function revealPortal(profile) {
+        document.body.classList.remove("intro-active");
+        document.body.classList.add("welcome-entered");
+        welcomeScreen?.setAttribute("aria-hidden", "true");
+        portalDashboard?.setAttribute("aria-hidden", "false");
+        const nameEl   = document.getElementById("ops-user-name");
+        const accessEl = document.getElementById("ops-user-access");
+        if (nameEl && profile?.full_name) nameEl.textContent = profile.full_name;
+        if (accessEl) accessEl.textContent = profile?.role === "executive"
+          ? "صلاحية تنفيذية تشمل التقارير والمحفظة"
+          : "صلاحية تشغيلية للمناقصات والعملاء والتحليلات";
+        applyAccess(profile?.role);
+      }
+
+      async function fetchProfile(userId) {
+        try {
+          const { data } = await sb.from("profiles")
+            .select("full_name, role, department_key, allowed_pages")
+            .eq("id", userId).single();
+          return data || null;
+        } catch { return null; }
+      }
+
+      async function afterLogin(session) {
+        const email = (session.user.email || "").trim().toLowerCase();
+        const isVip = VIP_EMAILS.includes(email);
+        const profile = await fetchProfile(session.user.id);
+        const executive = isVip || profile?.role === "executive";
+        sessionStorage.setItem(SESSION_KEY, executive ? "manager" : "department");
+        if (profile?.department_key)
+          sessionStorage.setItem("alrawafDepartmentKey", profile.department_key);
+        sessionStorage.setItem("alrawafUserEmail", session.user.email || "");
+        if (profile?.full_name) sessionStorage.setItem("alrawafUserName", profile.full_name);
+        // الصفحات المسموح بها للمستخدم في الشريط الجانبي (إن حُدِّدت)
+        if (Array.isArray(profile?.allowed_pages) && profile.allowed_pages.length)
+          sessionStorage.setItem("alrawafAllowedPages", JSON.stringify(profile.allowed_pages));
+        else
+          sessionStorage.removeItem("alrawafAllowedPages");
+        window.location.href = isVip ? "/welcome.html" : "/tenders/";
+      }
+
+      // نموذج تسجيل الدخول
+      if (!sb && errEl) {
+        errEl.textContent = "إعداد الخادم غير مكتمل: تواصل مع مسؤول النظام.";
+        errEl.classList.add("show");
+        if (loginBtn) loginBtn.disabled = true;
+      }
+
+      document.getElementById("login-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!sb) return;
+        loginBtn.disabled = true;
+        loginBtn.textContent = "جارٍ التحقق…";
+        errEl?.classList.remove("show");
+        try {
+          const email    = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value;
+          const { data, error } = await sb.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          await afterLogin(data.session);
+        } catch (err) {
+          const msg = (err.message || "").includes("Invalid login")
+            ? "البريد أو كلمة المرور غير صحيحة"
+            : err.message || "حدث خطأ، حاول مجدداً";
+          if (errEl) { errEl.textContent = msg; errEl.classList.add("show"); }
+          loginBtn.disabled = false;
+          loginBtn.textContent = "دخول";
+        }
       });
-    };
-    const showLogin = () => {
-      introPanel.hidden = true;
-      loginPanel.hidden = false;
-      document.body.classList.remove("role-welcome-active");
-      passwordInput.focus();
-    };
-    const showRoleWelcome = (user) => {
-      currentUser = user;
-      introPanel.hidden = true;
-      loginPanel.hidden = true;
-      welcomeOrbit.hidden = true;
-      roleWelcomeCard.hidden = false;
-      document.body.classList.add("role-welcome-active");
-      document.getElementById("role-name").textContent = user.name;
-      document.getElementById("role-message").textContent = user.message;
-      document.getElementById("role-sub").textContent = user.sub;
-      document.getElementById("ops-user-name").textContent = user.name;
-      document.getElementById("ops-user-access").textContent = user.access === "executive"
-        ? "صلاحية تنفيذية تشمل التقارير والمحفظة"
-        : "صلاحية تشغيلية للمناقصات والعملاء والتحليلات";
-      const avatarClass = user.key === "general" ? "role-logo-img" : "";
-      document.getElementById("role-avatar").innerHTML = user.avatar
-        ? `<img class="${avatarClass}" src="${user.avatar}" alt="${user.name}">`
-        : `<span>ر</span>`;
-      applyAccess();
-    };
-    const resetLogin = () => {
-      currentUser = null;
-      clearUserSession();
-      introPanel.hidden = false;
-      loginPanel.hidden = true;
-      welcomeOrbit.hidden = false;
-      roleWelcomeCard.hidden = true;
-      document.body.classList.remove("role-welcome-active");
-      passwordInput.value = "";
-      loginError.textContent = "";
-      document.querySelectorAll("[data-role-scope='executive']").forEach((item) => {
-        item.hidden = false;
+
+      // زر الخروج من لوحة التحكم
+      document.getElementById("portal-logout")?.addEventListener("click", async () => {
+        try {
+          sessionStorage.removeItem(SESSION_KEY);
+          sessionStorage.removeItem("alrawafDepartmentKey");
+        } catch {}
+        if (sb) { try { await sb.auth.signOut(); } catch {} }
+        window.location.href = "/";
       });
-    };
-    const openPortal = () => {
-      if (!currentUser) return;
-      saveUserSession();
-      window.location.href = "./tenders/?login=1";
-    };
-    const closePortal = () => {
-      document.body.classList.add("intro-active");
-      document.body.classList.remove("welcome-entered");
-      portalDashboard?.setAttribute("aria-hidden", "true");
-      welcomeScreen?.removeAttribute("aria-hidden");
-      resetLogin();
-      if (window.location.search) {
-        window.history.replaceState({}, "", window.location.pathname);
-      }
-    };
 
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("return") === "portal" || params.get("view") === "portal") {
-      window.history.replaceState({}, "", window.location.pathname);
-      const savedUser = getSavedUser();
-      if (savedUser) {
-        showRoleWelcome(savedUser);
-      } else {
-        showLogin();
-      }
-    }
+      // فحص الجلسة عند التحميل
+      (async () => {
+        if (!sb) return;
+        const { data } = await sb.auth.getSession();
+        if (!data?.session) return;
 
-    showLoginButton?.addEventListener("click", showLogin);
-    loginForm?.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const user = findUserByPassword(passwordInput.value);
-      if (!user) {
-        loginError.textContent = "كلمة المرور غير صحيحة";
-        passwordInput.focus();
-        return;
-      }
-      loginError.textContent = "";
-      showRoleWelcome(user);
-    });
-    enterPortalButton?.addEventListener("click", openPortal);
-    logoutPortalButton?.addEventListener("click", closePortal);
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("return") === "portal" || params.get("view") === "portal") {
+          window.history.replaceState({}, "", window.location.pathname);
+          const profile = await fetchProfile(data.session.user.id);
+          if (profile) {
+            const email = (data.session.user.email || "").trim().toLowerCase();
+            const executive = VIP_EMAILS.includes(email) || profile.role === "executive";
+            sessionStorage.setItem(SESSION_KEY, executive ? "manager" : "department");
+            if (profile.department_key) sessionStorage.setItem("alrawafDepartmentKey", profile.department_key);
+            if (Array.isArray(profile.allowed_pages) && profile.allowed_pages.length)
+              sessionStorage.setItem("alrawafAllowedPages", JSON.stringify(profile.allowed_pages));
+            else
+              sessionStorage.removeItem("alrawafAllowedPages");
+            revealPortal(profile);
+          }
+        } else {
+          await afterLogin(data.session);
+        }
+      })();
+    })();
   </script>
-  <script src="./generic-pages.js?v=1"></script>
 </body>
 </html>

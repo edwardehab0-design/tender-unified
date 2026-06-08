@@ -87,9 +87,9 @@ function writePrefs() {
 }
 
 let prefs = readPrefs();
-// تطبيق السمة فوراً لتفادي وميض الوضع النهاري قبل تحميل البيانات
+// تطبيق السمة فوراً لتفادي الوميض قبل تحميل البيانات (الثيم مشترك)
 try {
-  document.documentElement.setAttribute("data-theme", prefs.theme === "dark" ? "dark" : "light");
+  document.documentElement.setAttribute("data-theme", localStorage.getItem("alrawafTheme") === "green" ? "green" : "grad");
   if (prefs.density === "compact" && document.body) document.body.classList.add("density-compact");
 } catch {}
 let tenders = [];
@@ -102,6 +102,7 @@ let selectedView = ["board", "table", "calendar", "analytics"].includes(prefs.vi
 let advFilters = { sector: "", client: "", from: "", to: "" };
 let calendarRef = new Date();
 let savedState = readState();
+let deptNotifications = [];
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
 
@@ -128,6 +129,61 @@ function currentDepartmentKey() {
   } catch {
     return "BS";
   }
+}
+
+// ── تمييز مدير القسم عن الموظف ──
+// رؤساء الأقسام: يرون قسمهم بالكامل. باقي الموظفين: يرون مهامهم المسندة فقط.
+const DEPT_MANAGER_EMAILS = new Set([
+  "mohamed.salama@alrawaf.com.sa",        // العروض الفنية والتأهيل (TECH)
+  "mahmoud.a.abdelghany@alrawaf.com.sa",  // الإنشاءات والتكاليف (BS)
+  "nassersonbl2017@alrawaf.com.sa",       // البنية التحتية (INF)
+  "mostafa.moawed@alrawaf.com.sa"         // الدراسات والتصاميم (DESIGN)
+]);
+
+function viewerEmail() {
+  try { return (sessionStorage.getItem("alrawafUserEmail") || "").trim().toLowerCase(); } catch { return ""; }
+}
+
+function viewerName() {
+  try { return (sessionStorage.getItem("alrawafUserName") || "").trim(); } catch { return ""; }
+}
+
+function isDeptManager() {
+  return !isExecutive() && DEPT_MANAGER_EMAILS.has(viewerEmail());
+}
+
+// ── طبقات الصلاحية حسب منطق الأعمدة الصارم ──
+// المعتمِدون: مدير الإدارة + مالك الموقع فقط — العمود «جاهزة للاعتماد» → «معتمدة»
+const APPROVER_EMAILS = new Set([
+  "alaaaboelnaja@alrawaf.com.sa", // علاء أبو النجا — مدير الإدارة
+  "ehab.edward@alrawaf.com.sa",   // إيهاب ادوارد — مالك الموقع
+  "edwardehab0@gmail.com"         // إيهاب — حساب بديل
+]);
+
+function isApprover() {
+  return APPROVER_EMAILS.has(viewerEmail());
+}
+
+// قادة الفرق = مديرو الأقسام (حسب اعتماد الإدارة) — العمودان «مهام جديدة» و«قيد العمل»
+function isTeamLeader() {
+  return isDeptManager();
+}
+
+// نمط العرض: تنفيذي (الكل) · مدير قسم (قسمه) · موظف (مهامه فقط)
+function viewerMode() {
+  if (isExecutive()) return "executive";
+  if (isDeptManager()) return "manager";
+  return "employee";
+}
+
+// هل المنافسة مسندة للموظف الحالي داخل قسمه؟
+function assignedToViewer(tender) {
+  const myName = viewerName();
+  if (!myName) return false;
+  const myRow = departmentRows(tender).find((row) => row.key === currentDepartmentKey());
+  if (!myRow) return false;
+  const target = normalizeText(myName);
+  return myRow.engineers.some((eng) => normalizeText(personName(eng)) === target);
 }
 
 function readState() {
@@ -195,7 +251,7 @@ function assignmentRoleKey(person) {
 
 async function loadEmployees() {
   try {
-    const response = await fetch("./employees.json?v=1", { cache: "no-store" });
+    const response = await fetch("./employees.json?v=2", { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     if (!Array.isArray(data.departments) || !data.departments.length) return;
@@ -280,15 +336,15 @@ function normalizeTender(row, index) {
     title: pick(row, ["اسم المناقصة", "Tender Title", "tender_title", "name"], 1) || fallbackTenders[index % fallbackTenders.length].title,
     client: pick(row, ["المالك", "Client", "client", "owner"], 4) || "غير محدد",
     sector: pick(row, ["القطاع", "Sector", "sector"], 6) || "غير محدد",
-    submitDate: pick(row, ["تاريخ التقديم", "Submission", "submission", "date"], 2) || "2026-06-01"
+    submitDate: pick(row, ["تاريخ التقديم", "Submission", "submission", "date"], 2) || "2026-06-01",
+    guarantee: pick(row, ["تاريخ الضمان الابتدائي", "guarantee", "Guarantee"], -1) || ""
   };
 }
 
 function statusFor(tender, deptIndex) {
   const state = savedState[tender.id]?.departments?.[departments[deptIndex].key];
   if (state) return state;
-  const seed = [...String(tender.id)].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) + deptIndex;
-  if (seed % 4 === 0) return "completed";
+  // لا توجد حالة محفوظة: القسم قيد العمل حتى يُحدّثه شخص فعلياً
   return "in-progress";
 }
 
@@ -303,10 +359,16 @@ function setDepartmentStatus(tenderId, departmentKey, status) {
   }
   const tender = tenders.find((t) => t.id === tenderId);
   // عند اكتمال كل الأقسام نُزيل أي تجاوز يدوي للمرحلة كي تتدفق البطاقة تلقائيا إلى "جاهزة للاعتماد"
+  let clearedStage = false;
   if (tender && departmentRows(tender).every((row) => row.status === "completed")) {
     delete savedState[tenderId].stage;
+    clearedStage = true;
   }
   writeState();
+  if (window.SB?.enabled) {
+    window.SB.setDeptStatus(tenderId, departmentKey, status);
+    if (clearedStage) window.SB.setStageOverride(tenderId, null);
+  }
   const dept = departments.find((d) => d.key === departmentKey);
   if (tender && status === "completed") {
     addActivityEntry(tenderId, tender.title, "complete", `اعتماد إكمال ${dept?.name || departmentKey}`);
@@ -317,6 +379,7 @@ function setApproval(tenderId, status) {
   savedState[tenderId] = savedState[tenderId] || {};
   savedState[tenderId].approval = status;
   writeState();
+  if (window.SB?.enabled) window.SB.setApproval(tenderId, status);
   const tender = tenders.find((t) => t.id === tenderId);
   if (tender) {
     addActivityEntry(tenderId, tender.title, status === "approved" ? "approve" : "reject",
@@ -330,6 +393,9 @@ function savedAssignedNames(tenderId, departmentKey) {
 }
 
 function setAssignment(tenderId, departmentKey, names) {
+  const tender = tenders.find((t) => t.id === tenderId);
+  // التقط المرحلة قبل الحفظ لاكتشاف الانتقال التلقائي «جديدة» → «قيد العمل»
+  const wasNew = tender ? tenderStage(tender) === "new" : false;
   savedState[tenderId] = savedState[tenderId] || {};
   savedState[tenderId].assignments = savedState[tenderId].assignments || {};
   savedState[tenderId].assignments[departmentKey] = names;
@@ -337,11 +403,16 @@ function setAssignment(tenderId, departmentKey, names) {
   savedState[tenderId].timing[departmentKey] = savedState[tenderId].timing[departmentKey] || {};
   savedState[tenderId].timing[departmentKey].assignedAt = new Date().toISOString();
   writeState();
-  const tender = tenders.find((t) => t.id === tenderId);
+  if (window.SB?.enabled) window.SB.setAssignments(tenderId, departmentKey, names);
   const dept = departments.find((d) => d.key === departmentKey);
   if (tender && names.length) {
     addActivityEntry(tenderId, tender.title, "assign",
       `تعيين ${names.join("، ")} في ${dept?.name || departmentKey}`);
+    // منطق الأعمدة الصارم: أول تعيين فعلي للفريق ينقل المهمة تلقائيا إلى «قيد العمل»
+    // (يتم النقل عبر boardColumn تلقائيا بمجرد وجود تعيين محفوظ)
+    if (wasNew) {
+      addActivityEntry(tenderId, tender.title, "stage", "نقل تلقائي إلى «قيد العمل» بعد تعيين الفريق");
+    }
   }
 }
 
@@ -362,6 +433,7 @@ function addDepartmentComment(tenderId, departmentKey, text) {
     by: isExecutive() ? "مدير الإدارة" : "مدير القسم"
   });
   writeState();
+  if (window.SB?.enabled) window.SB.addComment(tenderId, departmentKey, value);
   const tender = tenders.find((t) => t.id === tenderId);
   const dept = departments.find((d) => d.key === departmentKey);
   if (tender) {
@@ -398,6 +470,41 @@ function tenderActivityLog(tenderId) {
 }
 
 // ── إعداد SharePoint ──
+const SP_DEPT_PREFIX = "alrawafSPDeptLink_";
+
+// يُملأ فوراً من localStorage بشكل متزامن — الـ render الأول يرى البيانات مباشرة
+const _libLinkCache = (() => {
+  const cache = {};
+  try {
+    Object.keys(localStorage).forEach((k) => {
+      if (k.startsWith(SP_DEPT_PREFIX)) {
+        const val = localStorage.getItem(k);
+        if (val) cache[k.slice(SP_DEPT_PREFIX.length)] = val;
+      }
+    });
+  } catch {}
+  return cache;
+})();
+
+// يُستدعى في loadData: يُزامن مع Supabase ويُهاجر localStorage إليه
+async function loadLibraryLinksCache() {
+  if (!window.SB?.enabled) return;
+  try {
+    const remote = await window.SB.fetchLibraryLinks();
+    // هجّر ما في localStorage إلى Supabase إن لم يكن موجوداً فيه بعد
+    for (const [key, url] of Object.entries(_libLinkCache)) {
+      if (!remote[key] && url) {
+        await window.SB.setLibraryLink(key, url);
+        remote[key] = url;
+      }
+    }
+    // Supabase هو المرجع النهائي — أضف/اكتب فوق cache
+    Object.assign(_libLinkCache, remote);
+  } catch (e) {
+    console.warn("[libLinks] Supabase sync failed, using localStorage:", e);
+  }
+}
+
 function getSharePointBase() {
   try { return localStorage.getItem(SP_KEY) || ""; } catch { return ""; }
 }
@@ -406,24 +513,47 @@ function saveSharePointBase(url) {
   try { localStorage.setItem(SP_KEY, String(url || "").trim()); } catch {}
 }
 
-function openSharePointConfig() {
+function getDeptLibraryLink(deptKey) {
+  return _libLinkCache[deptKey] || "";
+}
+
+function saveDeptLibraryLink(deptKey, url) {
+  const cleaned = String(url || "").trim();
+  _libLinkCache[deptKey] = cleaned;
+  // احفظ على Supabase (مشترك بين كل المتصفحات)
+  if (window.SB?.enabled) window.SB.setLibraryLink(deptKey, cleaned);
+  // احفظ على localStorage كـ fallback
+  try { localStorage.setItem(SP_DEPT_PREFIX + deptKey, cleaned); } catch {}
+}
+
+let _spModalDeptKey = null;
+
+function openSharePointConfig(deptKey) {
   const modal = qs("sp-modal");
   if (!modal) return;
-  qs("sp-url-input").value = getSharePointBase();
+  _spModalDeptKey = deptKey || null;
+  const dept = deptKey ? departments.find((d) => d.key === deptKey) : null;
+  const title = qs("sp-modal-title");
+  if (title) title.textContent = dept ? `رابط مكتبة ${dept.name}` : "إعداد رابط SharePoint";
+  const urlInput = qs("sp-url-input");
+  if (urlInput) urlInput.value = deptKey ? getDeptLibraryLink(deptKey) : getSharePointBase();
   modal.hidden = false;
 }
 
 function closeSharePointConfig() {
   const modal = qs("sp-modal");
   if (modal) modal.hidden = true;
+  _spModalDeptKey = null;
 }
 
 function openDeptLibrary(deptKey) {
+  const perLink = getDeptLibraryLink(deptKey);
+  if (perLink) { window.open(perLink, "_blank", "noopener"); return; }
   const dept = departments.find((d) => d.key === deptKey);
   const lib = dept?.library || deptKey;
   const base = getSharePointBase();
   if (!base) {
-    openSharePointConfig();
+    openSharePointConfig(deptKey);
     return;
   }
   const url = lib.startsWith("http") ? lib : `${base.replace(/\/$/, "")}/${lib}`;
@@ -466,19 +596,24 @@ function renderAdvancedFilters() {
 }
 
 // ── الوضع الليلي ──
+// الثيم موحّد بين كل الصفحات عبر localStorage["alrawafTheme"] = "grad" | "green"
+function savedTheme() {
+  try { return localStorage.getItem("alrawafTheme") === "green" ? "green" : "grad"; } catch { return "grad"; }
+}
+
 function applyTheme() {
-  const dark = prefs.theme === "dark";
-  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  const green = savedTheme() === "green";
+  document.documentElement.setAttribute("data-theme", green ? "green" : "grad");
   const btn = qs("theme-toggle");
   if (btn) {
-    btn.setAttribute("aria-pressed", dark ? "true" : "false");
-    btn.title = dark ? "الوضع النهاري" : "الوضع الليلي";
+    btn.setAttribute("aria-pressed", green ? "true" : "false");
+    btn.title = green ? "المظهر البنفسجي" : "المظهر الأخضر";
   }
 }
 
 function toggleTheme() {
-  prefs.theme = prefs.theme === "dark" ? "light" : "dark";
-  writePrefs();
+  const next = savedTheme() === "green" ? "grad" : "green";
+  try { localStorage.setItem("alrawafTheme", next); } catch {}
   applyTheme();
 }
 
@@ -499,39 +634,137 @@ function toggleDensity() {
   applyDensity();
 }
 
+// ── مساعدات الإشعارات ──
+
+function timeAgo(dateStr) {
+  if (!dateStr) return "";
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return "الآن";
+  if (m < 60) return `منذ ${m} دقيقة`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `منذ ${h} ساعة`;
+  return `منذ ${Math.floor(h / 24)} يوم`;
+}
+
+function notifTypeLabel(type) {
+  const map = { done: "انتهينا ✓", started: "بدأنا", coord: "طلب تنسيق", custom: "رسالة" };
+  return map[type] || "إشعار";
+}
+
+function notifTypeDefaultMsg(type) {
+  const map = {
+    done: "انتهى قسمنا من العمل على هذه المنافسة.",
+    started: "بدأ قسمنا العمل على هذه المنافسة.",
+    coord: "مطلوب التنسيق معنا بخصوص هذه المنافسة."
+  };
+  return map[type] || "";
+}
+
+function showToast(msg) {
+  let t = document.querySelector(".ops-toast");
+  if (!t) {
+    t = document.createElement("div");
+    t.className = "ops-toast";
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.add("visible");
+  setTimeout(() => t.classList.remove("visible"), 2800);
+}
+
+async function loadDeptNotifications() {
+  if (!window.SB?.enabled) return;
+  deptNotifications = await window.SB.fetchDeptNotifications(currentDepartmentKey());
+  renderNotifications();
+}
+
 // ── الإشعارات ──
 function renderNotifications() {
   const countBadge = qs("notif-count");
   if (!countBadge) return;
-  const alerts = smartAlerts();
-  const critical = alerts.filter((a) => a.tone === "danger").length;
-  if (critical > 0) {
-    countBadge.textContent = critical;
-    countBadge.hidden = false;
-  } else {
-    countBadge.hidden = true;
-  }
+  const sysCount = smartAlerts().length;
+  const unreadDept = deptNotifications.filter((n) => !n.is_read).length;
+  const total = sysCount + unreadDept;
+  countBadge.textContent = total;
+  countBadge.hidden = total === 0;
 }
 
 function buildNotifPanel() {
   const panel = qs("notif-panel");
   if (!panel) return;
   const alerts = smartAlerts();
+  const deadlines  = alerts.filter((a) => a.type === "deadline");
+  const guarantees = alerts.filter((a) => a.type === "guarantee");
+  const unreadDept = deptNotifications.filter((n) => !n.is_read);
+
+  function renderGroup(title, icon, items) {
+    if (!items.length) return "";
+    return `
+      <div class="notif-group-head">${icon} ${safe(title)} (${items.length})</div>
+      ${items.map((a) => `
+        <div class="notif-item ${safe(a.tone)}">
+          <div class="notif-item-top">
+            <strong>${safe(a.text)}</strong>
+            <span class="notif-label ${safe(a.tone)}">${safe(a.label)}</span>
+          </div>
+          <span class="notif-sub">${safe(a.sub)}</span>
+        </div>
+      `).join("")}
+    `;
+  }
+
+  const deptSection = deptNotifications.length ? `
+    <div class="notif-group-head">💬 إشعارات الأقسام (${deptNotifications.length})</div>
+    ${deptNotifications.map((n) => `
+      <div class="notif-item ${n.is_read ? "soft" : "info"}" data-notif-id="${safe(n.id)}" style="cursor:pointer">
+        <div class="notif-item-top">
+          <strong>${safe(n.message)}</strong>
+          <span class="notif-label ${n.is_read ? "soft" : "info"}">${safe(notifTypeLabel(n.type))}</span>
+        </div>
+        <span class="notif-sub">من: ${safe(n.from_dept)}${n.from_name ? ` (${safe(n.from_name)})` : ""} • ${safe(n.tender_title || n.tender_id)} • ${safe(timeAgo(n.created_at))}</span>
+      </div>
+    `).join("")}
+  ` : "";
+
+  const total = alerts.length + unreadDept.length;
+
   panel.innerHTML = `
     <div class="notif-panel-head">
-      <strong>الإشعارات (${alerts.length})</strong>
-      <button type="button" id="notif-close" aria-label="إغلاق">×</button>
+      <strong>الإشعارات${total ? ` (${total})` : ""}</strong>
+      <div style="display:flex;gap:6px;align-items:center">
+        ${unreadDept.length ? `<button type="button" id="notif-mark-all" style="font-size:11px;padding:0 8px;height:24px;border:1px solid var(--border);border-radius:6px;background:var(--surface-2);color:var(--muted);cursor:pointer;font-family:inherit;font-weight:800">قراءة الكل</button>` : ""}
+        <button type="button" id="notif-close" aria-label="إغلاق">×</button>
+      </div>
     </div>
     <div class="notif-items">
-      ${alerts.length ? alerts.map((alert) => `
-        <div class="notif-item ${safe(alert.tone)}">
-          <strong>${safe(alert.title)}</strong>
-          <span>${safe(alert.text)}</span>
-        </div>
-      `).join("") : `<div class="notif-empty">لا توجد إشعارات حرجة الآن.</div>`}
+      ${alerts.length === 0 && deptNotifications.length === 0
+        ? `<div class="notif-empty">لا توجد إشعارات حالياً.</div>`
+        : renderGroup("مواعيد إغلاق خلال 3 أيام", "📅", deadlines)
+          + renderGroup("ضمانات ابتدائية مستحقة", "🔐", guarantees)
+          + deptSection
+      }
     </div>
   `;
   panel.querySelector("#notif-close")?.addEventListener("click", closeNotifPanel);
+  panel.querySelector("#notif-mark-all")?.addEventListener("click", async () => {
+    if (!window.SB?.enabled) return;
+    await window.SB.markAllDeptNotifsRead(currentDepartmentKey());
+    await loadDeptNotifications();
+    buildNotifPanel();
+  });
+  panel.querySelectorAll("[data-notif-id]").forEach((item) => {
+    item.addEventListener("click", async () => {
+      const id = item.dataset.notifId;
+      const notif = deptNotifications.find((n) => n.id === id);
+      if (!notif || notif.is_read) return;
+      notif.is_read = true;
+      renderNotifications();
+      item.classList.replace("info", "soft");
+      item.querySelector(".notif-label")?.classList.replace("info", "soft");
+      if (window.SB?.enabled) await window.SB.markDeptNotifRead(id);
+    });
+  });
 }
 
 function openNotifPanel() {
@@ -543,6 +776,29 @@ function openNotifPanel() {
 function closeNotifPanel() {
   qs("notif-panel").hidden = true;
   qs("notif-wrap")?.classList.remove("open");
+}
+
+function openSendNotifModal() {
+  if (!selectedContext) return;
+  const tender = tenders.find((t) => t.id === selectedContext.tenderId);
+  const myDept = currentDepartmentKey();
+  const others = departments.filter((d) => d.key !== myDept);
+  const nameEl = qs("sn-tender-name");
+  const deptSel = qs("sn-dept-select");
+  const msgEl = qs("sn-message");
+  if (!nameEl || !deptSel || !msgEl) return;
+  nameEl.textContent = tender ? tender.title : selectedContext.tenderId;
+  deptSel.innerHTML = `<option value="">اختر القسم المستقبِل…</option>` +
+    others.map((d) => `<option value="${safe(d.key)}">${safe(d.name)}</option>`).join("");
+  msgEl.value = "";
+  document.querySelectorAll("[name='sn-type']").forEach((r) => { r.checked = false; });
+  const modal = qs("sn-modal");
+  if (modal) modal.hidden = false;
+}
+
+function closeSendNotifModal() {
+  const modal = qs("sn-modal");
+  if (modal) modal.hidden = true;
 }
 
 // ── تصدير CSV ──
@@ -651,16 +907,15 @@ function assignedEngineers(tender, dept, index) {
     const matched = record?.ownerIsValid ? employeeByFullName(dept, record.ownerFullName) : null;
     return matched ? [matched] : [];
   }
-  const seed = [...String(tender.id)].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) + index * 3;
-  const count = (seed % 3) + 1;
-  const pool = autoAssignableEmployees(dept);
-  if (!pool.length) return [];
-  return Array.from({ length: Math.min(count, pool.length) }, (_, offset) => pool[(seed + offset) % pool.length]);
+  // لا تعبئة تلقائية: يبقى القسم بلا تعيين حتى يُسنِد قائد الفريق فريقا فعليا
+  return [];
 }
 
 function fileCount(tender, index) {
-  const seed = [...String(tender.id)].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
-  return (seed + index) % 5;
+  // عدد المرفقات الحقيقي لكل قسم؛ يبقى 0 حتى نربط جدول attachments باللوحة
+  const dept = departments[index];
+  const files = savedState[tender.id]?.files?.[dept?.key];
+  return Array.isArray(files) ? files.length : 0;
 }
 
 function techAssignmentNote(tender) {
@@ -741,16 +996,19 @@ function tenderState(tender) {
 
 function visibleTenders() {
   const term = searchTerm.trim().toLowerCase();
+  const mode = viewerMode();
   return tenders.filter((tender) => {
     const visibleByRole = isExecutive() || selectedDepartment === "all" || selectedDepartment === currentDepartmentKey();
     const matchesDepartment = selectedDepartment === "all" || departmentRows(tender).some((row) => row.key === selectedDepartment);
+    // الموظف العادي يرى فقط المنافسات المسندة إليه؛ المدير والتنفيذي يريان قسمهما/الكل
+    const matchesViewer = mode !== "employee" || assignedToViewer(tender);
     const column = tenderStage(tender);
     const matchesFilter = selectedFilter === "all"
       || column === selectedFilter
       || (selectedFilter === "ready" && column === "approved");
     const matchesSearch = !term || `${tender.title} ${tender.client} ${tender.sector}`.toLowerCase().includes(term);
     const matchesAdvanced = matchesAdvancedFilters(tender);
-    return visibleByRole && matchesDepartment && matchesFilter && matchesSearch && matchesAdvanced;
+    return visibleByRole && matchesDepartment && matchesViewer && matchesFilter && matchesSearch && matchesAdvanced;
   });
 }
 
@@ -987,29 +1245,27 @@ function renderDeptChart() {
 
 function smartAlerts() {
   const alerts = [];
-  const now = new Date();
   tenders.forEach((tender) => {
-    const rows = departmentRows(tender);
-    const closeLabel = daysTo(tender.submitDate);
-    rows.forEach((row, index) => {
-      const timeline = timelineFor(tender, row.key, index, row.status);
-      const assignmentAge = hoursBetween(timeline.taskCreatedAt, now);
-      const workAge = hoursBetween(timeline.assignedAt, now);
-      if (!row.engineers.length) {
-        alerts.push({ tone: "danger", title: "مهمة غير مسندة", text: `${row.short} · ${tender.title}` });
-      } else if (row.status !== "completed" && workAge > 48) {
-        alerts.push({ tone: "warning", title: "مفتوحة أكثر من يومين", text: `${row.short} · ${formatHours(workAge)} · ${tender.title}` });
-      } else if (row.status !== "completed" && assignmentAge > 6) {
-        alerts.push({ tone: "soft", title: "تحتاج متابعة", text: `${row.short} · ${formatHours(assignmentAge)} منذ إنشاء المهمة` });
+    const left = daysLeft(tender.submitDate);
+    if (left !== Infinity && left <= 3) {
+      const label = left < 0 ? "متأخرة" : left === 0 ? "اليوم" : `بعد ${left} ${left === 1 ? "يوم" : "أيام"}`;
+      const tone  = left <= 0 ? "danger" : left === 1 ? "warning" : "soft";
+      alerts.push({ type: "deadline", tone, title: "موعد إغلاق قريب", label, text: tender.title, sub: tender.client });
+    }
+    if (tender.guarantee) {
+      const gLeft = daysLeft(tender.guarantee);
+      if (gLeft !== Infinity && gLeft <= 3) {
+        const label = gLeft < 0 ? "متأخر" : gLeft === 0 ? "اليوم" : `بعد ${gLeft} ${gLeft === 1 ? "يوم" : "أيام"}`;
+        const tone  = gLeft <= 0 ? "danger" : gLeft === 1 ? "warning" : "soft";
+        alerts.push({ type: "guarantee", tone, title: "ضمان ابتدائي مستحق", label, text: tender.title, sub: tender.client });
       }
-    });
-    if (rows.every((row) => row.status === "completed")) {
-      alerts.push({ tone: "good", title: "جاهزة للاعتماد", text: tender.title });
-    } else if (closeLabel.includes("اليوم") || closeLabel.includes("متأخر")) {
-      alerts.push({ tone: "danger", title: "موعد إغلاق حرج", text: `${closeLabel} · ${tender.title}` });
     }
   });
-  return alerts.slice(0, 6);
+  alerts.sort((a, b) => {
+    const order = { danger: 0, warning: 1, soft: 2 };
+    return (order[a.tone] ?? 3) - (order[b.tone] ?? 3);
+  });
+  return alerts;
 }
 
 function renderSmartAlerts() {
@@ -1030,12 +1286,27 @@ function renderSmartAlerts() {
 }
 
 function renderRole() {
-  const executive = isExecutive();
-  qs("role-label").textContent = executive ? "مدير الإدارة - عرض شامل" : "مدير قسم - عرض محدود";
-  qs("role-note").textContent = executive
-    ? "تظهر كل الأقسام وأزرار الاعتماد النهائي عند اكتمال المسارات"
-    : "تظهر مهام القسم المرتبط بصلاحيتك فقط";
-  if (!executive && selectedDepartment === "all") selectedDepartment = currentDepartmentKey();
+  const deptName = (departments.find((d) => d.key === currentDepartmentKey()) || {}).name || "قسمي";
+  const label = qs("role-label");
+  const note = qs("role-note");
+  if (isApprover()) {
+    if (label) label.textContent = "اعتماد نهائي — مدير الإدارة/مالك الموقع";
+    if (note) note.textContent = "تنقل المنافسات من «جاهزة للاعتماد» إلى «معتمدة»";
+  } else if (isTeamLeader()) {
+    if (label) label.textContent = `قائد فريق — ${deptName}`;
+    if (note) note.textContent = "تُسند الفرق وتنقل من «جديدة» إلى «قيد العمل» ثم «جاهزة للاعتماد»";
+    if (selectedDepartment === "all") selectedDepartment = currentDepartmentKey();
+  } else if (isExecutive()) {
+    if (label) label.textContent = "عرض تنفيذي — شامل";
+    if (note) note.textContent = "متابعة كل الأقسام دون صلاحية نقل على اللوحة";
+  } else {
+    if (label) label.textContent = "عرض الموظف — مهامي";
+    if (note) note.textContent = "تظهر المهام المسندة إليك فقط";
+    if (selectedDepartment === "all") selectedDepartment = currentDepartmentKey();
+  }
+  // زر تصفير اللوحة يظهر لمالك الموقع/مدير الإدارة فقط
+  const resetBtn = qs("reset-board-btn");
+  if (resetBtn) resetBtn.hidden = !isOwner();
 }
 
 function boardColumn(tender) {
@@ -1044,11 +1315,13 @@ function boardColumn(tender) {
   const state = tenderState(tender);
   if (state === "ready") return "ready";
   const left = daysLeft(tender.submitDate);
-  if (left <= 3) return "late";
+  // عمود «متأخرة»: فقط المنافسات التي تجاوزت موعد تقديمها فعلا
+  if (left < 0) return "late";
   const rows = departmentRows(tender);
   const anyCompleted = rows.some((row) => row.status === "completed");
-  const anyUnassigned = rows.some((row) => !row.engineers.length);
-  if (!anyCompleted && anyUnassigned) return "new";
+  // «مهام جديدة»: لم يُسنِد قائد الفريق فريقا فعليا بعد (نتجاهل التعبئة التلقائية)
+  const hasTeamAssigned = departments.some((d) => savedAssignedNames(tender.id, d.key).length > 0);
+  if (!anyCompleted && !hasTeamAssigned) return "new";
   return "active";
 }
 
@@ -1059,16 +1332,45 @@ function tenderStage(tender) {
   return boardColumn(tender);
 }
 
+// ── منطق الأعمدة الصارم: مَن ينقل ومِن أين إلى أين ──
+// قادة الفرق: «مهام جديدة» → «قيد العمل» ثم «قيد العمل» → «جاهزة للاعتماد»
+// المعتمِدون: «جاهزة للاعتماد» → «معتمدة»
+// «متأخرة» (متجاوزة الموعد) يدفعها القائد للأمام ويعتمدها المعتمِد
+function allowedStageTargets(fromStage) {
+  if (isTeamLeader()) {
+    if (fromStage === "new")    return ["active"];
+    if (fromStage === "active") return ["ready"];
+    if (fromStage === "late")   return ["ready"]; // إنهاء المتأخرة وتجهيزها للاعتماد
+  }
+  if (isApprover()) {
+    if (fromStage === "ready")  return ["approved"];
+  }
+  return [];
+}
+
+function canMoveStage(fromStage, toStage) {
+  return allowedStageTargets(fromStage).includes(toStage);
+}
+
+function canDragStage(stage) {
+  return allowedStageTargets(stage).length > 0;
+}
+
 // نقل منافسة إلى عمود عبر السحب والإفلات
 function setTenderStage(tenderId, stage) {
   if (!KANBAN_COLUMNS.some((col) => col.key === stage)) return;
   const tender = tenders.find((item) => item.id === tenderId);
   if (!tender) return;
+  // حارس الصلاحية الصارم: ارفض أي نقل غير مسموح به للدور الحالي
+  if (!canMoveStage(tenderStage(tender), stage)) return;
   savedState[tenderId] = savedState[tenderId] || {};
+  let approvalChange;
   if (stage === "approved") {
     savedState[tenderId].approval = "approved";
+    approvalChange = "approved";
   } else if (savedState[tenderId].approval === "approved") {
     savedState[tenderId].approval = "";
+    approvalChange = "";
   }
   if (stage === "ready") completeAllDepartments(tenderId, { skipWrite: true });
   // إن طابقت المرحلة المحسوبة تلقائيا نمسح التجاوز ليبقى السجل نظيفا
@@ -1076,6 +1378,10 @@ function setTenderStage(tenderId, stage) {
   if (stage === autoAfter) delete savedState[tenderId].stage;
   else savedState[tenderId].stage = stage;
   writeState();
+  if (window.SB?.enabled) {
+    if (approvalChange !== undefined) window.SB.setApproval(tenderId, approvalChange);
+    window.SB.setStageOverride(tenderId, savedState[tenderId].stage || null);
+  }
   addActivityEntry(tenderId, tender.title, "stage", `نقل إلى: ${columnLabel(stage)}`);
 }
 
@@ -1090,6 +1396,7 @@ function completeAllDepartments(tenderId, options = {}) {
     if (!savedState[tenderId].timing[dept.key].completedAt) {
       savedState[tenderId].timing[dept.key].completedAt = new Date().toISOString();
     }
+    if (window.SB?.enabled) window.SB.setDeptStatus(tenderId, dept.key, "completed");
   });
   if (!options.skipWrite) writeState();
 }
@@ -1248,13 +1555,33 @@ function renderEmployeePerformance() {
   `).join("");
 }
 
+const DEPT_COLORS = {
+  all:    "#64748b",
+  BS:     "#0f766e",
+  INF:    "#1d4ed8",
+  TECH:   "#6d28d9",
+  DESIGN: "#be185d",
+  FIN:    "#b45309",
+  HR:     "#0369a1",
+  OPS:    "#15803d",
+  LEGAL:  "#7e22ce",
+  PROC:   "#c2410c",
+  QA:     "#0e7490",
+};
+const DEPT_PALETTE = ["#0f766e","#1d4ed8","#6d28d9","#be185d","#b45309","#0369a1","#15803d","#0e7490","#c2410c","#7e22ce"];
+
+function deptAccent(key, index) {
+  return DEPT_COLORS[key] || DEPT_PALETTE[index % DEPT_PALETTE.length];
+}
+
 function renderDepartments() {
   const executive = isExecutive();
   const departmentButtons = executive
     ? [{ key: "all", name: "كل الإدارات", short: "ALL", virtual: true }, ...departments]
     : departments.filter((dept) => dept.key === currentDepartmentKey());
 
-  qs("department-list").innerHTML = departmentButtons.map((dept) => {
+  qs("department-list").innerHTML = departmentButtons.map((dept, i) => {
+    const accent = deptAccent(dept.key, i);
     const stats = dept.key === "all"
       ? {
         open: tenders.filter((tender) => tenderStage(tender) !== "ready" && tenderStage(tender) !== "approved").length,
@@ -1272,16 +1599,50 @@ function renderDepartments() {
       stats.late ? `<span class="m-late">${stats.late} متأخرة</span>` : "",
       stats.unassigned ? `<span class="m-warn">${stats.unassigned} غير مسندة</span>` : ""
     ].filter(Boolean).join('<i class="dept-sep"></i>');
+    const libLink = dept.virtual ? "" : getDeptLibraryLink(dept.key);
+    const canEditLib = !dept.virtual && (isExecutive() || (isDeptManager() && dept.key === currentDepartmentKey()));
     return `
-      <button class="department-button ${selectedDepartment === dept.key ? "active" : ""}" type="button" data-department="${dept.key}">
-        <div class="dept-row">
-          <span class="dept-code">${safe(dept.short)}</span>
-          <strong>${safe(dept.name)}</strong>
-          <span class="dept-flag ${flag}">${safe(status)}</span>
-        </div>
-        <span class="dept-bar"><i style="width:${Math.min(stats.load, 100)}%"></i></span>
-        <span class="dept-meta">${meta}</span>
-      </button>
+      <div class="dept-card-wrap">
+        <button class="dept-card ${selectedDepartment === dept.key ? "active" : ""}" type="button" data-department="${safe(dept.key)}" style="--da:${accent}">
+          <div class="dept-card-body">
+            <div class="dept-card-header">
+              <span class="dept-card-badge">${safe(dept.short)}</span>
+              <div class="dept-card-titles">
+                <strong>${safe(dept.name)}</strong>
+                ${dept.manager ? `<small>${safe(dept.manager)}</small>` : ""}
+              </div>
+            </div>
+            <div class="dept-card-metrics">
+              <div class="dept-metric"><b>${stats.open}</b><span>نشطة</span></div>
+              <div class="dept-metric"><b>${stats.completed}</b><span>مكتملة</span></div>
+              <div class="dept-metric ${stats.late ? "is-late" : ""}"><b>${stats.late}</b><span>متأخرة</span></div>
+            </div>
+            <div class="dept-card-prog">
+              <div class="dept-prog-track"><div class="dept-prog-fill" style="width:${Math.min(stats.load, 100)}%"></div></div>
+              <div class="dept-prog-label"><span>حجم العمل</span><span>${stats.load}%</span></div>
+            </div>
+          </div>
+        </button>
+        ${dept.virtual ? "" : `
+          <div class="dept-lib-card ${libLink ? "has-link" : "no-link"}">
+            <div class="dept-lib-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+            <div class="dept-lib-text">
+              <strong>مكتبة القسم</strong>
+              <span>${libLink ? "رابط SharePoint مُضبط" : "الرابط لم يُضبط بعد"}</span>
+            </div>
+            <div class="dept-lib-actions">
+              ${libLink
+                ? `<button class="dept-lib-open" type="button" data-dept-lib="${safe(dept.key)}">فتح ↗</button>`
+                : (canEditLib ? `<button class="dept-lib-add" type="button" data-dept-lib-edit="${safe(dept.key)}">+ إضافة</button>` : "")}
+              ${libLink && canEditLib ? `<button class="dept-lib-edit" type="button" data-dept-lib-edit="${safe(dept.key)}" title="تعديل الرابط">✏</button>` : ""}
+            </div>
+          </div>
+        `}
+      </div>
     `;
   }).join("");
 
@@ -1290,11 +1651,11 @@ function renderDepartments() {
 }
 
 const KANBAN_COLUMNS = [
-  { key: "new", label: "مهام جديدة" },
-  { key: "active", label: "قيد العمل" },
-  { key: "late", label: "متأخرة" },
-  { key: "ready", label: "جاهزة للاعتماد" },
-  { key: "approved", label: "معتمدة" }
+  { key: "new",      label: "مهام جديدة",      role: "قادة الفرق",            flows: true,  hint: "صلاحية قادة الفرق · تعيين الفريق ينقلها تلقائيا إلى «قيد العمل»" },
+  { key: "active",   label: "قيد العمل",        role: "قادة الفرق",            flows: true,  hint: "صلاحية قادة الفرق · تُنقل عند الانتهاء إلى «جاهزة للاعتماد»" },
+  { key: "late",     label: "متأخرة",           role: "متابعة عاجلة",          flows: true,  hint: "تجاوزت موعد التقديم · يُنهيها قائد الفريق وينقلها إلى «جاهزة للاعتماد»" },
+  { key: "ready",    label: "جاهزة للاعتماد",   role: "مدير الإدارة + المالك", flows: true,  hint: "الاعتماد لمدير الإدارة ومالك الموقع فقط · يُنقل إلى «معتمدة»" },
+  { key: "approved", label: "معتمدة",           role: "مكتملة",                flows: false, hint: "اكتمل مسار المنافسة" }
 ];
 
 function columnLabel(col) {
@@ -1314,10 +1675,14 @@ function daysLeft(dateValue) {
 // نقاط مخاطرة المنافسة: تأخر + غير مسند + قرب الإغلاق
 function riskScore(tender) {
   const rows = departmentRows(tender);
+  const stage = tenderStage(tender);
   const late = rows.filter((row) => row.status === "late").length;
   const unassigned = rows.filter((row) => !row.engineers.length).length;
   const left = daysLeft(tender.submitDate);
-  let score = late * 3 + unassigned * 2;
+  let score = late * 3;
+  // نقص التعيين يُحتسب خطرا فقط للمهام التي بدأت فعلا أو اقترب موعدها
+  // (المهمة الجديدة البعيدة عن الموعد ليست خطرا — هي بانتظار الإسناد طبيعيا)
+  if (stage !== "new" || left <= 5) score += unassigned * 2;
   if (left <= 0) score += 5;
   else if (left <= 2) score += 3;
   else if (left <= 5) score += 1;
@@ -1376,18 +1741,25 @@ function renderKanban() {
     const allowed = selectedFilter === "ready" ? ["ready", "approved"] : [selectedFilter];
     columns = KANBAN_COLUMNS.filter((col) => allowed.includes(col.key));
   }
-  const canManage = isExecutive();
+  const canManage = isTeamLeader() || isApprover();
   board.classList.toggle("can-drag", canManage);
+  const flowArrowSvg = `<svg class="kan-col-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>`;
   board.innerHTML = columns.map((col) => {
     const cards = list.filter((tender) => tenderStage(tender) === col.key);
+    // هل يمكن للدور الحالي إفلات بطاقة في هذا العمود؟ (لتلوين العمود كهدف صالح)
+    const isDropTarget = canManage && KANBAN_COLUMNS.some((c) => canMoveStage(c.key, col.key));
     return `
-      <div class="kan-col" data-col="${col.key}">
+      <div class="kan-col${isDropTarget ? " is-droppable" : ""}" data-col="${col.key}">
         <div class="kan-col-head">
           <span class="kan-col-title"><i></i>${safe(col.label)}</span>
           <span class="kan-col-count">${cards.length}</span>
         </div>
+        <div class="kan-col-role" data-role-col="${col.key}" title="${safe(col.hint || "")}">
+          <span class="kan-col-role-tag">${safe(col.role || "")}</span>
+          ${col.flows ? flowArrowSvg : ""}
+        </div>
         <div class="kan-col-body" data-drop="${col.key}">
-          ${cards.length ? cards.map(renderKanCard).join("") : `<div class="kan-empty">${canManage ? "أفلت ملفا هنا" : "لا توجد ملفات هنا"}</div>`}
+          ${cards.length ? cards.map(renderKanCard).join("") : `<div class="kan-empty">${isDropTarget ? "أفلت ملفا هنا" : "لا توجد ملفات هنا"}</div>`}
         </div>
       </div>
     `;
@@ -1406,7 +1778,9 @@ function renderKanCard(tender) {
   const urgent = isUrgentClose(close);
   const approval = savedState[tender.id]?.approval || "";
   const risk = riskScore(tender);
-  const canManage = isExecutive();
+  // أدوات الإدارة (التحديد الجماعي) تظهر لمن يملك صلاحية تشغيلية، والسحب فقط للبطاقات المسموح نقلها
+  const canManage = isTeamLeader() || isApprover();
+  const canDragCard = canDragStage(col);
   const isSelected = selectedIds.has(tender.id);
   const stateTag = approval === "approved" ? "معتمد" : columnLabel(col);
   const bic = ballInCourt(tender);
@@ -1417,7 +1791,7 @@ function renderKanCard(tender) {
   </div>` : "";
   const hasHead = bic || hasHeadEnd;
   return `
-    <article class="kan-card state-${col} ${isSelected ? "is-selected" : ""}" data-tender="${safe(tender.id)}" data-dept="${safe(rows[0].key)}" ${canManage ? 'draggable="true"' : ""}>
+    <article class="kan-card state-${col} ${isSelected ? "is-selected" : ""} ${canDragCard ? "is-draggable" : ""}" data-tender="${safe(tender.id)}" data-dept="${safe(rows[0].key)}" ${canDragCard ? 'draggable="true"' : ""}>
       ${hasHead ? `<div class="kan-head">
         ${bic ? `<span class="kan-bic-chip ${safe(bic.type)}" title="${safe(bic.label)}">${safe(shortBicLabel(bic))}</span>` : ""}
         ${headEnd}
@@ -1504,10 +1878,12 @@ function renderCalendar() {
 function renderDrawerDeptNav(tender, activeKey) {
   const nav = qs("drawer-dept-nav");
   if (!nav) return;
-  const rows = departmentRows(tender);
-  const doneCount = rows.filter((row) => row.status === "completed").length;
+  const allRows = departmentRows(tender);
+  const doneCount = allRows.filter((row) => row.status === "completed").length;
+  // قائد الفريق/مدير القسم يرى قسمه فقط؛ التنفيذي والمعتمِد يريان كل الأقسام
+  const navRows = isTeamLeader() ? allRows.filter((row) => row.key === currentDepartmentKey()) : allRows;
   nav.innerHTML = `
-    ${rows.map((row) => {
+    ${navRows.map((row) => {
       const done = row.status === "completed";
       const isActive = row.key === activeKey;
       return `<button type="button" class="dept-chip-nav ${done ? "is-done" : ""} ${isActive ? "is-active" : ""}" data-dept-nav="${safe(row.key)}" title="${safe(row.name)}">
@@ -1515,12 +1891,14 @@ function renderDrawerDeptNav(tender, activeKey) {
         <span class="dcn-code">${safe(row.short)}</span>
       </button>`;
     }).join("")}
-    <span class="dept-nav-progress">${doneCount}/${rows.length} مكتملة</span>
+    ${isTeamLeader() ? "" : `<span class="dept-nav-progress">${doneCount}/${allRows.length} مكتملة</span>`}
   `;
 }
 
 function openDrawer(tenderId, departmentKey) {
   const tender = tenders.find((item) => item.id === tenderId);
+  // قائد الفريق/مدير القسم: يفتح ويعدّل قسمه فقط مهما كانت البطاقة المنقورة
+  if (isTeamLeader()) departmentKey = currentDepartmentKey();
   const row = tender && departmentRows(tender).find((dept) => dept.key === departmentKey);
   if (!tender || !row) return;
   selectedContext = { tenderId, departmentKey };
@@ -1595,10 +1973,12 @@ function openDrawer(tenderId, departmentKey) {
     </div>
   `).join("");
 
-  const canComplete = isExecutive() || departmentKey === currentDepartmentKey();
+  // اعتماد إكمال القسم: صلاحية قائد الفريق/مدير القسم لقسمه فقط (منطق صارم)
+  const canComplete = isTeamLeader() && departmentKey === currentDepartmentKey();
   qs("complete-department").disabled = !canComplete || row.status === "completed";
   qs("complete-department").textContent = row.status === "completed" ? "القسم مكتمل" : "اعتماد إكمال القسم";
   qs("open-library").textContent = `فتح مكتبة ${row.short}`;
+  if (qs("send-notif-btn")) qs("send-notif-btn").hidden = !isDeptManager();
   qs("detail-drawer").classList.add("open");
   qs("detail-drawer").setAttribute("aria-hidden", "false");
 }
@@ -1637,6 +2017,16 @@ function renderActivityLog(tenderId) {
 function renderAssignmentTools(tender, row) {
   const container = qs("drawer-assignment-tools");
   if (!container) return;
+  // التعيين صلاحية قائد الفريق/مدير القسم فقط (وهو ما ينقل المهمة من «جديدة» إلى «قيد العمل»)
+  if (!isTeamLeader()) {
+    container.innerHTML = `<div class="assignment-empty">التعيين متاح لقائد الفريق/مدير القسم فقط.</div>`;
+    return;
+  }
+  // حماية صارمة: لا يعيّن قائد الفريق إلا داخل قسمه هو
+  if (row.key !== currentDepartmentKey()) {
+    container.innerHTML = `<div class="assignment-empty">يمكنك تعيين موظفي قسمك فقط.</div>`;
+    return;
+  }
   const pool = assignableEmployees(row);
   const selected = new Set(row.engineers.map(personName));
   if (!pool.length) {
@@ -1780,12 +2170,14 @@ function renderBulkBar() {
     bar.innerHTML = "";
     return;
   }
-  const canManage = isExecutive();
+  // نقل إلى «جاهزة» لقادة الفرق · «اعتماد» للمعتمِدين فقط
+  const canReady = isTeamLeader();
+  const canApprove = isApprover();
   bar.innerHTML = `
     <span class="bulk-count"><b>${count}</b> منافسة محددة</span>
     <div class="bulk-actions">
-      <button type="button" data-bulk="ready" ${canManage ? "" : "disabled"}>نقل إلى جاهزة</button>
-      <button type="button" data-bulk="approve" ${canManage ? "" : "disabled"}>اعتماد المحدد</button>
+      <button type="button" data-bulk="ready" ${canReady ? "" : "disabled"}>نقل إلى جاهزة</button>
+      <button type="button" data-bulk="approve" ${canApprove ? "" : "disabled"}>اعتماد المحدد</button>
       <button type="button" class="ghost" data-bulk="clear">إلغاء التحديد</button>
     </div>
   `;
@@ -1798,19 +2190,55 @@ function runBulkAction(action) {
     render();
     return;
   }
-  if (!isExecutive()) return;
+  // منطق صارم: «جاهزة» لقادة الفرق · «اعتماد» للمعتمِدين — ويُحترم المسار المسموح لكل بطاقة
   selectedIds.forEach((id) => {
     const tender = tenders.find((item) => item.id === id);
     if (!tender) return;
-    if (action === "ready") {
+    const from = tenderStage(tender);
+    if (action === "ready" && isTeamLeader() && canMoveStage(from, "ready")) {
       setTenderStage(id, "ready");
-    } else if (action === "approve") {
-      const done = departmentRows(tender).every((row) => row.status === "completed");
-      if (done) setApproval(id, "approved");
+    } else if (action === "approve" && isApprover() && canMoveStage(from, "approved")) {
+      setTenderStage(id, "approved");
     }
   });
   if (action === "approve") selectedIds.clear();
   render();
+}
+
+// مالك الموقع/مدير الإدارة فقط لهما حق تصفير اللوحة
+function isOwner() {
+  return isApprover();
+}
+
+// تصفير اللوحة: إلغاء كل التعيينات والحالات والمراحل والاعتمادات (تبقى الملاحظات)
+// لإرجاع كل المنافسات إلى «مهام جديدة» وبدء العمل الفعلي
+async function resetBoardToFresh() {
+  if (!isOwner()) return;
+  const ok = window.confirm(
+    "سيتم إلغاء جميع التعيينات والحالات وإرجاع كل المنافسات إلى «مهام جديدة».\n" +
+    "هذا الإجراء لا يمكن التراجع عنه. هل تريد المتابعة؟"
+  );
+  if (!ok) return;
+  // امسح الحالة المحلية مع الإبقاء على الملاحظات
+  Object.keys(savedState).forEach((id) => {
+    if (!savedState[id]) return;
+    delete savedState[id].assignments;
+    delete savedState[id].departments;
+    delete savedState[id].stage;
+    delete savedState[id].approval;
+    delete savedState[id].timing;
+  });
+  writeState();
+  // امسح الحالة المشتركة على Supabase إن كانت مهيّأة
+  if (window.SB?.enabled && window.SB.resetAllState) {
+    const result = await window.SB.resetAllState();
+    if (result && result.ok === false && result.errors?.length) {
+      window.alert("تعذّر تصفير بعض البيانات على الخادم:\n" + result.errors.join("\n"));
+    }
+  }
+  selectedIds.clear();
+  render();
+  window.alert("تم تصفير اللوحة. كل المنافسات الآن في «مهام جديدة» وجاهزة لبدء العمل الفعلي.");
 }
 
 // استعادة تفضيلات العرض المحفوظة على واجهة المستخدم
@@ -1826,27 +2254,98 @@ async function loadData() {
   try {
     await loadEmployees();
     await loadTechOffers();
-    const sources = window.TENDER_PORTAL_CONFIG?.sources?.liveTenders || ["../data.json"];
-    let data = null;
-    for (const source of sources) {
+    await loadLibraryLinksCache();
+    let rows = null;
+    // المصدر الأساسي: قاعدة بيانات Supabase (إن كانت مهيّأة)
+    if (window.SB?.enabled) {
       try {
-        const response = await fetch(source, { cache: "no-store" });
-        if (response.ok) {
-          data = await response.json();
-          break;
+        const [dbTenders, dbState] = await Promise.all([
+          window.SB.fetchTenders(),
+          window.SB.fetchState()
+        ]);
+        if (Array.isArray(dbTenders) && dbTenders.length) {
+          rows = dbTenders;
+          if (dbState) savedState = dbState;
         }
-      } catch {}
+      } catch (err) {
+        console.warn("[loadData] Supabase fetch failed, falling back:", err);
+      }
     }
-    const rows = Array.isArray(data?.tenders) ? data.tenders : fallbackTenders;
+    // احتياطي: ملف data.json الثابت
+    if (!rows) {
+      const sources = window.TENDER_PORTAL_CONFIG?.sources?.liveTenders || ["../data.json"];
+      let data = null;
+      for (const source of sources) {
+        try {
+          const response = await fetch(source, { cache: "no-store" });
+          if (response.ok) {
+            data = await response.json();
+            break;
+          }
+        } catch {}
+      }
+      rows = Array.isArray(data?.tenders) ? data.tenders : fallbackTenders;
+    }
     tenders = rows.map(normalizeTender);
   } catch {
     tenders = fallbackTenders;
   }
   applySavedPrefs();
   render();
+  subscribeRealtime();
+  loadDeptNotifications();
+  subscribeDeptNotifsRealtime();
+}
+
+// يشترك في تحديثات قاعدة البيانات الفورية مرة واحدة فقط
+let _realtimeSubscribed = false;
+
+let _deptNotifSubscribed = false;
+function subscribeDeptNotifsRealtime() {
+  if (_deptNotifSubscribed || !window.SB?.enabled) return;
+  _deptNotifSubscribed = true;
+  window.SB.subscribeDeptNotifs(currentDepartmentKey(), async () => {
+    await loadDeptNotifications();
+  });
+}
+function subscribeRealtime() {
+  if (_realtimeSubscribed || !window.SB?.enabled) return;
+  _realtimeSubscribed = true;
+  let pending = false;
+  window.SB.subscribe(async () => {
+    if (pending) return;
+    pending = true;
+    setTimeout(async () => {
+      pending = false;
+      try {
+        const st = await window.SB.fetchState();
+        if (st) { savedState = st; render(); }
+      } catch {}
+    }, 400);
+  });
 }
 
 document.addEventListener("click", (event) => {
+  // مكتبة القسم — زر التعديل (يجب أن يأتي قبل زر المكتبة العادي)
+  const libEditBtn = event.target.closest("[data-dept-lib-edit]");
+  if (libEditBtn) {
+    event.stopPropagation();
+    openSharePointConfig(libEditBtn.dataset.deptLibEdit);
+    return;
+  }
+
+  // مكتبة القسم — زر الفتح
+  const libBtn = event.target.closest("[data-dept-lib]");
+  if (libBtn) {
+    event.stopPropagation();
+    const key = libBtn.dataset.deptLib;
+    const link = getDeptLibraryLink(key);
+    if (link) { window.open(link, "_blank", "noopener"); }
+    else if (isExecutive() || (isDeptManager() && key === currentDepartmentKey())) { openSharePointConfig(key); }
+    else { showToast("لم يتم ضبط رابط المكتبة بعد — تواصل مع مدير القسم"); }
+    return;
+  }
+
   const kpiCard = event.target.closest(".kpi[data-kpi-filter]");
   if (kpiCard) {
     selectedFilter = kpiCard.dataset.kpiFilter;
@@ -1902,6 +2401,7 @@ document.addEventListener("click", (event) => {
 
   const approve = event.target.closest("[data-approve]");
   if (approve && !approve.disabled) {
+    if (!isApprover()) return; // الاعتماد النهائي للمعتمِدين فقط
     setApproval(approve.dataset.approve, "approved");
     render();
     return;
@@ -1909,6 +2409,7 @@ document.addEventListener("click", (event) => {
 
   const reject = event.target.closest("[data-reject]");
   if (reject && !reject.disabled) {
+    if (!isApprover()) return;
     setApproval(reject.dataset.reject, "rejected");
     render();
   }
@@ -1974,6 +2475,32 @@ qs("open-library").addEventListener("click", () => {
 
 qs("config-sharepoint")?.addEventListener("click", openSharePointConfig);
 
+qs("send-notif-btn")?.addEventListener("click", openSendNotifModal);
+
+qs("sn-cancel")?.addEventListener("click", closeSendNotifModal);
+qs("sn-modal-overlay")?.addEventListener("click", closeSendNotifModal);
+
+qs("sn-send")?.addEventListener("click", async () => {
+  const toDept = qs("sn-dept-select")?.value;
+  if (!toDept || !selectedContext) return;
+  const typeEl = document.querySelector("[name='sn-type']:checked");
+  const type = typeEl?.value || "custom";
+  const extra = qs("sn-message")?.value.trim() || "";
+  const msg = extra || notifTypeDefaultMsg(type);
+  if (!msg) { showToast("يرجى اختيار نوع الإشعار أو كتابة رسالة"); return; }
+  const tender = tenders.find((t) => t.id === selectedContext.tenderId);
+  if (window.SB?.enabled) {
+    await window.SB.sendDeptNotification(
+      currentDepartmentKey(), viewerName(),
+      toDept, selectedContext.tenderId,
+      tender?.title || selectedContext.tenderId,
+      type, msg
+    );
+  }
+  closeSendNotifModal();
+  showToast("تم إرسال الإشعار بنجاح ✓");
+});
+
 // ── Notification bell ──
 qs("notif-bell")?.addEventListener("click", (event) => {
   event.stopPropagation();
@@ -1989,6 +2516,9 @@ document.addEventListener("click", (event) => {
 // ── Export CSV ──
 qs("export-btn")?.addEventListener("click", exportCSV);
 
+// ── تصفير اللوحة (مالك الموقع/مدير الإدارة) ──
+qs("reset-board-btn")?.addEventListener("click", resetBoardToFresh);
+
 // ── Theme + density toggles ──
 qs("theme-toggle")?.addEventListener("click", toggleTheme);
 qs("density-toggle")?.addEventListener("click", toggleDensity);
@@ -1996,7 +2526,12 @@ qs("density-toggle")?.addEventListener("click", toggleDensity);
 // ── SharePoint modal ──
 qs("sp-save")?.addEventListener("click", () => {
   const url = qs("sp-url-input")?.value?.trim() || "";
-  saveSharePointBase(url);
+  if (_spModalDeptKey) {
+    saveDeptLibraryLink(_spModalDeptKey, url);
+    renderDepartments();
+  } else {
+    saveSharePointBase(url);
+  }
   closeSharePointConfig();
   if (selectedContext) openDeptLibrary(selectedContext.departmentKey);
 });
@@ -2050,11 +2585,14 @@ document.addEventListener("change", (event) => {
   const board = qs("kanban");
   if (!board) return;
   let draggingId = null;
+  let draggingFrom = null;
 
   board.addEventListener("dragstart", (event) => {
     const card = event.target.closest(".kan-card[draggable='true']");
     if (!card) return;
     draggingId = card.dataset.tender;
+    const dragged = tenders.find((item) => item.id === draggingId);
+    draggingFrom = dragged ? tenderStage(dragged) : null;
     card.classList.add("dragging");
     event.dataTransfer.effectAllowed = "move";
     try { event.dataTransfer.setData("text/plain", draggingId); } catch {}
@@ -2062,13 +2600,16 @@ document.addEventListener("change", (event) => {
 
   board.addEventListener("dragend", () => {
     draggingId = null;
+    draggingFrom = null;
     board.querySelectorAll(".dragging").forEach((el) => el.classList.remove("dragging"));
     board.querySelectorAll(".drop-active").forEach((el) => el.classList.remove("drop-active"));
   });
 
   board.addEventListener("dragover", (event) => {
-    const zone = event.target.closest(".kan-col");
+    const zone = event.target.closest(".kan-col[data-col]");
     if (!zone) return;
+    // أبرز فقط الأعمدة المسموح للدور الحالي الإفلات فيها (منطق صارم)
+    if (draggingFrom && !canMoveStage(draggingFrom, zone.dataset.col)) return;
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
     board.querySelectorAll(".drop-active").forEach((el) => { if (el !== zone) el.classList.remove("drop-active"); });
@@ -2081,7 +2622,10 @@ document.addEventListener("change", (event) => {
     event.preventDefault();
     const id = draggingId || (() => { try { return event.dataTransfer.getData("text/plain"); } catch { return null; } })();
     zone.classList.remove("drop-active");
-    if (!id || !isExecutive()) return;
+    if (!id) return;
+    const tender = tenders.find((item) => item.id === id);
+    // الحارس الصارم: لا نقل إلا إذا كان مسموحا للدور من المرحلة الحالية إلى الهدف
+    if (!tender || !canMoveStage(tenderStage(tender), zone.dataset.col)) return;
     setTenderStage(id, zone.dataset.col);
     render();
   });

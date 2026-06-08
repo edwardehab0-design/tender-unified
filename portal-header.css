@@ -1,0 +1,295 @@
+/* ──────────── ALRAWAF UNIFIED LIGHT HEADER OVERRIDE ──────────── */
+/* Loaded last in every portal page to unify header appearance.   */
+
+/* ─── 1. All header variants → white with purple+gold top stripe ─── */
+body .header,
+body .ops-topbar,
+body .topbar,
+body .report-page .hero,
+body .ds-header {
+  background: linear-gradient(to bottom,
+    #3b1e78 0px, #3b1e78 2px,
+    #e8b547 2px, #e8b547 4px,
+    #ffffff 4px) !important;
+  border-top: none !important;
+  border-bottom: 1px solid #e2e7f1 !important;
+  border-radius: 0 !important;
+  box-shadow: 0 2px 8px rgba(20, 41, 77, .06) !important;
+  color: #1a2332 !important;
+}
+
+/* ─── Remove decorative pseudo-elements ─── */
+body .header::before,
+body .header::after,
+body .ops-topbar::before,
+body .ops-topbar::after,
+body .topbar::before,
+body .topbar::after,
+body .report-page .hero::before,
+body .report-page .hero::after,
+body .ds-header::before,
+body .ds-header::after {
+  display: none !important;
+}
+
+/* ─── 2. Coordination ops-topbar: stretch to full content width ─── */
+body .ops-topbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 200 !important;
+  margin: -22px -28px 20px !important;
+  padding: 0 28px !important;
+  min-height: 64px !important;
+  display: grid !important;
+  align-items: center !important;
+  grid-template-columns: minmax(0,auto) minmax(200px,1fr) minmax(0,auto) !important;
+  gap: 20px !important;
+}
+
+/* ─── Fix height / padding for .header pages ─── */
+body .header {
+  height: 68px !important;
+  padding: 0 24px !important;
+  min-height: unset !important;
+}
+
+/* ─── 3. Org-chart header text colors ─── */
+body .header-logo .h-title { color: #3b1e78 !important; }
+body .header-logo .h-sub   { color: #64748b !important; }
+
+/* ─── Tenders design-system header text ─── */
+body .ds-header__title { color: #3b1e78 !important; }
+body .ds-header__sub   { color: #64748b !important; }
+
+/* Org-chart header action buttons */
+body .hbtn {
+  color: #1a2238 !important;
+  background: #f4f6fb !important;
+  border: 1px solid #d1dae8 !important;
+}
+body .hbtn:hover {
+  background: #e8eef8 !important;
+}
+
+/* ─── 4. Coordination topbar: hide letter-mark, fix text ─── */
+body .topbar-mark        { display: none !important; }
+body .topbar-kicker      { color: #d4a017 !important; }
+body .topbar-name        { color: #3b1e78 !important; }
+body .ops-topbar .topbar-search {
+  background: #f4f6fb !important;
+  border-color: #d1dae8 !important;
+}
+
+/* ─── 5. Executive-report hero text (was white on dark) ─── */
+body .report-page .hero { min-height: 80px !important; padding: 24px 28px !important; }
+body .report-page .hero-copy p   { color: #64748b !important; }
+body .report-page .hero-copy h1  { color: #3b1e78 !important; font-size: 22px !important; }
+body .report-page .hero-copy span{ color: #64748b !important; font-size: 13px !important; }
+body .report-page .hero-actions .back-link {
+  color: #3b1e78 !important;
+  border: 1px solid #d1dae8 !important;
+  background: #f4f6fb !important;
+}
+
+/* ─── 6. Portfolio topbar text colors ─── */
+body .topbar .hero-copy .eyebrow { color: #64748b !important; }
+body .topbar .hero-copy h1       { color: #3b1e78 !important; font-size: 20px !important; }
+body .topbar .hero-copy .hero-sub{ color: #64748b !important; }
+body .topbar .export-excel-btn   { background: #3b1e78 !important; color: #fff !important; }
+body .topbar { min-height: 80px !important; padding: 20px 28px !important; }
+
+/* ─── 7. Analytics k-total card: force to white flat ─── */
+#tab-analytics .an-kpi,
+#tab-analytics .an-kpi.k-total,
+#tab-analytics .an-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e7f1 !important;
+  border-inline-start: 4px solid var(--an-acc, #3b1e78) !important;
+  box-shadow: 0 1px 3px rgba(20, 41, 77, .06) !important;
+  color: #1a2332 !important;
+  border-radius: 10px !important;
+}
+
+#tab-analytics .an-kpi.k-jariya { --an-acc: #16a34a; }
+#tab-analytics .an-kpi.k-sub    { --an-acc: #d97706; }
+#tab-analytics .an-kpi.k-total  { --an-acc: #3b1e78; }
+
+#tab-analytics .an-kpi .an-kpi-num,
+#tab-analytics .an-kpi.k-total .an-kpi-num { color: #1a2238 !important; }
+
+#tab-analytics .an-kpi .an-kpi-lbl,
+#tab-analytics .an-kpi.k-total .an-kpi-lbl { color: #64748b !important; }
+
+#tab-analytics .an-kpi-icon { display: none !important; }
+
+#tab-analytics .an-kpi::after { display: none !important; }
+
+#tab-analytics .an-kpi.k-total .analytics-click-hint {
+  color: #7c5a16 !important;
+  background: rgba(212, 160, 23, .10) !important;
+  border-color: rgba(212, 160, 23, .28) !important;
+}
+
+/* ─── 8. Flat KPI cards (tenders stat-cards, client-kpi) ─── */
+body .stat-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e7f1 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 3px rgba(20, 41, 77, .06) !important;
+}
+
+/* Remove decorative circle pseudo-elements on stat cards */
+body .stat-card::before,
+body .stat-card::after {
+  display: none !important;
+}
+
+/* ─── 9. Page background ─── */
+body.page-clients,
+body.page-analytics {
+  background: #f4f6fb !important;
+}
+
+/* ─── Tenders: gradient bg so glass cards render correctly ─── */
+body.page-tenders {
+  background: linear-gradient(160deg, #d8e4f8 0%, #eef2fb 55%, #fdf8ec 100%) !important;
+}
+body.page-tenders .main {
+  background: transparent !important;
+}
+
+/* ─── Tenders: countdown banner → sidebar plum (matches sidebar) ─── */
+body.page-tenders .countdown-banner {
+  background: linear-gradient(135deg, #3b1e78 0%, #2a1460 55%, #25115a 100%) !important;
+  border: 1px solid rgba(232,181,71,.22) !important;
+  box-shadow: 0 4px 24px rgba(20,8,48,.36) !important;
+}
+body.page-tenders .countdown-banner::before,
+body.page-tenders .countdown-banner::after { display: none !important; }
+body.page-tenders .countdown-icon           { display: none !important; }
+body.page-tenders .countdown-title          { color: rgba(255,255,255,.55) !important; font-size: 11px !important; letter-spacing: .4px !important; }
+body.page-tenders #cd-name                  { color: #e8b547 !important; font-weight: 800 !important; font-size: 14px !important; }
+body.page-tenders #cd-owner                 { color: rgba(255,255,255,.38) !important; }
+body.page-tenders .countdown-num            { color: #e8b547 !important; font-weight: 900 !important; }
+body.page-tenders .countdown-label          { color: rgba(255,255,255,.42) !important; font-size: 10px !important; }
+body.page-tenders .countdown-sep            { color: rgba(232,181,71,.35) !important; }
+
+/* ─── Tenders: KPI cards → glass effect ─── */
+body.page-tenders .stats-grid .stat-card {
+  background: rgba(255,255,255,.62) !important;
+  backdrop-filter: blur(14px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(160%) !important;
+  border: 1px solid rgba(255,255,255,.80) !important;
+  border-inline-start: 4px solid var(--kpi, #3b1e78) !important;
+  box-shadow: 0 4px 20px rgba(59,30,120,.07), inset 0 1px 0 rgba(255,255,255,.92) !important;
+  border-radius: 10px !important;
+  color: #1a2332 !important;
+  transform: none !important;
+}
+body.page-tenders .stats-grid .stat-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 28px rgba(59,30,120,.12), inset 0 1px 0 rgba(255,255,255,.92) !important;
+}
+body.page-tenders .stats-grid .stat-card .stat-num   { color: #1a2332 !important; text-shadow: none !important; }
+body.page-tenders .stats-grid .stat-card .stat-label { color: #3a4a6b !important; font-weight: 700 !important; }
+body.page-tenders .stats-grid .stat-card .stat-sub   { color: #6b7fa8 !important; }
+body.page-tenders .stats-grid .stat-card.c-blue   { --kpi: #2563eb; }
+body.page-tenders .stats-grid .stat-card.c-yellow { --kpi: #d97706; }
+body.page-tenders .stats-grid .stat-card.c-orange { --kpi: #ea580c; }
+body.page-tenders .stats-grid .stat-card.c-teal   { --kpi: #16a34a; }
+body.page-tenders .stats-grid .stat-card.c-urgent { --kpi: #dc2626; }
+
+/* ─── 10. Tenders ds-header: unified layout + improved styling ─── */
+body .ds-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 0 28px !important;
+  height: 68px !important;
+  min-height: unset !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 200 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+body .ds-header__brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 13px !important;
+  min-width: 0 !important;
+}
+
+body .ds-header__brand img {
+  height: 36px !important;
+  width: auto !important;
+  object-fit: contain !important;
+  flex: 0 0 auto !important;
+}
+
+body .ds-header__titles {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+}
+
+body .ds-header__title {
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  color: #3b1e78 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -.2px !important;
+  white-space: nowrap !important;
+}
+
+body .ds-header__sub {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
+  white-space: nowrap !important;
+}
+
+body .ds-header__actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  direction: ltr !important;
+  flex-shrink: 0 !important;
+}
+
+body .ds-header__meta {
+  color: #94a3b8 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+  direction: rtl !important;
+}
+
+/* زر تصدير Excel — أنيق ومتسق مع الهيدر الأبيض */
+body .ds-header .export-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  height: 36px !important;
+  padding: 0 16px !important;
+  border: 1px solid #d1dae8 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #3b1e78 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  box-shadow: 0 1px 4px rgba(59,30,120,.08) !important;
+  transform: none !important;
+  transition: background .15s, border-color .15s, box-shadow .15s !important;
+}
+
+body .ds-header .export-btn:hover {
+  background: #f0f4fb !important;
+  border-color: #3b1e78 !important;
+  box-shadow: 0 2px 8px rgba(59,30,120,.14) !important;
+  transform: none !important;
+}

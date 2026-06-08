@@ -5,8 +5,8 @@
 set -e
 
 if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
-  echo "ERROR: SUPABASE_URL and SUPABASE_ANON_KEY must be set in Cloudflare Pages environment variables."
-  exit 1
+  echo "WARNING: SUPABASE_URL or SUPABASE_ANON_KEY not set — skipping injection. Change variable type to Text in Cloudflare Pages to enable."
+  exit 0
 fi
 
 sed -i "s|__SUPABASE_URL__|$SUPABASE_URL|g"       config.js

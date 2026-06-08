@@ -1,0 +1,240 @@
+/* ═══════════════════════════════════════════════════════════════
+   portal-theme.css — ثيمات البوابة
+   • الأساسي:  بنفسجي متدرّج   →  html[data-theme="grad"]   (الافتراضي)
+   • الفرعي:   أخضر هادئ        →  html[data-theme="green"]
+   تُضبط السمة من portal-sidebar.js (الافتراضي grad عند عدم وجود تفضيل).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════ ① البنفسجي المتدرّج (الأساسي) ═══════════════════ */
+html[data-theme="grad"] {
+  --navy: #6a55c9;  --navy-700: #5a47b0;  --navy-900: #473a8f;
+  --navy-2: #6a55c9; --navy-3: #473a8f;
+  --primary: #6a55c9; --primary-2: #c65b9b; --primary-3: #6a55c9;
+
+  --gold: #6c5ce7;  --gold-700: #5a4bd0;  --gold-light: #8b7bf0;
+  --gold-bright: #8b7bf0; --gold-2: #b3a6f5; --gold-soft: #ece9fb; --gold-bg: #ece9fb;
+
+  --bg: #e9e7f3;  --page-bg: #e9e7f3;
+  --surface: #ffffff;  --surface-2: #f6f4fc;
+  --bg-card: #ffffff;  --card-bg: #ffffff;  --panel: #ffffff;  --paper: #ffffff;
+  --border: #ddd8ee;  --border-2: #cdc6e6;  --line: #ddd8ee;  --card-border: #ddd8ee;
+
+  --blue: #6c5ce7;  --blue-bg: #ece9fb;
+  --blue-deep: #473a8f;  --blue-mid: #6a55c9;  --blue-light: #8b7bf0;  --blue-pale: #ece9fb;
+
+  --ps-plum-dark: #6a55c9;  --ps-plum: #9156bd;  --ps-green: #c65b9b;
+  --ps-gold: #ffffff;  --ps-gold-light: #d8c9f5;
+}
+html[data-theme="grad"] body {
+  background:
+    radial-gradient(900px 480px at 100% -8%, rgba(106,85,201,.16), transparent 60%),
+    radial-gradient(760px 420px at 0% 0%, rgba(198,91,155,.12), transparent 55%),
+    linear-gradient(160deg, #ecebf5 0%, #f3f1fa 50%, #e8e4f3 100%) !important;
+}
+html[data-theme="grad"] .header,
+html[data-theme="grad"] .ds-header,
+html[data-theme="grad"] .tabs-nav {
+  background: linear-gradient(105deg, #1e2547 0%, #3a3690 52%, #6a55c9 100%) !important;
+  border-top: none !important;
+  border-bottom: 1px solid rgba(139,123,240,.45) !important;
+  box-shadow: 0 6px 22px rgba(30,24,71,.22) !important;
+}
+html[data-theme="grad"] .ops-topbar {
+  background: linear-gradient(105deg, #1e2547 0%, #3a3690 55%, #6a55c9 100%) !important;
+  box-shadow: 0 6px 22px rgba(30,24,71,.22) !important;
+}
+/* نصوص الهيدر بيضاء واضحة على التدرّج */
+html[data-theme="grad"] .ds-header__title,
+html[data-theme="grad"] .header-logo .h-title,
+html[data-theme="grad"] .logo-text,
+html[data-theme="grad"] .header > div:first-child div { color: #fff !important; }
+html[data-theme="grad"] .ds-header__sub,
+html[data-theme="grad"] .header-logo .h-sub { color: rgba(255,255,255,.75) !important; }
+/* شريط العدّ التنازلي — نفس تدرّج الهيدر + نصوص ذهبية
+   (نسبق بـ body لتجاوز body.page-tenders في portal-header.css) */
+html[data-theme="grad"] body .countdown-banner {
+  background: linear-gradient(105deg, #1e2547 0%, #3a3690 52%, #6a55c9 100%) !important;
+  border: 1px solid rgba(139,123,240,.40) !important;
+  box-shadow: 0 6px 22px rgba(30,24,71,.22) !important;
+}
+html[data-theme="grad"] body .countdown-title { color: #e8c976 !important; }
+html[data-theme="grad"] body .countdown-name,
+html[data-theme="grad"] body #cd-name { color: #f0c040 !important; }
+html[data-theme="grad"] body .countdown-owner { color: rgba(255,255,255,.62) !important; }
+html[data-theme="grad"] body .countdown-unit {
+  background: rgba(255,255,255,.12) !important;
+  border: 1px solid rgba(255,255,255,.20) !important;
+}
+html[data-theme="grad"] body .countdown-num { color: #fff !important; }
+html[data-theme="grad"] body .countdown-label { color: #e8c976 !important; }
+html[data-theme="grad"] body .countdown-sep { color: rgba(255,255,255,.40) !important; }
+
+/* ═══════════════════ ② الأخضر الهادئ (الفرعي) ═══════════════════ */
+html[data-theme="green"] {
+  --navy: #1f5239;  --navy-700: #194430;  --navy-900: #123726;
+  --navy-2: #2f6f51; --navy-3: #123726;
+  --primary: #1f5239; --primary-2: #2f6f51; --primary-3: #173d2b;
+
+  --gold: #2d6a4f;  --gold-700: #235940;  --gold-light: #40916c;
+  --gold-bright: #40916c; --gold-2: #74c69d; --gold-soft: #e6f0ea; --gold-bg: #e6f0ea;
+
+  --bg: #eceeec;  --page-bg: #eceeec;
+  --surface: #ffffff;  --surface-2: #f3f7f4;
+  --bg-card: #ffffff;  --card-bg: #ffffff;  --panel: #ffffff;  --paper: #ffffff;
+  --border: #d6e2da;  --border-2: #c3d6ca;  --line: #d6e2da;  --card-border: #d6e2da;
+
+  --blue: #2d6a4f;  --blue-bg: #e6f0ea;
+  --blue-deep: #173d2b;  --blue-mid: #2d6a4f;  --blue-light: #40916c;  --blue-pale: #e6f0ea;
+
+  --ps-plum-dark: #173d2b;  --ps-plum: #1f5239;  --ps-green: #2f6f51;
+  --ps-gold: #ffffff;  --ps-gold-light: #b7e0c8;
+}
+html[data-theme="green"] body {
+  background:
+    radial-gradient(900px 480px at 100% -8%, rgba(45,106,79,.14), transparent 60%),
+    radial-gradient(760px 420px at 0% 0%, rgba(64,145,108,.10), transparent 55%),
+    linear-gradient(160deg, #eceeec 0%, #f4f7f4 50%, #e7ece8 100%) !important;
+}
+html[data-theme="green"] .header,
+html[data-theme="green"] .ds-header,
+html[data-theme="green"] .tabs-nav {
+  background: linear-gradient(105deg, #143427 0%, #1f5239 52%, #2f6f51 100%) !important;
+  border-top: none !important;
+  border-bottom: 1px solid rgba(116,198,157,.45) !important;
+  box-shadow: 0 6px 22px rgba(15,45,30,.22) !important;
+}
+html[data-theme="green"] .ops-topbar {
+  background: linear-gradient(105deg, #143427 0%, #1f5239 55%, #2f6f51 100%) !important;
+  box-shadow: 0 6px 22px rgba(15,45,30,.22) !important;
+}
+/* نصوص الهيدر بيضاء واضحة على التدرّج */
+html[data-theme="green"] .ds-header__title,
+html[data-theme="green"] .header-logo .h-title,
+html[data-theme="green"] .logo-text,
+html[data-theme="green"] .header > div:first-child div { color: #fff !important; }
+html[data-theme="green"] .ds-header__sub,
+html[data-theme="green"] .header-logo .h-sub { color: rgba(255,255,255,.75) !important; }
+html[data-theme="green"] body .countdown-banner {
+  background: linear-gradient(105deg, #143427 0%, #1f5239 52%, #2f6f51 100%) !important;
+  border: 1px solid rgba(116,198,157,.40) !important;
+  box-shadow: 0 6px 22px rgba(15,45,30,.22) !important;
+}
+html[data-theme="green"] body .countdown-title { color: #cdead9 !important; }
+html[data-theme="green"] body .countdown-name,
+html[data-theme="green"] body #cd-name { color: #fff !important; }
+html[data-theme="green"] body .countdown-owner { color: rgba(255,255,255,.62) !important; }
+html[data-theme="green"] body .countdown-unit {
+  background: rgba(255,255,255,.12) !important;
+  border: 1px solid rgba(255,255,255,.20) !important;
+}
+html[data-theme="green"] body .countdown-num { color: #fff !important; }
+html[data-theme="green"] body .countdown-label { color: #b7e0c8 !important; }
+html[data-theme="green"] body .countdown-sep { color: rgba(255,255,255,.40) !important; }
+
+/* ═══════════════════════════════════════════════════════════════
+   تناغم محتوى الصفحة مع الثيم (تجاوزات ألوان فقط — لا تمسّ أي منطق)
+   نسبق بـ body لتجاوز inline + portal-header.css. ألوان الحالة
+   (متأخر/مكتمل/تحذير) تُترك كما هي لأنها تحمل معنى.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── ① البنفسجي ── */
+/* شارة العدد */
+html[data-theme="grad"] body .section-count { background: #6a55c9 !important; }
+/* كروت المؤشرات تُترك كما هي (ألوانها ترمز للحالة) */
+/* توحيد حدود/زوايا/ظلال بقية الكروت */
+html[data-theme="grad"] body .side-card,
+html[data-theme="grad"] body .table-card,
+html[data-theme="grad"] body .table-section {
+  border-color: #e2dcf2 !important;
+  box-shadow: 0 4px 16px rgba(106,85,201,.10) !important;
+}
+/* الفلاتر: العام النشط بنفسجي (ألوان الحالة تبقى) */
+html[data-theme="grad"] body .filter-btn.active:not(.f-today):not(.f-3days):not(.f-week):not(.f-active) {
+  background: #6a55c9 !important; border-color: #5a47b0 !important; color: #fff !important;
+}
+html[data-theme="grad"] body .filter-btn:hover { border-color: #8b7bf0 !important; color: #6a55c9 !important; }
+/* البحث */
+html[data-theme="grad"] body .search-box:focus-within { border-color: #8b7bf0 !important; }
+/* أشرطة الجهات المالكة: تدرّج بنفسجي أحادي بدل 8 ألوان */
+html[data-theme="grad"] body .owner-bar { background: #6a55c9 !important; }
+html[data-theme="grad"] body .owner-row:nth-child(2n) .owner-bar { background: #8b7bf0 !important; }
+html[data-theme="grad"] body .owner-row:nth-child(3n) .owner-bar { background: #5a47b0 !important; }
+html[data-theme="grad"] body .owner-row.active-owner {
+  background: #f0ecfb !important; border-right-color: #6a55c9 !important;
+}
+
+/* ── ② الأخضر ── */
+html[data-theme="green"] body .section-count { background: #2d6a4f !important; }
+/* كروت المؤشرات تُترك كما هي (ألوانها ترمز للحالة) */
+html[data-theme="green"] body .side-card,
+html[data-theme="green"] body .table-card,
+html[data-theme="green"] body .table-section {
+  border-color: #d3e4d9 !important;
+  box-shadow: 0 4px 16px rgba(45,106,79,.10) !important;
+}
+html[data-theme="green"] body .filter-btn.active:not(.f-today):not(.f-3days):not(.f-week):not(.f-active) {
+  background: #2d6a4f !important; border-color: #235940 !important; color: #fff !important;
+}
+html[data-theme="green"] body .filter-btn:hover { border-color: #40916c !important; color: #2d6a4f !important; }
+html[data-theme="green"] body .search-box:focus-within { border-color: #40916c !important; }
+html[data-theme="green"] body .owner-bar { background: #2d6a4f !important; }
+html[data-theme="green"] body .owner-row:nth-child(2n) .owner-bar { background: #40916c !important; }
+html[data-theme="green"] body .owner-row:nth-child(3n) .owner-bar { background: #235940 !important; }
+html[data-theme="green"] body .owner-row.active-owner {
+  background: #e6f0ea !important; border-right-color: #2d6a4f !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   إزالة الذهبي/الكريمي من المحتوى (مصدره internal-unified.css)
+   → أسطح بيضاء بحدود ولمسات الثيم. تجاوزات ألوان فقط.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── ① البنفسجي ── */
+html[data-theme="grad"] body .side-card,
+html[data-theme="grad"] body .table-section,
+html[data-theme="grad"] body .filters {
+  background: #ffffff !important;
+  border-color: #e2dcf2 !important;
+  box-shadow: 0 4px 16px rgba(106,85,201,.08) !important;
+}
+html[data-theme="grad"] body .side-card::before,
+html[data-theme="grad"] body .table-section::before,
+html[data-theme="grad"] body .filters::before { display: none !important; }
+html[data-theme="grad"] body .section-header {
+  background: #f6f4fc !important;
+  border-bottom-color: #e2dcf2 !important;
+}
+html[data-theme="grad"] body thead tr,
+html[data-theme="grad"] body th {
+  background: #f4f1fb !important;
+  color: #5a4bd0 !important;
+}
+html[data-theme="grad"] body .section-title::before {
+  background: linear-gradient(135deg, #6a55c9, #8b7bf0) !important;
+  box-shadow: 0 0 0 4px rgba(106,85,201,.10) !important;
+}
+
+/* ── ② الأخضر ── */
+html[data-theme="green"] body .side-card,
+html[data-theme="green"] body .table-section,
+html[data-theme="green"] body .filters {
+  background: #ffffff !important;
+  border-color: #d3e4d9 !important;
+  box-shadow: 0 4px 16px rgba(45,106,79,.08) !important;
+}
+html[data-theme="green"] body .side-card::before,
+html[data-theme="green"] body .table-section::before,
+html[data-theme="green"] body .filters::before { display: none !important; }
+html[data-theme="green"] body .section-header {
+  background: #f2f7f4 !important;
+  border-bottom-color: #d3e4d9 !important;
+}
+html[data-theme="green"] body thead tr,
+html[data-theme="green"] body th {
+  background: #eef5f0 !important;
+  color: #235940 !important;
+}
+html[data-theme="green"] body .section-title::before {
+  background: linear-gradient(135deg, #2d6a4f, #40916c) !important;
+  box-shadow: 0 0 0 4px rgba(45,106,79,.10) !important;
+}

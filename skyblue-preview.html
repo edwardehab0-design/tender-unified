@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>معاينة — أزرق سماوي مقلوب</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Tajawal", Arial, sans-serif;
+      background: #c8d8e8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      gap: 20px;
+    }
+    .badge {
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      color: #fff;
+      font-size: 16px; font-weight: 900;
+      padding: 10px 28px; border-radius: 50px;
+      box-shadow: 0 4px 20px rgba(2,132,199,.35);
+    }
+    .page {
+      width: 100%; max-width: 1100px;
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,.28);
+      display: flex; min-height: 620px;
+    }
+
+    /* ── الشريط الجانبي — أزرق سماوي سائد ── */
+    .sb {
+      width: 224px; flex: 0 0 224px;
+      display: flex; flex-direction: column; gap: 10px;
+      padding: 14px 11px;
+      background: linear-gradient(180deg, #0369a1 0%, #0284c7 40%, #0ea5e9 100%);
+      border-left: 1px solid rgba(255,255,255,.20);
+      box-shadow: inset -1px 0 0 rgba(255,255,255,.12);
+    }
+    .sb-brand {
+      padding: 12px; border-radius: 12px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25);
+      display: flex; flex-direction: column; gap: 5px;
+    }
+    .sb-top { font-size: 10px; font-weight: 800; color: rgba(255,255,255,.70); letter-spacing: 1px; }
+    .sb-name { font-size: 16px; font-weight: 900; color: #fff; line-height: 1.3; }
+    .sb-role { font-size: 11px; font-weight: 900; color: #bae6fd; }
+
+    .sb-nav { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+    .sb-link {
+      display: flex; align-items: center; gap: 9px;
+      padding: 10px 12px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.12);
+      color: rgba(255,255,255,.88);
+      font-size: 13px; font-weight: 900;
+    }
+    .sb-link.active {
+      background: #fff;
+      color: #0284c7;
+      border-color: rgba(255,255,255,.90);
+      box-shadow: 0 4px 14px rgba(0,0,0,.18);
+    }
+    .sb-code {
+      font-size: 10px; font-weight: 900;
+      padding: 2px 6px; border-radius: 5px;
+      background: rgba(255,255,255,.20); color: #fff;
+      flex: 0 0 auto;
+    }
+    .sb-link.active .sb-code { background: rgba(2,132,199,.15); color: #0284c7; }
+    .sb-txt { display: flex; flex-direction: column; flex: 1; }
+    .sb-lbl { font-size: 13px; font-weight: 900; }
+    .sb-sub { font-size: 10px; opacity: .70; font-weight: 700; }
+    .sb-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.55); flex: 0 0 auto; }
+    .sb-link.active .sb-dot { background: #0284c7; }
+
+    .sb-out {
+      padding: 11px; border-radius: 10px; text-align: center;
+      font-size: 13px; font-weight: 900; color: #fff;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25);
+    }
+
+    /* ── المحتوى ── */
+    .content { flex: 1; display: flex; flex-direction: column; background: #f0f7ff; }
+
+    .topbar {
+      padding: 16px 24px;
+      background: linear-gradient(135deg, #0369a1, #0284c7);
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,.15);
+    }
+    .tb-left h2 { font-size: 16px; font-weight: 900; color: #fff; }
+    .tb-left p { font-size: 11px; color: rgba(255,255,255,.65); font-weight: 700; margin-top: 2px; }
+    .tb-badge {
+      padding: 5px 14px; border-radius: 20px;
+      background: rgba(255,255,255,.20); color: #fff;
+      font-size: 11px; font-weight: 900;
+      border: 1px solid rgba(255,255,255,.30);
+    }
+
+    .main { padding: 22px; display: flex; flex-direction: column; gap: 18px; }
+
+    /* KPIs */
+    .kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+    .kpi {
+      background: linear-gradient(150deg, rgba(255,255,255,.96), rgba(224,242,254,.88));
+      border: 1px solid rgba(255,255,255,.95);
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(2,132,199,.12), inset 0 1px 0 #fff;
+      padding: 16px 18px;
+      display: flex; flex-direction: column; gap: 5px;
+    }
+    .kpi-dot { width: 8px; height: 8px; border-radius: 50%; margin-bottom: 3px; }
+    .kpi b { font-size: 28px; font-weight: 900; color: #0c4a6e; }
+    .kpi b.sky { color: #0284c7; }
+    .kpi b.red { color: #dc2626; }
+    .kpi span { font-size: 12px; color: #1e6090; font-weight: 700; }
+
+    /* بطاقات المناقصات */
+    .cards { display: flex; flex-direction: column; gap: 9px; }
+    .tc {
+      background: linear-gradient(150deg, rgba(255,255,255,.96), rgba(224,242,254,.88));
+      border: 1px solid rgba(255,255,255,.95);
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(2,132,199,.10), inset 0 1px 0 #fff;
+      padding: 13px 18px;
+      display: flex; align-items: center; gap: 13px;
+    }
+    .tc-st {
+      padding: 4px 11px; border-radius: 8px;
+      font-size: 11px; font-weight: 900; white-space: nowrap; flex: 0 0 auto;
+      background: rgba(2,132,199,.13); color: #0284c7;
+      border: 1px solid rgba(2,132,199,.22);
+    }
+    .tc-st.late { background: rgba(220,38,38,.11); color: #dc2626; border-color: rgba(220,38,38,.22); }
+    .tc-nm { flex: 1; font-size: 13px; font-weight: 900; color: #0c4a6e; line-height: 1.4; }
+    .tc-dt { font-size: 11px; color: #1e6090; font-weight: 700; white-space: nowrap; }
+
+    /* كانبان مصغّر */
+    .kanban { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    .kol {
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(2,132,199,.15);
+      border-radius: 11px; padding: 11px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .kol-head {
+      font-size: 11px; font-weight: 900; color: #1e6090;
+      padding-bottom: 7px; border-bottom: 1px solid rgba(2,132,199,.14);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .kol-count {
+      background: rgba(2,132,199,.15); color: #0284c7;
+      font-size: 10px; font-weight: 900;
+      padding: 1px 7px; border-radius: 10px;
+    }
+    .kol-card {
+      background: linear-gradient(150deg, rgba(255,255,255,.96), rgba(224,242,254,.88));
+      border: 1px solid rgba(255,255,255,.95);
+      border-radius: 8px; padding: 8px 10px;
+      font-size: 11px; font-weight: 900; color: #0c4a6e;
+      box-shadow: 0 2px 6px rgba(2,132,199,.09), inset 0 1px 0 #fff;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="badge">① كحلي + أزرق سماوي — مقلوب: السماوي هو السائد</div>
+
+  <div class="page">
+    <!-- الشريط الجانبي -->
+    <div class="sb">
+      <div class="sb-brand">
+        <div class="sb-top">ENTERPRISE</div>
+        <div class="sb-name">إدارة المناقصات</div>
+        <div class="sb-role">صلاحية تنفيذية</div>
+      </div>
+      <nav class="sb-nav">
+        <a class="sb-link active">
+          <span class="sb-code">TN</span>
+          <span class="sb-txt"><span class="sb-lbl">المناقصات</span><span class="sb-sub">الرصد والمتابعة</span></span>
+          <span class="sb-dot"></span>
+        </a>
+        <a class="sb-link">
+          <span class="sb-code">OP</span>
+          <span class="sb-txt"><span class="sb-lbl">العمليات</span><span class="sb-sub">التنسيق الداخلي</span></span>
+          <span class="sb-dot"></span>
+        </a>
+        <a class="sb-link">
+          <span class="sb-code">CL</span>
+          <span class="sb-txt"><span class="sb-lbl">العملاء</span><span class="sb-sub">العلاقات والجهات</span></span>
+          <span class="sb-dot"></span>
+        </a>
+        <a class="sb-link">
+          <span class="sb-code">AN</span>
+          <span class="sb-txt"><span class="sb-lbl">التحليلات</span><span class="sb-sub">المؤشرات والاتجاهات</span></span>
+          <span class="sb-dot"></span>
+        </a>
+        <a class="sb-link">
+          <span class="sb-code">OR</span>
+          <span class="sb-txt"><span class="sb-lbl">الهيكل</span><span class="sb-sub">الهيكل التنظيمي</span></span>
+          <span class="sb-dot"></span>
+        </a>
+        <a class="sb-link">
+          <span class="sb-code">PF</span>
+          <span class="sb-txt"><span class="sb-lbl">المحفظة</span><span class="sb-sub">محفظة المناقصات</span></span>
+          <span class="sb-dot"></span>
+        </a>
+        <a class="sb-link">
+          <span class="sb-code">RP</span>
+          <span class="sb-txt"><span class="sb-lbl">التقارير</span><span class="sb-sub">تقارير الإدارة</span></span>
+          <span class="sb-dot"></span>
+        </a>
+      </nav>
+      <div class="sb-out">خروج</div>
+    </div>
+
+    <!-- المحتوى -->
+    <div class="content">
+      <div class="topbar">
+        <div class="tb-left">
+          <h2>المناقصات الجارية</h2>
+          <p>الرواف للمقاولات — الإدارة العامة للمناقصات</p>
+        </div>
+        <span class="tb-badge">21 مناقصة نشطة</span>
+      </div>
+      <div class="main">
+
+        <div class="kpis">
+          <div class="kpi"><div class="kpi-dot" style="background:#0284c7"></div><b class="sky">21</b><span>المناقصات الجارية</span></div>
+          <div class="kpi"><div class="kpi-dot" style="background:#94a3b8"></div><b>4</b><span>باقي 3 أيام</span></div>
+          <div class="kpi"><div class="kpi-dot" style="background:#f87171"></div><b class="red">1</b><span>مستحق اليوم</span></div>
+          <div class="kpi"><div class="kpi-dot" style="background:#34d399"></div><b>0</b><span>تنتهي اليوم</span></div>
+        </div>
+
+        <div class="cards">
+          <div class="tc">
+            <span class="tc-st">جارية</span>
+            <span class="tc-nm">مشروع صيانة وتأهيل طريق الأمير سلطان بمدينة الظهران</span>
+            <span class="tc-dt">2026-06-08</span>
+          </div>
+          <div class="tc">
+            <span class="tc-st late">1 يوم</span>
+            <span class="tc-nm">مشروع صيانة وتأهيل مواقع متفرقة بحي الدانة الشمالية بالظهران</span>
+            <span class="tc-dt">2026-06-09</span>
+          </div>
+          <div class="tc">
+            <span class="tc-st">جارية</span>
+            <span class="tc-nm">مشروع طريق جدة - مكة</span>
+            <span class="tc-dt">2026-06-09</span>
+          </div>
+          <div class="tc">
+            <span class="tc-st late">2 أيام</span>
+            <span class="tc-nm">تنفيذ حلول لتصريف مياه الأمطار للمنطقة H الحزمة الثانية</span>
+            <span class="tc-dt">2026-06-10</span>
+          </div>
+        </div>
+
+        <div class="kanban">
+          <div class="kol">
+            <div class="kol-head">قيد الدراسة <span class="kol-count">8</span></div>
+            <div class="kol-card">مشروع طريق الأمير سلطان</div>
+            <div class="kol-card">مشروع الدانة الشمالية</div>
+          </div>
+          <div class="kol">
+            <div class="kol-head">جاهزة للتقديم <span class="kol-count">5</span></div>
+            <div class="kol-card">مشروع طريق جدة - مكة</div>
+            <div class="kol-card">تصريف مياه الأمطار</div>
+          </div>
+          <div class="kol">
+            <div class="kol-head">مكتملة <span class="kol-count">8</span></div>
+            <div class="kol-card">مشروع مطار الملك سلمان</div>
+            <div class="kol-card">مشروع المسار الرياضي</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
