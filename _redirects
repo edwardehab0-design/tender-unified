@@ -1,3 +1,7 @@
 # Cloudflare Pages redirect rules
 # الجذر "/" لم يعد يعرض شاشة التعريف الأولى؛ index.html يحوّل المستخدم
+ codex/locate-repository-edit-permissions
 # مباشرة إلى صفحة تسجيل الدخول بمسار نسبي يعمل على GitHub Pages وCloudflare.
+
+# مباشرة إلى /login.html مع الإبقاء على روابط استرداد كلمة المرور.
+ main
