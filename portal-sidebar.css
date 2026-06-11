@@ -1,7 +1,7 @@
 /* ─────────────────── ALRAWAF ENTERPRISE PORTAL SIDEBAR ─────────────────── */
 :root {
-  --ps-bg-1: #2e3d2a;
-  --ps-bg-2: #20291b;
+  --ps-bg-1: #1c3a2c;
+  --ps-bg-2: #10251d;
   --ps-gold: #c4a368;
   --ps-w: 266px;
 }
@@ -25,7 +25,7 @@ body.has-control-sidebar {
   border: none;
   border-inline-start: 1px solid rgba(196, 163, 104, .18);
   border-radius: 0;
-  background: linear-gradient(180deg, #2e3d2a 0%, #20291b 100%);
+  background: linear-gradient(180deg, #1c3a2c 0%, #10251d 100%);
   box-shadow: -4px 0 28px rgba(20, 28, 18, .36);
   color: #fff;
 }
@@ -276,7 +276,7 @@ html[data-theme="grad"] .portal-theme-toggle.on-light {
   color: #1c3c5e; background: #e9eef4; border-color: #c6d3e2;
 }
 html[data-theme="green"] .portal-theme-toggle.on-light {
-  color: #54684a; background: #e8ede1; border-color: #cdd6c2;
+  color: #5f7654; background: #e6efdd; border-color: #c7d6ba;
 }
 .portal-theme-toggle.on-light:hover { filter: brightness(.96); }
 
@@ -324,14 +324,14 @@ html[data-theme="grad"] .control-sidebar .control-sidebar-logout:hover {
 /* ═══════════════ ② الأخضر السيج الهادئ — شريط سيج داكن ═══════════════ */
 html[data-theme="green"] .control-sidebar {
   border-inline-start: 1px solid rgba(255, 255, 255, .12);
-  background: linear-gradient(180deg, #2e3d2a 0%, #283621 60%, #20291b 100%);
+  background: linear-gradient(180deg, #1c3a2c 0%, #163024 60%, #10251d 100%);
   box-shadow: -4px 0 28px rgba(20, 28, 18, .40);
 }
 html[data-theme="green"] .control-sidebar-brand {
   border-bottom-color: rgba(255, 255, 255, .12);
   background: rgba(255, 255, 255, .05);
 }
-html[data-theme="green"] .control-sidebar-brand span { color: #b1c4a0; }
+html[data-theme="green"] .control-sidebar-brand span { color: #aebf9d; }
 html[data-theme="green"] .control-sidebar-brand small { color: rgba(255, 255, 255, .65); }
 html[data-theme="green"] .control-sidebar-link .ps-code {
   background: rgba(255, 255, 255, .10); color: rgba(255, 255, 255, .80);
@@ -344,8 +344,8 @@ html[data-theme="green"] .control-sidebar-link:hover .ps-code {
   background: rgba(111, 135, 99, .35); color: #fff;
 }
 html[data-theme="green"] .control-sidebar-link.active {
-  background: linear-gradient(135deg, #54684a, #6f8763);
-  border-inline-start-color: #93b083;
+  background: linear-gradient(135deg, #5f7654, #728d64);
+  border-inline-start-color: #8aa093;
   box-shadow: 0 4px 14px rgba(84, 104, 74, .35);
 }
 html[data-theme="green"] .control-sidebar-link.active .ps-label,
@@ -356,7 +356,7 @@ html[data-theme="green"] .control-sidebar-link.active .ps-code {
 html[data-theme="green"] .control-sidebar .control-sidebar-logout {
   border-top-color: rgba(255, 255, 255, .12) !important;
   background: rgba(255, 255, 255, .08) !important;
-  color: #b1c4a0 !important;
+  color: #aebf9d !important;
 }
 html[data-theme="green"] .control-sidebar .control-sidebar-logout:hover {
   background: rgba(111, 135, 99, .26) !important; color: #fff !important;
