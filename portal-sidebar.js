@@ -108,11 +108,14 @@
     if (document.getElementById("control-sidebar")) return;
     const role = savedRole();
     const isExecutive = role === "manager" || role === "vp";
+    // الدخول معطّل مؤقتاً: في غياب أي دور محفوظ تُعرض جميع الصفحات (بما فيها
+    // التنفيذية)؛ يعود التقييد تلقائياً بمجرد ضبط الدور عند بناء الدخول الجديد.
+    const authDisabled = !role;
     // إن حُدِّدت صفحات مخصّصة للمستخدم نعرض تلك فقط، وإلا نعتمد صلاحية الـ role
     const custom = allowedPages();
     const visiblePages = custom
       ? pages.filter(p => custom.includes(p.key))
-      : pages.filter(p => p.scope !== "executive" || isExecutive);
+      : pages.filter(p => authDisabled || p.scope !== "executive" || isExecutive);
 
     const sidebar = document.createElement("aside");
     sidebar.id = "control-sidebar";
