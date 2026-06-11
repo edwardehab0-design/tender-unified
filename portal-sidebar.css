@@ -344,8 +344,8 @@ html[data-theme="green"] .control-sidebar-link:hover .ps-code {
   background: rgba(111, 135, 99, .35); color: #fff;
 }
 html[data-theme="green"] .control-sidebar-link.active {
-  background: linear-gradient(135deg, #5f7654, #728d64);
-  border-inline-start-color: #8aa093;
+  background: linear-gradient(135deg, #2f5743, #3d6650);
+  border-inline-start-color: #5e8a6f;
   box-shadow: 0 4px 14px rgba(84, 104, 74, .35);
 }
 html[data-theme="green"] .control-sidebar-link.active .ps-label,

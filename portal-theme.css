@@ -100,13 +100,13 @@ html[data-theme="green"] body {
 html[data-theme="green"] .header,
 html[data-theme="green"] .ds-header,
 html[data-theme="green"] .tabs-nav {
-  background: linear-gradient(135deg, #10251d, #728d64) !important;
+  background: linear-gradient(135deg, #10251d, #355c45) !important;
   border-top: none !important;
   border-bottom: 2px solid var(--gold) !important;
   box-shadow: 0 2px 12px rgba(32,41,27,.24) !important;
 }
 html[data-theme="green"] .ops-topbar {
-  background: linear-gradient(135deg, #10251d, #728d64) !important;
+  background: linear-gradient(135deg, #10251d, #355c45) !important;
   border-bottom: 2px solid var(--gold) !important;
   box-shadow: 0 2px 12px rgba(32,41,27,.24) !important;
 }
@@ -117,7 +117,7 @@ html[data-theme="green"] .header > div:first-child div { color: #fff !important;
 html[data-theme="green"] .ds-header__sub,
 html[data-theme="green"] .header-logo .h-sub { color: rgba(255,255,255,.72) !important; }
 html[data-theme="green"] body .countdown-banner {
-  background: linear-gradient(135deg, #10251d, #728d64) !important;
+  background: linear-gradient(135deg, #10251d, #355c45) !important;
   border: 1px solid rgba(185,146,63,.45) !important;
   box-shadow: 0 2px 12px rgba(32,41,27,.24) !important;
 }
