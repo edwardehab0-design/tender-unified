@@ -1,8 +1,8 @@
 /* ─────────────────── ALRAWAF ENTERPRISE PORTAL SIDEBAR ─────────────────── */
 :root {
-  --ps-bg-1: #3b1e78;
-  --ps-bg-2: #25115a;
-  --ps-gold: #e8b547;
+  --ps-bg-1: #2e3d2a;
+  --ps-bg-2: #20291b;
+  --ps-gold: #c4a368;
   --ps-w: 266px;
 }
 
@@ -23,10 +23,10 @@ body.has-control-sidebar {
   gap: 0;
   padding: 0;
   border: none;
-  border-inline-start: 1px solid rgba(232, 181, 71, .18);
+  border-inline-start: 1px solid rgba(196, 163, 104, .18);
   border-radius: 0;
-  background: linear-gradient(180deg, #3b1e78 0%, #25115a 100%);
-  box-shadow: -4px 0 28px rgba(20, 8, 48, .36);
+  background: linear-gradient(180deg, #2e3d2a 0%, #20291b 100%);
+  box-shadow: -4px 0 28px rgba(20, 28, 18, .36);
   color: #fff;
 }
 
@@ -41,7 +41,7 @@ body.has-control-sidebar {
   text-align: center;
   gap: 5px;
   padding: 24px 18px 20px;
-  border-bottom: 1px solid rgba(232, 181, 71, .14);
+  border-bottom: 1px solid rgba(196, 163, 104, .14);
   border-radius: 0;
   background: rgba(255, 255, 255, .04);
 }
@@ -56,7 +56,7 @@ body.has-control-sidebar {
   background: #ffffff;
   padding: 10px 16px;
   border-radius: 14px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, .22), inset 0 0 0 1px rgba(232,181,71,.18);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .22), inset 0 0 0 1px rgba(196,163,104,.18);
   margin-bottom: 12px;
 }
 
@@ -181,19 +181,19 @@ body.has-control-sidebar {
 /* ─── Hover ─── */
 .control-sidebar-link:hover {
   background: rgba(255, 255, 255, .08);
-  border-inline-start-color: rgba(232, 181, 71, .4);
+  border-inline-start-color: rgba(196, 163, 104, .4);
   transform: translateX(-3px);
 }
 
 .control-sidebar-link:hover .ps-label { color: #fff; }
 .control-sidebar-link:hover .ps-code {
-  background: rgba(232, 181, 71, .14);
+  background: rgba(196, 163, 104, .14);
   color: var(--ps-gold);
 }
 
 /* ─── Active ─── */
 .control-sidebar-link.active {
-  background: rgba(232, 181, 71, .10);
+  background: rgba(196, 163, 104, .10);
   border-inline-start-color: var(--ps-gold);
 }
 
@@ -214,9 +214,9 @@ body.has-control-sidebar {
   gap: 8px;
   padding: 13px 16px;
   border: none !important;
-  border-top: 1px solid rgba(232, 181, 71, .18) !important;
+  border-top: 1px solid rgba(196, 163, 104, .18) !important;
   border-radius: 0 !important;
-  background: linear-gradient(135deg, rgba(232,181,71,.22) 0%, rgba(232,181,71,.14) 100%) !important;
+  background: linear-gradient(135deg, rgba(196,163,104,.22) 0%, rgba(196,163,104,.14) 100%) !important;
   color: var(--ps-gold) !important;
   font-family: "Tajawal", "Cairo", Arial, sans-serif;
   font-size: 13px;
@@ -226,7 +226,7 @@ body.has-control-sidebar {
 }
 
 .control-sidebar .control-sidebar-logout:hover {
-  background: linear-gradient(135deg, rgba(232,181,71,.42) 0%, rgba(232,181,71,.28) 100%) !important;
+  background: linear-gradient(135deg, rgba(196,163,104,.42) 0%, rgba(196,163,104,.28) 100%) !important;
   color: #fff !important;
 }
 
@@ -273,39 +273,39 @@ body.has-control-sidebar .back-link {
 
 /* عند وضعه داخل رأس قائمة فاتح الخلفية */
 html[data-theme="grad"] .portal-theme-toggle.on-light {
-  color: #4c2f8f; background: #efeafb; border-color: #d6cbed;
+  color: #1c3c5e; background: #e9eef4; border-color: #c6d3e2;
 }
 html[data-theme="green"] .portal-theme-toggle.on-light {
-  color: #2d6a4f; background: #e6f0ea; border-color: #cfe3d6;
+  color: #54684a; background: #e8ede1; border-color: #cdd6c2;
 }
 .portal-theme-toggle.on-light:hover { filter: brightness(.96); }
 
-/* ═══════════════ ① البنفسجي الملكي × الذهبي — شريط بنفسجي داكن ═══════════════ */
+/* ═══════════════ ① الكحلي المؤسسي × الذهبي — شريط كحلي داكن ═══════════════ */
 html[data-theme="grad"] .control-sidebar {
   border-inline-start: 1px solid rgba(255,255,255,.10);
-  background: linear-gradient(180deg, #3d2683 0%, #2e1c66 60%, #241550 100%);
-  box-shadow: -4px 0 28px rgba(28,15,60,.40);
+  background: linear-gradient(180deg, #142d49 0%, #0f2740 60%, #0c1f36 100%);
+  box-shadow: -4px 0 28px rgba(10,25,45,.40);
 }
 html[data-theme="grad"] .control-sidebar-brand {
   border-bottom-color: rgba(255,255,255,.12);
   background: rgba(255,255,255,.05);
 }
-html[data-theme="grad"] .control-sidebar-brand span { color: #e8be6a; }
+html[data-theme="grad"] .control-sidebar-brand span { color: #cfa653; }
 html[data-theme="grad"] .control-sidebar-brand small { color: rgba(255,255,255,.65); }
 html[data-theme="grad"] .control-sidebar-link .ps-code {
   background: rgba(255,255,255,.10); color: rgba(255,255,255,.80);
 }
 html[data-theme="grad"] .control-sidebar-link:hover {
   background: rgba(255,255,255,.06);
-  border-inline-start-color: rgba(217,164,65,.55);
+  border-inline-start-color: rgba(185,146,63,.55);
 }
 html[data-theme="grad"] .control-sidebar-link:hover .ps-code {
-  background: rgba(217,164,65,.30); color: #e8be6a;
+  background: rgba(185,146,63,.30); color: #cfa653;
 }
 html[data-theme="grad"] .control-sidebar-link.active {
-  background: linear-gradient(135deg, #5b3fa0, #4c2f8f);
-  border-inline-start-color: #e8be6a;
-  box-shadow: 0 4px 14px rgba(76, 47, 143, .35);
+  background: linear-gradient(135deg, #2a5d86, #1c3c5e);
+  border-inline-start-color: #cfa653;
+  box-shadow: 0 4px 14px rgba(28, 60, 94, .35);
 }
 html[data-theme="grad"] .control-sidebar-link.active .ps-label,
 html[data-theme="grad"] .control-sidebar-link.active .ps-sub { color: #fff; }
@@ -315,38 +315,38 @@ html[data-theme="grad"] .control-sidebar-link.active .ps-code {
 html[data-theme="grad"] .control-sidebar .control-sidebar-logout {
   border-top-color: rgba(255,255,255,.12) !important;
   background: rgba(255,255,255,.08) !important;
-  color: #e8be6a !important;
+  color: #cfa653 !important;
 }
 html[data-theme="grad"] .control-sidebar .control-sidebar-logout:hover {
-  background: rgba(217,164,65,.26) !important; color: #fff !important;
+  background: rgba(185,146,63,.26) !important; color: #fff !important;
 }
 
-/* ═══════════════ ② الأخضر الهادئ — شريط أخضر داكن ═══════════════ */
+/* ═══════════════ ② الأخضر السيج الهادئ — شريط سيج داكن ═══════════════ */
 html[data-theme="green"] .control-sidebar {
   border-inline-start: 1px solid rgba(255, 255, 255, .12);
-  background: linear-gradient(180deg, #234232 0%, #1a3325 60%, #142a1e 100%);
-  box-shadow: -4px 0 28px rgba(10, 30, 20, .40);
+  background: linear-gradient(180deg, #2e3d2a 0%, #283621 60%, #20291b 100%);
+  box-shadow: -4px 0 28px rgba(20, 28, 18, .40);
 }
 html[data-theme="green"] .control-sidebar-brand {
   border-bottom-color: rgba(255, 255, 255, .12);
   background: rgba(255, 255, 255, .05);
 }
-html[data-theme="green"] .control-sidebar-brand span { color: #b7e0c8; }
+html[data-theme="green"] .control-sidebar-brand span { color: #b1c4a0; }
 html[data-theme="green"] .control-sidebar-brand small { color: rgba(255, 255, 255, .65); }
 html[data-theme="green"] .control-sidebar-link .ps-code {
   background: rgba(255, 255, 255, .10); color: rgba(255, 255, 255, .80);
 }
 html[data-theme="green"] .control-sidebar-link:hover {
   background: rgba(255, 255, 255, .06);
-  border-inline-start-color: rgba(64, 145, 108, .6);
+  border-inline-start-color: rgba(111, 135, 99, .6);
 }
 html[data-theme="green"] .control-sidebar-link:hover .ps-code {
-  background: rgba(64, 145, 108, .35); color: #fff;
+  background: rgba(111, 135, 99, .35); color: #fff;
 }
 html[data-theme="green"] .control-sidebar-link.active {
-  background: linear-gradient(135deg, #2f7a52, #40916c);
-  border-inline-start-color: #74c69d;
-  box-shadow: 0 4px 14px rgba(47, 122, 82, .35);
+  background: linear-gradient(135deg, #54684a, #6f8763);
+  border-inline-start-color: #93b083;
+  box-shadow: 0 4px 14px rgba(84, 104, 74, .35);
 }
 html[data-theme="green"] .control-sidebar-link.active .ps-label,
 html[data-theme="green"] .control-sidebar-link.active .ps-sub { color: #fff; }
@@ -356,10 +356,10 @@ html[data-theme="green"] .control-sidebar-link.active .ps-code {
 html[data-theme="green"] .control-sidebar .control-sidebar-logout {
   border-top-color: rgba(255, 255, 255, .12) !important;
   background: rgba(255, 255, 255, .08) !important;
-  color: #b7e0c8 !important;
+  color: #b1c4a0 !important;
 }
 html[data-theme="green"] .control-sidebar .control-sidebar-logout:hover {
-  background: rgba(64, 145, 108, .26) !important; color: #fff !important;
+  background: rgba(111, 135, 99, .26) !important; color: #fff !important;
 }
 
 /* ─── Responsive: tablet ─── */
@@ -390,7 +390,7 @@ html[data-theme="green"] .control-sidebar .control-sidebar-logout:hover {
   }
 
   .control-sidebar-link.active {
-    background: rgba(232, 181, 71, .14);
+    background: rgba(196, 163, 104, .14);
   }
 
   .control-sidebar-link .ps-code {
@@ -423,7 +423,7 @@ html[data-theme="green"] .control-sidebar .control-sidebar-logout:hover {
     height: 60px;
     grid-template-rows: 1fr;
     border-inline-start: none;
-    border-top: 1px solid rgba(232, 181, 71, .18);
+    border-top: 1px solid rgba(196, 163, 104, .18);
     box-shadow: 0 -4px 20px rgba(10, 15, 35, .22);
   }
 
@@ -456,7 +456,7 @@ html[data-theme="green"] .control-sidebar .control-sidebar-logout:hover {
 
   .control-sidebar-link.active {
     border-bottom-color: var(--ps-gold);
-    background: rgba(232, 181, 71, .12);
+    background: rgba(196, 163, 104, .12);
   }
 
   .control-sidebar-link .ps-code {
@@ -468,7 +468,7 @@ html[data-theme="green"] .control-sidebar .control-sidebar-logout:hover {
   .control-sidebar-link .ps-texts { display: none; }
 }
 
-/* السايدبار الفاتح (الثيم اللؤلؤي): نصوص داكنة فوق الأبيض */
+/* نصوص فاتحة فوق الكحلي الداكن */
 html[data-theme="grad"] .control-sidebar-brand strong { color: #ffffff; }
 html[data-theme="grad"] .control-sidebar-link .ps-label { color: rgba(255,255,255,.90); }
 html[data-theme="grad"] .control-sidebar-link .ps-sub { color: rgba(255,255,255,.50); }
