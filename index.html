@@ -1,25 +1,14 @@
 <!doctype html>
-<!-- preview-check: تجربة معاينة Cloudflare على فرع التطوير -->
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>تحويل إلى تسجيل الدخول | بوابة المناقصات</title>
+  <title>بوابة المناقصات</title>
   <meta name="robots" content="noindex">
   <script>
+    // البوابة تفتح مباشرة على المناقصات الجارية (تمت إزالة شاشات الدخول مؤقتاً).
     (function () {
-      const hash = window.location.hash || "";
- codex/locate-repository-edit-permissions
-      const targetPage = hash.includes("type=recovery")
-        ? "reset-password.html" + hash
-        : "login.html";
-      window.location.replace(new URL(targetPage, window.location.href));
-
-      const target = hash.includes("type=recovery")
-        ? "/reset-password.html" + hash
-        : "/login.html";
-      window.location.replace(target);
- main
+      window.location.replace(new URL("tenders/", window.location.href));
     })();
   </script>
 </head>
@@ -27,12 +16,7 @@
   <noscript>
     <main style="font-family: Arial, sans-serif; text-align: center; padding: 48px; direction: rtl;">
       <h1>بوابة المناقصات</h1>
-      <p>تمت إزالة شاشة التعريف الأولى. يرجى الانتقال مباشرة إلى تسجيل الدخول.</p>
- codex/locate-repository-edit-permissions
-      <p><a href="login.html">فتح صفحة تسجيل الدخول</a></p>
-
-      <p><a href="/login.html">فتح صفحة تسجيل الدخول</a></p>
-main
+      <p><a href="tenders/">فتح المناقصات الجارية</a></p>
     </main>
   </noscript>
 </body>
