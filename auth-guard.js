@@ -1,6 +1,17 @@
 // auth-guard.js — أضِف هذا السكريبت في <head> كل صفحة محمية
 // يُعيد توجيه المستخدم لـ /login.html إن لم يكن مسجّل دخوله
 (async () => {
+  // ── تجاوز للمعاينة فقط ───────────────────────────────────────
+  // يعمل حصراً على مضيف معاينة فرع التطوير (يبدأ بـ "claude-")
+  // فلا يُفعَّل إطلاقاً على الإنتاج (الدومين الرسمي لا يبدأ بهذه البادئة).
+  // الهدف: فتح الوحدات أثناء تجربة التعديلات دون تسجيل دخول.
+  if (location.hostname.startsWith("claude-")) {
+    sessionStorage.setItem("alrawafPortalRole", "manager");
+    sessionStorage.setItem("alrawafUserName", "معاينة");
+    sessionStorage.setItem("alrawafUserEmail", "preview@local");
+    return;
+  }
+
   const SUPABASE_URL = window.APP_CONFIG?.supabaseUrl;
   const SUPABASE_KEY = window.APP_CONFIG?.supabaseKey;
   // إن لم تُحقن المفاتيح بعد (placeholder ما زال يحوي "__") نتخطّى الحارس

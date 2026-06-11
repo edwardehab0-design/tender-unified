@@ -1187,8 +1187,8 @@ body .header { padding-top: 58px !important; height: 130px !important; }
 <link rel="stylesheet" href="../shared-visual.css?v=4">
 <link rel="stylesheet" href="../internal-unified.css?v=15">
 <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("alrawafTheme")==="green"?"green":"grad");}catch(e){}</script>
-<link rel="stylesheet" href="../portal-sidebar.css?v=19">
-<link rel="stylesheet" href="../portal-theme.css?v=10">
+<link rel="stylesheet" href="../portal-sidebar.css?v=26">
+<link rel="stylesheet" href="../portal-theme.css?v=26">
 <style>
 /* Analytics polish: calmer cards, no card icons or dropdown arrows */
 body {
@@ -1453,8 +1453,9 @@ body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
 <link rel="stylesheet" href="../portal-header.css?v=6">
+<link rel="stylesheet" href="../portal-premium.css?v=26">
 </head>
-<body>
+<body class="premium">
 <a class="portal-home-link" href="../index.html?return=portal" onclick="window.location.href='../index.html?return=portal'; return false;">رجوع</a>
 <header class="header" style="display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:72px;position:sticky;top:0;z-index:100;width:100%;background:linear-gradient(105deg,var(--primary-3,#1a2e54) 0%,var(--primary,#1b3a6b) 55%,var(--primary-2,#254d8f) 100%);border-bottom:2px solid var(--gold-light,#d4a017);box-shadow:0 2px 12px rgba(27,58,107,0.22);">
   <div style="display:flex;align-items:center;gap:14px;">
@@ -1465,8 +1466,8 @@ body {
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:10px;">
-    <button class="export-btn" onclick="exportClientReport('full')">📊 تصدير Excel</button>
-    <div class="last-update" id="last-update">جاري التحميل...</div>
+    <button class="export-btn" onclick="exportClientReport('full')">تصدير Excel</button>
+    <div class="last-update" id="last-update">—</div>
   </div>
 </header>
 
@@ -1488,22 +1489,22 @@ body {
   <!-- Navigation -->
   <button id="nav-btn-tenders" onclick="switchTab('tenders',this)"
     style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;border:none;background:transparent;color:var(--text,#1a2332);font-family:Cairo,sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:none;margin-bottom:2px;">
-    <span>📋 المناقصات الجارية</span><small style="opacity:0.6;font-size:10px;">01</small>
+    <span>المناقصات الجارية</span><small style="opacity:0.6;font-size:10px;">01</small>
   </button>
 
   <button id="nav-btn-clients" onclick="switchTab('clients',this)"
     style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;border:none;background:transparent;color:var(--text,#1a2332);font-family:Cairo,sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:2px;transition:background 0.15s;">
-    <span>🏆 أهم العملاء</span><small style="opacity:0.5;font-size:10px;">02</small>
+    <span>أهم العملاء</span><small style="opacity:0.5;font-size:10px;">02</small>
   </button>
 
   <button id="nav-btn-analytics" onclick="switchTab('analytics',this)"
     style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;border:none;background:var(--solid-navy,#203a5a);color:#fff;font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:2px;transition:background 0.15s;box-shadow:0 3px 10px rgba(32,58,90,0.20);">
-    <span>📊 التحليلات</span><small style="opacity:0.5;font-size:10px;">03</small>
+    <span>التحليلات</span><small style="opacity:0.5;font-size:10px;">03</small>
   </button>
 
   <button id="nav-btn-executive-report" onclick="switchTab('executive-report',this)"
     style="display:none;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;border:none;background:transparent;color:var(--text,#1a2332);font-family:Cairo,sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:2px;transition:background 0.15s;">
-    <span>📑 تقرير الإدارة العليا</span><small style="opacity:0.5;font-size:10px;">04</small>
+    <span>تقرير الإدارة العليا</span><small style="opacity:0.5;font-size:10px;">04</small>
   </button>
 
   <!-- Divider -->
@@ -1511,31 +1512,31 @@ body {
 
   <!-- Export in sidebar -->
   <div class="export-wrap" id="export-wrap-main">
-    <button class="export-btn" onclick="toggleExport(event)" style="width:100%;justify-content:center;">📊 تصدير تقرير ▾</button>
+    <button class="export-btn" onclick="toggleExport(event)" style="width:100%;justify-content:center;">تصدير تقرير ▾</button>
     <div class="export-dropdown" id="export-dropdown">
-      <div class="export-group-title">📋 تقارير المناقصات</div>
+      <div class="export-group-title">تقارير المناقصات</div>
       <div class="export-item" onclick="exportReport('all')"><span class="ei-icon">📋</span><span class="ei-label">كل المناقصات</span></div>
       <div class="export-item" onclick="exportReport('active')"><span class="ei-icon">🟢</span><span class="ei-label">المناقصات الجارية</span></div>
       <div class="export-item" onclick="exportReport('critical')"><span class="ei-icon">🔥</span><span class="ei-label">الحرجة (3 أيام)</span></div>
       <div class="export-item" onclick="exportReport('today')"><span class="ei-icon">⚡</span><span class="ei-label">تنتهي اليوم</span></div>
-      <div class="export-group-title">🔐 الضمانات</div>
+      <div class="export-group-title">الضمانات</div>
       <div class="export-item" onclick="exportReport('guarantee_today')"><span class="ei-icon">🔐</span><span class="ei-label">الضمانات اليوم</span></div>
       <div class="export-item" onclick="exportReport('guarantee_all')"><span class="ei-icon">📆</span><span class="ei-label">كل الضمانات</span></div>
-      <div class="export-group-title">📊 تحليلية</div>
+      <div class="export-group-title">تحليلية</div>
       <div class="export-item" onclick="exportReport('by_owner')"><span class="ei-icon">🏛️</span><span class="ei-label">توزيع الجهات</span></div>
       <div class="export-item" onclick="exportReport('by_worktype')"><span class="ei-icon">⚙️</span><span class="ei-label">أنواع الأعمال</span></div>
       <div class="export-item" onclick="exportReport('monthly')"><span class="ei-icon">📈</span><span class="ei-label">الملخص الإحصائي</span></div>
-      <div class="export-group-title">⭐ التقرير الشامل</div>
+      <div class="export-group-title">التقرير الشامل</div>
       <div class="export-item" onclick="exportReport('full')" style="background:linear-gradient(90deg,#fffbf0,#fff);"><span class="ei-icon">🏆</span><span class="ei-label" style="font-weight:800;color:#b8860b;">التقرير التنفيذي الكامل</span></div>
     </div>
   </div>
 
-  <button onclick="printFull()" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 12px;border-radius:10px;border:1px solid var(--border,#d1dae8);background:#fff;color:var(--text,#1a2332);font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">🖨️ طباعة</button>
+  <button onclick="printFull()" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 12px;border-radius:10px;border:1px solid var(--border,#d1dae8);background:#fff;color:var(--text,#1a2332);font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">طباعة</button>
 
   <!-- Status -->
   <div style="margin-top:auto;padding:12px;border-radius:10px;background:var(--solid-navy,#203a5a);color:#fff;">
     <div style="font-size:10px;font-weight:800;color:rgba(255,255,255,0.6);margin-bottom:4px;">حالة النظام</div>
-    <div id="sidebar-status" style="font-size:11px;color:rgba(255,255,255,0.85);line-height:1.6;">جاري التحميل...</div>
+    <div id="sidebar-status" style="font-size:11px;color:rgba(255,255,255,0.85);line-height:1.6;">—</div>
   </div>
 
 
@@ -1598,10 +1599,10 @@ body {
   </div>
   <div class="countdown-banner fade-in" id="countdown-banner">
     <div class="countdown-left">
-      <div class="countdown-icon">⏳</div>
+      <div class="countdown-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#e8b547" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
       <div class="countdown-info">
         <div class="countdown-title">أقرب مناقصة تنتهي</div>
-        <div class="countdown-name" id="cd-name">جاري التحميل...</div>
+        <div class="countdown-name" id="cd-name">—</div>
         <div class="countdown-owner" id="cd-owner"></div>
       </div>
     </div>
@@ -1618,7 +1619,7 @@ body {
   <div class="content-grid">
     <div class="table-section fade-in">
       <div class="section-header">
-        <div class="section-title">📊 قائمة المناقصات <span class="section-count" id="table-count">0</span></div>
+        <div class="section-title">قائمة المناقصات <span class="section-count" id="table-count">0</span></div>
         <div class="search-box">
           <span>🔍</span>
           <input type="text" id="search-input" placeholder="بحث في المناقصات..." oninput="applyFilters()">
@@ -1626,12 +1627,12 @@ body {
       </div>
       <div class="filters">
         <button class="filter-btn active" onclick="filterBy('all')">الكل</button>
-        <button class="filter-btn f-active" onclick="filterBy('active')">🟢 جارية</button>
-        <button class="filter-btn f-week" onclick="filterBy('week')">📅 باقي أسبوع</button>
-        <button class="filter-btn f-3days" onclick="filterBy('3days')">⏰ باقي 3 أيام</button>
-        <button class="filter-btn f-today" onclick="filterBy('today')">🔥 اليوم</button>
-        <button class="filter-btn f-today" onclick="filterBy('urgent')">🚨 الحرجة</button>
-        <button class="filter-btn" onclick="filterBy('guarantee')" style="border-color:#b5dde1;color:#2a7f86;">🔐 ضمان اليوم</button>
+        <button class="filter-btn f-active" onclick="filterBy('active')">جارية</button>
+        <button class="filter-btn f-week" onclick="filterBy('week')">باقي أسبوع</button>
+        <button class="filter-btn f-3days" onclick="filterBy('3days')">باقي 3 أيام</button>
+        <button class="filter-btn f-today" onclick="filterBy('today')">اليوم</button>
+        <button class="filter-btn f-today" onclick="filterBy('urgent')">الحرجة</button>
+        <button class="filter-btn" onclick="filterBy('guarantee')" style="border-color:#b5dde1;color:#2a7f86;">ضمان اليوم</button>
       </div>
       <div id="loading" class="loading"><div class="spinner"></div>جاري تحميل البيانات...</div>
       <div style="overflow-x:auto">
@@ -1654,11 +1655,11 @@ body {
     </div>
     <div class="sidebar">
       <div class="side-card fade-in">
-        <div class="section-header"><div class="section-title">🏛️ توزيع الجهات المالكة</div></div>
+        <div class="section-header"><div class="section-title">توزيع الجهات المالكة</div></div>
         <div id="owners-list"><div class="loading"><div class="spinner"></div></div></div>
       </div>
       <div class="side-card fade-in">
-        <div class="section-header"><div class="section-title">⚙️ أنواع الأعمال</div></div>
+        <div class="section-header"><div class="section-title">أنواع الأعمال</div></div>
         <div id="worktypes-list"><div class="loading"><div class="spinner"></div></div></div>
       </div>
     </div>
@@ -1674,20 +1675,20 @@ body {
 <div class="clients-wrap">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;grid-column:1/-1;">
     <div style="font-size:20px;font-weight:900;color:var(--text);display:flex;align-items:center;gap:10px;">
-      🏆 أهم العملاء والمشاريع — 2026
+      أهم العملاء والمشاريع — 2026
     </div>
     <div class="export-wrap">
-      <button class="export-btn" onclick="toggleClientExport(event)">📊 تصدير تقرير العملاء ▾</button>
+      <button class="export-btn" onclick="toggleClientExport(event)">تصدير تقرير العملاء ▾</button>
       <div class="export-dropdown" id="client-export-dropdown">
-        <div class="export-group-title">📋 تقارير العملاء</div>
+        <div class="export-group-title">تقارير العملاء</div>
         <div class="export-item" onclick="exportClientReport('all')"><span class="ei-icon">📋</span><span class="ei-label">كل مناقصات 2026</span><span class="ei-tag">الكل</span></div>
         <div class="export-item" onclick="exportClientReport('jariya')"><span class="ei-icon">🟢</span><span class="ei-label">المناقصات الجارية</span><span class="ei-tag">جارية</span></div>
         <div class="export-item" onclick="exportClientReport('submitted')"><span class="ei-icon">📋</span><span class="ei-label">المناقصات المقدمة</span><span class="ei-tag">مقدمة</span></div>
-        <div class="export-group-title">🏛️ تقارير تحليلية</div>
+        <div class="export-group-title">تقارير تحليلية</div>
         <div class="export-item" onclick="exportClientReport('by_client')"><span class="ei-icon">🏛️</span><span class="ei-label">ملخص العملاء والأعداد</span><span class="ei-tag">تحليل</span></div>
         <div class="export-item" onclick="exportClientReport('by_sector')"><span class="ei-icon">📂</span><span class="ei-label">توزيع القطاعات</span><span class="ei-tag">تحليل</span></div>
         <div class="export-item" onclick="exportClientReport('by_worktype')"><span class="ei-icon">⚙️</span><span class="ei-label">توزيع أنواع الأعمال</span><span class="ei-tag">تحليل</span></div>
-        <div class="export-group-title">⭐ التقرير الشامل</div>
+        <div class="export-group-title">التقرير الشامل</div>
         <div class="export-item" onclick="exportClientReport('full')" style="background:linear-gradient(90deg,#fffbf0,#fff);"><span class="ei-icon">🏆</span><span class="ei-label" style="font-weight:800;color:#b8860b">التقرير التنفيذي الكامل</span><span class="ei-tag" style="background:#fffbeb;color:#b8860b;">احترافي</span></div>
       </div>
     </div>
@@ -1716,17 +1717,17 @@ body {
   </div>
 
   <div class="chart-card-light" style="grid-column:span 2;">
-    <div class="chart-card-title">🏆 أهم العملاء في 2026</div>
+    <div class="chart-card-title">أهم العملاء في 2026</div>
     <div id="cl-owner-bars"></div>
   </div>
 
   <div class="chart-card-light half">
-    <div class="chart-card-title">📂 توزيع القطاعات</div>
+    <div class="chart-card-title">توزيع القطاعات</div>
     <div id="cl-sectors"></div>
   </div>
 
   <div class="chart-card-light full">
-    <div class="chart-card-title">⚙️ توزيع أنواع الأعمال</div>
+    <div class="chart-card-title">توزيع أنواع الأعمال</div>
     <canvas id="cl-works-chart" height="80"></canvas>
   </div>
 </div>
@@ -1951,8 +1952,8 @@ function getUrgency(submitDate) {
   const d = new Date(submitDate); d.setHours(0,0,0,0);
   const n = new Date(); n.setHours(0,0,0,0);
   const diff = Math.round((d - n) / 86400000);
-  if (diff < 0)  return { level:'urgent', label:'🚨 منتهية',    cls:'u-urgent', diff };
-  if (diff === 0) return { level:'today',  label:'🔥 اليوم',     cls:'u-today',  diff };
+  if (diff < 0)  return { level:'urgent', label:'منتهية',    cls:'u-urgent', diff };
+  if (diff === 0) return { level:'today',  label:'اليوم',     cls:'u-today',  diff };
   if (diff <= 3)  return { level:'3days',  label:`⏰ ${diff} أيام`, cls:'u-3days', diff };
   if (diff <= 7)  return { level:'week',   label:`📅 ${diff} أيام`, cls:'u-week',  diff };
   return { level:'active', label:`${diff} يوم`, cls:'u-active', diff };
@@ -2022,12 +2023,12 @@ async function fetchTenders() {
   }
 
   // فشل الكل
-  document.getElementById('last-update').textContent = '⚠️ تعذر الاتصال — يُعاد المحاولة...';
+  document.getElementById('last-update').textContent = 'تعذر الاتصال — يُعاد المحاولة...';
   document.getElementById('loading').style.display = 'none';
   if(allTenders.length === 0) {
     allSubmitted = [];
     rebuildOwnersData(); renderAll();
-    document.getElementById('last-update').textContent = '⚠️ بيانات محلية — تحقق من الاتصال';
+    document.getElementById('last-update').textContent = 'بيانات محلية — تحقق من الاتصال';
   }
   fetchRetryCount = (fetchRetryCount||0) + 1;
   if(fetchRetryCount <= 3) setTimeout(fetchTenders, 15000);
@@ -2280,7 +2281,7 @@ function startCountdown() {
     
     if (diff <= 0) {
       clearInterval(cdInterval);
-      document.getElementById('cd-timer').innerHTML = '<div class="countdown-done">🔥 انتهى الموعد!</div>';
+      document.getElementById('cd-timer').innerHTML = '<div class="countdown-done">انتهى الموعد!</div>';
       return;
     }
 
@@ -2809,10 +2810,10 @@ function showAnalyticsAggregate(kind) {
   const combined = getAnalyticsDataset();
   const source = kind === 'owners-active' ? combined.filter(t=>t.status === 'جارية') : combined;
   const map = {
-    owners: ['owner','🏛️ توزيع الجهات المالكة'],
-    'owners-active': ['owner','🏛️ الجهات المالكة - الجارية'],
-    worktypes: ['type','⚙️ توزيع أنواع الأعمال'],
-    sectors: ['sector','📂 توزيع القطاعات']
+    owners: ['owner','توزيع الجهات المالكة'],
+    'owners-active': ['owner','الجهات المالكة - الجارية'],
+    worktypes: ['type','توزيع أنواع الأعمال'],
+    sectors: ['sector','توزيع القطاعات']
   };
   const [key, title] = map[kind] || map.owners;
   const rows = analyticsAggregate(source, key);
@@ -2927,7 +2928,7 @@ function copyAnalyticsSummary() {
   const submitted = document.getElementById('an-kpi-sub')?.textContent || '—';
   const text = `ملخص التحليلات 2026\nالإجمالي: ${total}\nالجارية: ${jariya}\nتم التقديم: ${submitted}`;
   navigator.clipboard?.writeText(text);
-  showToast('✅ تم نسخ ملخص التحليلات');
+  showToast('تم نسخ ملخص التحليلات');
 }
 
 function runAnalyticsAction(action) {
@@ -3121,7 +3122,7 @@ function openClientListModal(filter) {
   let filtered, title, color;
   if (filter === 'all') {
     filtered = allT;
-    title = '📋 كل مناقصات 2026';
+    title = 'كل مناقصات 2026';
     color = '#315b8f';
   } else if (filter === 'clients') {
     // Show clients summary
@@ -3129,7 +3130,7 @@ function openClientListModal(filter) {
       .map(([name, ts]) => ({ name, count: ts.length }))
       .sort((a,b) => b.count - a.count);
     document.getElementById('cm-head').style.background = 'linear-gradient(135deg,#16a34a,#15803d)';
-    document.getElementById('cm-title').textContent = '🏛️ قائمة العملاء — 2026';
+    document.getElementById('cm-title').textContent = 'قائمة العملاء — 2026';
     document.getElementById('cm-sub').textContent = `إجمالي العملاء: ${owners.length}`;
     document.querySelectorAll('.cm-filter').forEach(b=>b.classList.remove('active'));
     document.querySelector('.cm-filter').classList.add('active');
@@ -3146,7 +3147,7 @@ function openClientListModal(filter) {
     return;
   } else {
     filtered = allT.filter(t => t.status === filter);
-    title = filter === 'جارية' ? '🟢 المناقصات الجارية 2026' : '📋 المناقصات المقدمة 2026';
+    title = filter === 'جارية' ? 'المناقصات الجارية 2026' : 'المناقصات المقدمة 2026';
     color = filter === 'جارية' ? '#2f7d62' : '#315b8f';
   }
 
@@ -3248,7 +3249,7 @@ function exportClientReport(type) {
     exportClientFullPro(todayStr);
     return;
   }
-  showToast('✅ تم تصدير تقرير العملاء بنجاح!');
+  showToast('تم تصدير تقرير العملاء بنجاح!');
 }
 
 async function exportClientFullPro(todayStr) {
@@ -3325,7 +3326,7 @@ async function exportClientFullPro(todayStr) {
   // ══ SHEET 2: ALL TENDERS ══
   const wsA=wb3.addWorksheet('كل مناقصات 2026',{views:[{rightToLeft:true,showGridLines:false}],properties:{tabColor:{argb:'FF'+BLUE}}});
   wsA.columns=[{width:5},{width:44},{width:28},{width:22},{width:26},{width:14},{width:14}];
-  addTitle(wsA,'📋  كل مناقصات 2026  —  إجمالي: '+allT.length,7,NAVY);
+  addTitle(wsA,'كل مناقصات 2026  —  إجمالي: '+allT.length,7,NAVY);
   addHeaders(wsA,['#','اسم المناقصة','العميل','نوع الأعمال','القطاع','تاريخ التقديم','الحالة'],BLUE);
   allT.forEach((t,i)=>{
     const bg=i%2===0?WHITE:GREY;
@@ -3337,7 +3338,7 @@ async function exportClientFullPro(todayStr) {
   // ══ SHEET 3: TOP CLIENTS ══
   const wsC=wb3.addWorksheet('أهم العملاء',{views:[{rightToLeft:true,showGridLines:false}],properties:{tabColor:{argb:'FF'+GOLD}}});
   wsC.columns=[{width:5},{width:36},{width:14},{width:12},{width:12},{width:16}];
-  addTitle(wsC,'🏆  أهم العملاء في 2026 — مرتبة حسب عدد المناقصات',6,NAVY);
+  addTitle(wsC,'أهم العملاء في 2026 — مرتبة حسب عدد المناقصات',6,NAVY);
   addHeaders(wsC,['#','العميل','الإجمالي','جارية','تم التقديم','النسبة من الإجمالي'],GOLD,'1A1F3C');
   Object.entries(oc0).sort((a,b)=>b[1].total-a[1].total).forEach(([name,c],i)=>{
     const bg=i%2===0?WHITE:GOLDBG;
@@ -3349,7 +3350,7 @@ async function exportClientFullPro(todayStr) {
   // ══ SHEET 4: SECTORS ══
   const wsS=wb3.addWorksheet('توزيع القطاعات',{views:[{rightToLeft:true,showGridLines:false}],properties:{tabColor:{argb:'FF'+TEAL}}});
   wsS.columns=[{width:5},{width:44},{width:16},{width:14}];
-  addTitle(wsS,'📂  توزيع المناقصات حسب القطاع — 2026',4,TEAL);
+  addTitle(wsS,'توزيع المناقصات حسب القطاع — 2026',4,TEAL);
   addHeaders(wsS,['#','القطاع','عدد المناقصات','النسبة'],TEAL);
   const sc={};
   allT.forEach(t=>{if(t.sector&&t.sector!=='—')sc[t.sector]=(sc[t.sector]||0)+1;});
@@ -3363,7 +3364,7 @@ async function exportClientFullPro(todayStr) {
   // ══ SHEET 5: WORK TYPES ══
   const wsW=wb3.addWorksheet('أنواع الأعمال',{views:[{rightToLeft:true,showGridLines:false}],properties:{tabColor:{argb:'FF'+PURPLE}}});
   wsW.columns=[{width:5},{width:44},{width:16},{width:14}];
-  addTitle(wsW,'⚙️  توزيع المناقصات حسب نوع الأعمال — 2026',4,'7C3AED');
+  addTitle(wsW,'توزيع المناقصات حسب نوع الأعمال — 2026',4,'7C3AED');
   addHeaders(wsW,['#','نوع الأعمال','عدد المناقصات','النسبة'],'7C3AED');
   const wc={};
   allT.forEach(t=>{if(t.type&&t.type!=='—')wc[t.type]=(wc[t.type]||0)+1;});
@@ -3377,7 +3378,7 @@ async function exportClientFullPro(todayStr) {
   // ══ SHEET 6: EXECUTIVE SUMMARY ══
   const wsX=wb3.addWorksheet('الملخص التنفيذي',{views:[{rightToLeft:true,showGridLines:false}],properties:{tabColor:{argb:'FF'+GOLD}}});
   wsX.columns=[{width:30},{width:14},{width:14},{width:34}];
-  const xr1=wsX.addRow(['📈  الملخص التنفيذي — أهم العملاء 2026']); xr1.height=44;
+  const xr1=wsX.addRow(['الملخص التنفيذي — أهم العملاء 2026']); xr1.height=44;
   wsX.mergeCells('A1:D1');
   const xc1=wsX.getCell('A1'); xc1.font=fn(true,18,NAVY); xc1.fill=sf(GOLD); xc1.alignment=al('center'); xc1.border=mb();
   const xr2=wsX.addRow(['تاريخ التقرير: '+todayStr+'    |    الرواف للمقاولات']); xr2.height=28;
@@ -3414,7 +3415,7 @@ async function exportClientFullPro(todayStr) {
   const a = document.createElement('a');
   a.href=url; a.download='التقرير_التنفيذي_العملاء_2026_'+todayStr+'.xlsx';
   a.click(); URL.revokeObjectURL(url);
-  showToast('🏆 تم تصدير التقرير التنفيذي الكامل!');
+  showToast('تم تصدير التقرير التنفيذي الكامل!');
 }
 
 
@@ -3459,7 +3460,7 @@ function showDailyAlert() {
     if(today.length)  msg.push(`${today.length} مناقصة تنتهي اليوم`);
     if(urgent3.length) msg.push(`${urgent3.length} تنتهي خلال 3 أيام`);
     if(gToday.length)  msg.push(`${gToday.length} ضمان مستحق اليوم`);
-    document.getElementById('alert-title').textContent = '⚠️ تنبيه يومي — يحتاج متابعة فورية';
+    document.getElementById('alert-title').textContent = 'تنبيه يومي — يحتاج متابعة فورية';
     document.getElementById('alert-sub').textContent = msg.join('  |  ');
     banner.classList.remove('hidden');
   }
@@ -3743,7 +3744,7 @@ function printFull() {
 // Initialize: تحميل البيانات الحية من ملف data.json الذي يحدثه سكربت Tender
 allSubmitted = [];
 renderAll();
-document.getElementById('last-update').textContent = 'جاري التحميل...';
+document.getElementById('last-update').textContent = 'يتم التحديث…';
 // ثم جلب البيانات الحية
 fetchTenders();
 setInterval(fetchTenders, 5*60*1000);
@@ -3920,7 +3921,7 @@ function exportReport_full() {
     {key:'wt',width:16},{key:'sd',width:16},{key:'gd',width:16},
     {key:'pri',width:14},{key:'stat',width:12}
   ];
-  addTitleRow(wsA,'📋  قائمة المناقصات الشاملة  —  '+todayStr,8,NAVY,'FFFFFF');
+  addTitleRow(wsA,'قائمة المناقصات الشاملة  —  '+todayStr,8,NAVY,'FFFFFF');
   addHeaderRow(wsA,['#','اسم المناقصة','الجهة المالكة','نوع الأعمال','تاريخ التقديم','تاريخ الضمان','الأولوية','الحالة'],BLUE);
   allTenders.forEach((t,i)=>{
     const level=urgLevel(t);
@@ -3944,7 +3945,7 @@ function exportReport_full() {
   wsC.columns=[
     {width:5},{width:44},{width:28},{width:16},{width:16},{width:18},{width:16}
   ];
-  addTitleRow(wsC,'🔥  المناقصات الحرجة — تنتهي خلال 3 أيام أو اليوم',7,RED,'FFFFFF');
+  addTitleRow(wsC,'المناقصات الحرجة — تنتهي خلال 3 أيام أو اليوم',7,RED,'FFFFFF');
   addHeaderRow(wsC,['#','اسم المناقصة','الجهة المالكة','نوع الأعمال','تاريخ التقديم','الوقت المتبقي','تاريخ الضمان'],ORANGE);
   const crit=allTenders.filter(t=>['today','3days'].includes(urgLevel(t)));
   crit.forEach((t,i)=>{
@@ -3965,7 +3966,7 @@ function exportReport_full() {
   const wsG = wb.addWorksheet('الضمانات',{views:[{rightToLeft:true,showGridLines:false}],
     properties:{tabColor:{argb:'FF'+TEAL}}});
   wsG.columns=[{width:5},{width:44},{width:28},{width:16},{width:16},{width:16},{width:18}];
-  addTitleRow(wsG,'🔐  جدول الضمانات الابتدائية — مرتبة بالتاريخ',7,TEAL,'FFFFFF');
+  addTitleRow(wsG,'جدول الضمانات الابتدائية — مرتبة بالتاريخ',7,TEAL,'FFFFFF');
   addHeaderRow(wsG,['#','اسم المناقصة','الجهة المالكة','نوع الأعمال','تاريخ التقديم','تاريخ الضمان','الحالة'],TEAL);
   const guas=[...allTenders].filter(t=>t.guarantee).sort((a,b)=>a.guarantee.localeCompare(b.guarantee));
   guas.forEach((t,i)=>{
@@ -3988,7 +3989,7 @@ function exportReport_full() {
   const wsO = wb.addWorksheet('تحليل الجهات',{views:[{rightToLeft:true,showGridLines:false}],
     properties:{tabColor:{argb:'FF'+NAVY}}});
   wsO.columns=[{width:5},{width:32},{width:18},{width:18},{width:24}];
-  addTitleRow(wsO,'🏛️  توزيع المناقصات حسب الجهة المالكة',5,NAVY,'FFFFFF');
+  addTitleRow(wsO,'توزيع المناقصات حسب الجهة المالكة',5,NAVY,'FFFFFF');
   addHeaderRow(wsO,['#','الجهة المالكة','عدد المناقصات','النسبة المئوية','متوسط الأيام المتبقية'],BLUE);
   const ownerColors=['3B4FB8','16A34A','D4A017','EA580C','0891B2','7C3AED','DC2626','C4690B'];
   const oc={};
@@ -4011,7 +4012,7 @@ function exportReport_full() {
   const wsW = wb.addWorksheet('أنواع الأعمال',{views:[{rightToLeft:true,showGridLines:false}],
     properties:{tabColor:{argb:'FF'+PURPLE}}});
   wsW.columns=[{width:5},{width:28},{width:18},{width:18}];
-  addTitleRow(wsW,'⚙️  توزيع المناقصات حسب نوع الأعمال',4,'7C3AED','FFFFFF');
+  addTitleRow(wsW,'توزيع المناقصات حسب نوع الأعمال',4,'7C3AED','FFFFFF');
   addHeaderRow(wsW,['#','نوع الأعمال','عدد المناقصات','النسبة المئوية'],'7C3AED');
   const wc={};
   allTenders.forEach(t=>{if(t.workType) wc[t.workType]=(wc[t.workType]||0)+1;});
@@ -4031,7 +4032,7 @@ function exportReport_full() {
   wsS.columns=[{width:28},{width:12},{width:14},{width:32}];
 
   // Big gold title
-  wsS.addRow(['📈  الملخص التنفيذي للمناقصات']).height=44;
+  wsS.addRow(['الملخص التنفيذي للمناقصات']).height=44;
   wsS.mergeCells('A1:D1');
   const sc1=wsS.getCell('A1');
   sc1.font=fontStyle(true,18,NAVY);
@@ -4090,7 +4091,7 @@ function exportReport_full() {
     a.download = 'تقرير_الرواف_التنفيذي_' + todayStr + '.xlsx';
     a.click();
     URL.revokeObjectURL(url);
-    showToast('🏆 تم تصدير التقرير التنفيذي الكامل!');
+    showToast('تم تصدير التقرير التنفيذي الكامل!');
   });
 }
 
@@ -4234,7 +4235,7 @@ function styleSheet(ws, rowCount) {
 function download(wb, name) {
   const date = new Date().toISOString().slice(0,10);
   XLSX.writeFile(wb, name + '_' + date + '.xlsx');
-  showToast('✅ تم تصدير التقرير بنجاح!');
+  showToast('تم تصدير التقرير بنجاح!');
 }
 
 </script>
@@ -4252,8 +4253,8 @@ function download(wb, name) {
     <div class="client-modal-body">
       <div class="client-modal-filters">
         <button class="cm-filter active" onclick="cmFilter('all',this)">الكل</button>
-        <button class="cm-filter" onclick="cmFilter('جارية',this)">🟢 جارية</button>
-        <button class="cm-filter" onclick="cmFilter('تم التقديم',this)">📋 تم التقديم</button>
+        <button class="cm-filter" onclick="cmFilter('جارية',this)">جارية</button>
+        <button class="cm-filter" onclick="cmFilter('تم التقديم',this)">تم التقديم</button>
       </div>
       <div id="cm-body"></div>
     </div>
@@ -4274,7 +4275,7 @@ function download(wb, name) {
       <button class="pw-toggle" onclick="togglePwVisibility()" id="pw-eye">👁️</button>
     </div>
     <button class="pw-btn" onclick="checkPassword()">دخول ←</button>
-    <div class="pw-error" id="pw-error">❌ كلمة المرور غير صحيحة</div>
+    <div class="pw-error" id="pw-error">كلمة المرور غير صحيحة</div>
     <div class="pw-hint">Tendering Department — الرواف للمقاولات</div>
   </div>
 </div>
@@ -4328,7 +4329,7 @@ window.addEventListener('load', function () {
 })();
 </script>
 <script src="../internal-interactions.js?v=10"></script>
-<script src="../portal-sidebar.js?v=13"></script>
+<script src="../portal-sidebar.js?v=15"></script>
 </body>
 </html>
 

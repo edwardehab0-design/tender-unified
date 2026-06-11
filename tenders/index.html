@@ -23,10 +23,10 @@
   --text: #1a2332; --text-muted: #5e7191;
   --green: #16a34a; --green-bg: #f0fdf4; --green-border: #bbf7d0;
   --yellow: #d97706; --yellow-bg: #fffbeb; --yellow-border: #fde68a;
-  --orange: #ea580c; --orange-bg: #fff7ed; --orange-border: #fed7aa;
+  --orange: #b8860b; --orange-bg: #fff7ed; --orange-border: #fed7aa;
   --red: #dc2626; --red-bg: #fef2f2; --red-border: #fecaca;
-  --purple: #7c3aed; --purple-bg: #f5f3ff; --purple-border: #ddd6fe;
-  --teal: #0891b2; --teal-bg: #ecfeff; --teal-border: #a5f3fc;
+  --purple: #254d8f; --purple-bg: #f5f3ff; --purple-border: #ddd6fe;
+  --teal: #2d6a4f; --teal-bg: #ecfeff; --teal-border: #a5f3fc;
   --shadow: 0 1px 3px rgba(27,58,107,0.08);
   --shadow-md: 0 4px 16px rgba(27,58,107,0.14);
 }
@@ -219,7 +219,7 @@ tr:last-child td { border-bottom:none; }
   font-size:10px; padding:2px 8px; border-radius:10px;
   background:#e8f5e9; color:#16a34a; font-weight:800;
 }
-.export-item .ei-tag.orange { background:#fff3e0; color:#ea580c; }
+.export-item .ei-tag.orange { background:#fff3e0; color:#b8860b; }
 .export-toast {
   position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px);
   background:linear-gradient(135deg,#1e2a5e,#3b4fb8);
@@ -733,7 +733,7 @@ body::before {
   --primary-2: #28476d;
   --primary-3: #121d31;
   --gold: #a8792a;
-  --gold-light: #c59a46;
+  --gold-light: #d4a017;
   --gold-bg: #fbf3e3;
   --blue-deep: #1b314f;
   --blue-mid: #315b8f;
@@ -750,16 +750,16 @@ body::before {
   --yellow: #af7d26;
   --yellow-bg: #fbf3df;
   --yellow-border: #e6c987;
-  --orange: #b86b37;
+  --orange: #b8860b;
   --orange-bg: #fbefe6;
   --orange-border: #e4ba9b;
-  --red: #a84b54;
+  --red: #173d2b;
   --red-bg: #fbebed;
   --red-border: #e6b8bd;
-  --purple: #665a92;
+  --purple: #254d8f;
   --purple-bg: #f1eff8;
   --purple-border: #cfc8e3;
-  --teal: #2a7f86;
+  --teal: #2d6a4f;
   --teal-bg: #edf8f8;
   --teal-border: #b5dde1;
   --shadow: 0 1px 3px rgba(23,34,50,0.07);
@@ -816,18 +816,18 @@ body::before {
 .stat-card.c-orange {
   background: linear-gradient(135deg,#fbefe6,#f1dccc);
   border-color: #e0b89b;
-  color: #b86b37;
+  color: #b8860b;
 }
 .stat-card.c-red,
 .stat-card.c-urgent {
   background: linear-gradient(135deg,#fbebed,#f3dfe2);
   border-color: #e3b4ba;
-  color: #a84b54;
+  color: #173d2b;
 }
 .stat-card.c-teal {
   background: linear-gradient(135deg,#edf8f8,#d9eeee);
   border-color: #afd9dc;
-  color: #2a7f86;
+  color: #2d6a4f;
 }
 
 .section-header,
@@ -862,7 +862,7 @@ tr:hover td,
 
 .export-btn,
 .welcome-enter-btn {
-  background: linear-gradient(135deg,#c59a46,#a8792a) !important;
+  background: linear-gradient(135deg,#d4a017,#a8792a) !important;
   box-shadow: 0 6px 18px rgba(168,121,42,0.22);
 }
 
@@ -898,7 +898,7 @@ body.dark-mode {
 
 .alert-title,
 .alert-close {
-  color: #a84b54 !important;
+  color: #173d2b !important;
 }
 
 .hm-3 {
@@ -1098,37 +1098,36 @@ body {
 
 .stat-card {
   min-height: 112px !important;
-  padding: 17px 22px 15px 18px !important;
-  border-radius: 11px !important;
+  padding: 19px 22px 15px 18px !important;
+  border-radius: 12px !important;
   background: #fff !important;
-  border: 1px solid rgba(20, 58, 90, .34) !important;
-  outline: 1px solid rgba(212, 160, 23, .72);
-  outline-offset: -2px;
-  box-shadow:
-    0 16px 30px rgba(15, 23, 42, .075),
-    inset 0 1px 0 rgba(255,255,255,.95),
-    inset 0 -1px 0 rgba(15,23,42,.035) !important;
+  border: 1px solid var(--card-border, #dbe4ef) !important;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, .07) !important;
   color: #111827 !important;
   overflow: hidden !important;
+  transition: transform .2s ease, box-shadow .2s ease !important;
 }
 
+/* الخط العلوي المزدوج: ذهبي (3px) فوق لون الهوية (2px) — يتكيّف مع الثيم */
 .stat-card::before {
-  display: none !important;
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  height: 5px;
+  background: linear-gradient(to bottom,
+    var(--gold, #b9923f) 0 3px,
+    var(--primary-2, #2d6a4f) 3px 5px) !important;
+  z-index: 2;
 }
 
-.stat-card::after {
-  content: "";
-  position: absolute;
-  inset-inline: 14px;
-  bottom: 0;
-  height: 3px;
-  border-radius: 6px 6px 0 0;
-  background: linear-gradient(90deg, #173b5b, #d4a017);
-}
+.stat-card::after { display: none !important; }
 
 .stat-card:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 14px 28px rgba(15, 23, 42, .09) !important;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, .12) !important;
 }
 
 .stat-card.c-blue { --card-num: #1f8f5f; }
@@ -1212,14 +1211,67 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
 <link rel="stylesheet" href="../shared-visual.css?v=4">
 <link rel="stylesheet" href="../internal-unified.css?v=15">
 <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("alrawafTheme")==="green"?"green":"grad");}catch(e){}</script>
-<link rel="stylesheet" href="../portal-sidebar.css?v=19">
-<link rel="stylesheet" href="../portal-theme.css?v=10">
-<link rel="stylesheet" href="../portal-header.css?v=7">
+<link rel="stylesheet" href="../portal-sidebar.css?v=26">
+<link rel="stylesheet" href="../portal-theme.css?v=26">
+<link rel="stylesheet" href="../portal-header.css?v=8">
+<link rel="stylesheet" href="../portal-premium.css?v=26">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<style>
+/* ═══ بطاقات KPI — التحكّم النهائي (يُحمّل بعد كل CSS الخارجي) ═══
+   خلفية فاتحة · خط علوي مزدوج (ذهبي + لون الهوية) · أرقام بلون الهوية.
+   يتكيّف تلقائياً مع الثيمين عبر متغيّرات portal-theme.css. */
+html[data-theme] body.page-tenders .stat-card {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 1px !important;
+  min-height: 120px !important;
+  padding: 18px 20px 40px !important;
+  background: var(--surface, #fff) !important;
+  border: 1px solid var(--card-border, #e4ddf2) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 6px 18px rgba(20, 30, 50, .07) !important;
+  outline: none !important;
+  overflow: hidden !important;
+  transition: transform .2s ease, box-shadow .2s ease !important;
+  animation: none !important;
+}
+html[data-theme] body.page-tenders .stat-card::before {
+  content: "" !important; display: block !important;
+  position: absolute !important; top: 0 !important;
+  inset-inline-start: 0 !important; inset-inline-end: 0 !important;
+  width: auto !important; height: 5px !important;
+  border-radius: 0 !important; opacity: 1 !important;
+  background: linear-gradient(to bottom,
+    var(--gold, #b9923f) 0 3px,
+    var(--primary-2, #2d6a4f) 3px 5px) !important;
+  z-index: 3 !important;
+}
+html[data-theme] body.page-tenders .stat-card::after { display: none !important; }
+html[data-theme] body.page-tenders .stat-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 26px rgba(20, 30, 50, .12) !important;
+}
+html[data-theme] body.page-tenders .stat-card .stat-num {
+  font-size: 36px !important; font-weight: 900 !important; line-height: 1 !important;
+  color: var(--primary, #1f5239) !important; margin: 0 0 3px !important; text-shadow: none !important;
+}
+html[data-theme] body.page-tenders .stat-card .stat-label {
+  font-size: 13px !important; font-weight: 800 !important; color: #3f4757 !important; margin: 0 !important;
+}
+html[data-theme] body.page-tenders .stat-card .stat-sub {
+  font-size: 10.5px !important; font-weight: 600 !important; color: #94a0b0 !important; margin: 2px 0 0 !important; opacity: 1 !important;
+}
+html[data-theme] body.page-tenders .stat-card .kc-pill {
+  position: absolute !important; bottom: 12px !important; inset-inline-end: 14px !important; top: auto !important;
+}
+</style>
 </head>
-<body class="page-tenders">
+<body class="page-tenders premium">
 <a class="portal-home-link" href="../index.html?return=portal" onclick="window.location.href='../index.html?return=portal'; return false;">رجوع</a>
 
 <div class="app-shell" style="display:grid;grid-template-columns:1fr;min-height:100vh;padding-top:18px;">
@@ -1240,7 +1292,7 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
   <!-- Navigation -->
   <button id="nav-btn-tenders" onclick="switchTab('tenders',this)"
     style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;border:none;background:var(--solid-navy,#203a5a);color:#fff;font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(32,58,90,0.20);margin-bottom:2px;">
-    <span>📋 المناقصات الجارية</span><small style="opacity:0.6;font-size:10px;">01</small>
+    <span>المناقصات الجارية</span><small style="opacity:0.6;font-size:10px;">01</small>
   </button>
 
   <button id="nav-btn-clients" onclick="switchTab('clients',this)"
@@ -1250,7 +1302,7 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
 
   <button id="nav-btn-analytics" onclick="switchTab('analytics',this)"
     style="display:none;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;border:none;background:transparent;color:var(--text,#1a2332);font-family:Cairo,sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:2px;transition:background 0.15s;">
-    <span>📊 التحليلات</span><small style="opacity:0.5;font-size:10px;">03</small>
+    <span>التحليلات</span><small style="opacity:0.5;font-size:10px;">03</small>
   </button>
 
   <button id="nav-btn-executive-report" onclick="switchTab('executive-report',this)"
@@ -1261,12 +1313,12 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
   <!-- Divider -->
   <div style="border-top:1px solid var(--border,#d1dae8);margin:8px 0;"></div>
 
-  <button onclick="printFull()" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 12px;border-radius:10px;border:1px solid var(--border,#d1dae8);background:#fff;color:var(--text,#1a2332);font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">🖨️ طباعة</button>
+  <button onclick="printFull()" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 12px;border-radius:10px;border:1px solid var(--border,#d1dae8);background:#fff;color:var(--text,#1a2332);font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">طباعة</button>
 
   <!-- Status -->
   <div style="margin-top:auto;padding:12px;border-radius:10px;background:var(--solid-navy,#203a5a);color:#fff;">
     <div style="font-size:10px;font-weight:800;color:rgba(255,255,255,0.6);margin-bottom:4px;">حالة النظام</div>
-    <div id="sidebar-status" style="font-size:11px;color:rgba(255,255,255,0.85);line-height:1.6;">جاري التحميل...</div>
+    <div id="sidebar-status" style="font-size:11px;color:rgba(255,255,255,0.85);line-height:1.6;">—</div>
   </div>
 
 </aside>
@@ -1280,7 +1332,7 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
   <div style="font-size:12px;color:#6b7a99;margin-top:4px;" id="print-date"></div>
 </div>
 <div class="alert-banner hidden" id="daily-alert">
-  <div class="alert-icon">🚨</div>
+  <div class="alert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#d4a017" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></div>
   <div class="alert-text">
     <div class="alert-title" id="alert-title">تنبيه يومي</div>
     <div class="alert-sub" id="alert-sub"></div>
@@ -1289,38 +1341,38 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
 </div>
 <main class="main">
   <div class="stats-grid fade-in">
-    <div class="stat-card c-blue" onclick="filterBy('active')">
-      <div class="stat-num" id="stat-active">—</div>
+    <div class="stat-card c-blue" onclick="filterBy('active')">      <div class="stat-num" id="stat-active">—</div>
       <div class="stat-label">المناقصات الجارية</div>
       <div class="stat-sub">إجمالي النشطة</div>
+      <span class="kc-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7"/></svg>نشطة</span>
     </div>
-    <div class="stat-card c-yellow" onclick="filterBy('3days')">
-      <div class="stat-num" id="stat-3days">—</div>
+    <div class="stat-card c-yellow" onclick="filterBy('3days')">      <div class="stat-num" id="stat-3days">—</div>
       <div class="stat-label">الباقي 3 أيام</div>
       <div class="stat-sub">تحتاج متابعة عاجلة</div>
+      <span class="kc-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>عاجلة</span>
     </div>
-    <div class="stat-card c-orange" onclick="filterBy('today')">
-      <div class="stat-num" id="stat-today">—</div>
+    <div class="stat-card c-orange" onclick="filterBy('today')">      <div class="stat-num" id="stat-today">—</div>
       <div class="stat-label">تنتهي اليوم</div>
       <div class="stat-sub">آخر موعد للتقديم</div>
+      <span class="kc-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>اليوم</span>
     </div>
-    <div class="stat-card c-teal" onclick="filterBy('guarantee')">
-      <div class="stat-num" id="stat-guarantee">—</div>
+    <div class="stat-card c-teal" onclick="filterBy('guarantee')">      <div class="stat-num" id="stat-guarantee">—</div>
       <div class="stat-label">ضمان مستحق اليوم</div>
       <div class="stat-sub">تاريخ الضمان الابتدائي</div>
+      <span class="kc-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4-3 7-8 9-5-2-8-5-8-9V6z"/></svg>ضمان</span>
     </div>
-    <div class="stat-card c-urgent" onclick="filterBy('urgent')">
-      <div class="stat-num" id="stat-urgent">—</div>
+    <div class="stat-card c-urgent" onclick="filterBy('urgent')">      <div class="stat-num" id="stat-urgent">—</div>
       <div class="stat-label">الحرجة</div>
       <div class="stat-sub">منتهية أو متأخرة</div>
+      <span class="kc-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>حرجة</span>
     </div>
   </div>
   <div class="countdown-banner fade-in" id="countdown-banner">
     <div class="countdown-left">
-      <div class="countdown-icon">⏳</div>
+      <div class="countdown-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#e8b547" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
       <div class="countdown-info">
         <div class="countdown-title">أقرب مناقصة تنتهي</div>
-        <div class="countdown-name" id="cd-name">جاري التحميل...</div>
+        <div class="countdown-name" id="cd-name">—</div>
         <div class="countdown-owner" id="cd-owner"></div>
       </div>
     </div>
@@ -1339,7 +1391,7 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
       <div class="section-header">
         <div class="section-title">قائمة المناقصات <span class="section-count" id="table-count">0</span></div>
         <div style="display:flex;align-items:center;gap:12px;">
-          <div id="last-update" style="font-size:11px;color:#8a8aa0;font-weight:700;white-space:nowrap;">جاري التحميل...</div>
+          <div id="last-update" style="font-size:11px;color:#8a8aa0;font-weight:700;white-space:nowrap;">—</div>
           <div class="search-box">
             <span class="srch-ic"><svg viewBox="0 0 24 24" width="15" height="15" fill="#8a96a8"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 10-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1114 9.5 4.5 4.5 0 019.5 14z"/></svg></span>
             <input type="email" name="prevent_autofill" style="display:none;" aria-hidden="true" tabindex="-1">
@@ -1360,15 +1412,16 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
         <table id="tenders-table" style="display:none">
           <colgroup>
             <col style="width:40px">
-            <col style="width:33%">
-            <col style="width:14%">
+            <col style="width:27%">
+            <col style="width:13%">
             <col style="width:11%">
-            <col style="width:10%">
-            <col style="width:10%">
             <col style="width:9%">
+            <col style="width:9%">
+            <col style="width:8%">
+            <col style="width:128px">
             <col style="width:48px">
           </colgroup>
-          <thead><tr><th>#</th><th>اسم المناقصة</th><th>المالك</th><th>نوع الأعمال</th><th>تاريخ التقديم</th><th>الضمان</th><th>الأولوية</th><th></th></tr></thead>
+          <thead><tr><th>#</th><th>اسم المناقصة</th><th>المالك</th><th>نوع الأعمال</th><th>تاريخ التقديم</th><th>الضمان</th><th>الأولوية</th><th>نوع المناقصة</th><th></th></tr></thead>
           <tbody id="tenders-tbody"></tbody>
         </table>
       </div>
@@ -1509,7 +1562,7 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
     </div>
     <div class="an-card">
       <div class="an-card-head">
-        <div class="an-card-title">🎯 نسبة الإنجاز</div>
+        <div class="an-card-title">نسبة الإنجاز</div>
       </div>
       <div class="an-card-body">
         <div class="gauge-wrap">
@@ -1597,7 +1650,7 @@ tbody td { padding: 9px 12px !important; font-size: 12px !important; }
     </div>
     <div class="an-card">
       <div class="an-card-head">
-        <div class="an-card-title">📈 إحصاءات سريعة</div>
+        <div class="an-card-title">إحصاءات سريعة</div>
       </div>
       <div class="an-card-body" id="an-quick-stats"></div>
     </div>
@@ -1746,12 +1799,12 @@ async function fetchTenders() {
   }
 
   // فشل الكل
-  document.getElementById('last-update').textContent = '⚠️ تعذر الاتصال — يُعاد المحاولة...';
+  document.getElementById('last-update').textContent = 'تعذر الاتصال — يُعاد المحاولة...';
   document.getElementById('loading').style.display = 'none';
   if(allTenders.length === 0) {
     allSubmitted = [];
     rebuildOwnersData(); renderAll();
-    document.getElementById('last-update').textContent = '⚠️ بيانات محلية — تحقق من الاتصال';
+    document.getElementById('last-update').textContent = 'بيانات محلية — تحقق من الاتصال';
   }
   fetchRetryCount = (fetchRetryCount||0) + 1;
   if(fetchRetryCount <= 3) setTimeout(fetchTenders, 15000);
@@ -1808,6 +1861,13 @@ function renderStats() {
     const el = document.getElementById('stat-'+k);
     if (el) { let n=0; const t=setInterval(()=>{ n=Math.min(n+1,c[k]); el.textContent=n; if(n>=c[k])clearInterval(t); },40); }
   });
+  // نبض حبة الحالة عند وجود حالات تحتاج انتباه (بديل شريط التنبيه)
+  const urgPill = document.querySelector('.stat-card.c-urgent .kc-pill');
+  if (urgPill) urgPill.classList.toggle('blink', c.urgent > 0);
+  const guarPill = document.querySelector('.stat-card.c-teal .kc-pill');
+  if (guarPill) guarPill.classList.toggle('blink', c.guarantee > 0);
+  const todayPill = document.querySelector('.stat-card.c-orange .kc-pill');
+  if (todayPill) todayPill.classList.toggle('blink', c.today > 0);
 }
 
 function filterBy(f) {
@@ -1853,11 +1913,12 @@ function renderTable(tenders) {
     <td class="date-text">${t.submitDate?t.submitDate.split('T')[0]:'—'}</td>
     <td class="date-text" style="${gToday?'color:var(--teal);font-weight:800;':''}">${t.guarantee?t.guarantee.split('T')[0]:'—'}</td>
     <td><span class="urgency-badge ${u.cls}">${u.label}</span></td>
+    <td>${typeof tenderTypeCell==='function'?tenderTypeCell(t.title):''}</td>
     <td style="text-align:center;"><a href="${spLink}" target="_blank" title="فتح فولدر المناقصة في SharePoint" style="display:inline-flex;text-decoration:none;opacity:.65;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.65"><svg width="16" height="16" viewBox="0 0 24 24" fill="#4a5568"><path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z"/></svg></a></td></tr>`;
   }).join('');
 }
 
-const ownerColors = ['#315b8f','#2f7d62','#a8792a','#b86b37','#665a92','#2a7f86','#a84b54','#7b6a4a'];
+const ownerColors = ['#315b8f','#2f7d62','#a8792a','#b8860b','#254d8f','#2d6a4f','#173d2b','#a8792a'];
 
 function renderTenderSidebar(tenders) {
   const oc = {}, wc = {};
@@ -1899,7 +1960,7 @@ function openWorkTypeModal(workType) {
     ? tenders.map(t => {
         const u = getUrgency(t.submitDate);
         return `<div class="modal-tender-row">
-          <div style="font-size:18px">${u.cls==='u-today'?'🔥':u.cls==='u-3days'?'⏰':u.cls==='u-week'?'📅':u.cls==='u-urgent'?'🚨':'📋'}</div>
+          
           <div class="modal-tender-title">${t.title}</div>
           <span class="urgency-badge ${u.cls}" style="font-size:10px">${u.label}</span>
           <div class="modal-tender-date">${t.submitDate?t.submitDate.split('T')[0]:'—'}</div>
@@ -1911,13 +1972,13 @@ function openWorkTypeModal(workType) {
 
 function openOwnerModal(ownerName) {
   const tenders = (visibleTenders.length ? visibleTenders : getCurrentTenders()).filter(t => t.owner === ownerName);
-  document.getElementById('owner-modal-title').textContent = '🏛️ ' + ownerName;
+  document.getElementById('owner-modal-title').textContent = ownerName;
   document.getElementById('owner-modal-count').textContent = `عدد المناقصات: ${tenders.length}`;
   document.getElementById('owner-modal-body').innerHTML = tenders.length
     ? tenders.map(t => {
         const u = getUrgency(t.submitDate);
         return `<div class="modal-tender-row">
-          <div style="font-size:18px">${u.cls==='u-today'?'🔥':u.cls==='u-3days'?'⏰':u.cls==='u-week'?'📅':u.cls==='u-urgent'?'🚨':'📋'}</div>
+          
           <div class="modal-tender-title">${t.title}</div>
           <span class="urgency-badge ${u.cls}" style="font-size:10px">${u.label}</span>
           <div class="modal-tender-date">${t.submitDate?t.submitDate.split('T')[0]:'—'}</div>
@@ -2074,7 +2135,7 @@ function switchTab(name, btn) {
 }
 
 // ── CLIENTS DATA ──────────────────────────────────────
-const CLIENTS_COLORS=['#315b8f','#2f7d62','#c59a46','#b86b37','#2a7f86','#665a92','#a84b54','#8a6f3f','#35756f','#765f9a'];
+const CLIENTS_COLORS=['#315b8f','#2f7d62','#d4a017','#b8860b','#2d6a4f','#254d8f','#173d2b','#b8860b','#40916c','#1b3a6b'];
 
 const clientOwners=[
   {name:'الشركة الوطنية للإسكان',count:10},
@@ -2168,7 +2229,7 @@ function renderAnalytics() {
 }
 
 function _buildAnalytics() {
-  const AC = ['#315b8f','#2f7d62','#c59a46','#b86b37','#2a7f86','#665a92','#a84b54','#8a6f3f','#35756f','#765f9a'];
+  const AC = ['#315b8f','#2f7d62','#d4a017','#b8860b','#2d6a4f','#254d8f','#173d2b','#b8860b','#40916c','#1b3a6b'];
 
   // combined = كل مناقصات 2026 فقط (جارية + مقدمة)
   const combined = [
@@ -2237,7 +2298,7 @@ function _buildAnalytics() {
   anUrgencyChart=new Chart(document.getElementById('an-urgency-chart'),{
     type:'doughnut',
     data:{labels:Object.keys(urg),datasets:[{data:Object.values(urg),
-      backgroundColor:['#a84b54','#b86b37','#af7d26','#2f7d62','#665a92'],
+      backgroundColor:['#173d2b','#b8860b','#af7d26','#2f7d62','#254d8f'],
       borderWidth:3, borderColor:'#fff', hoverOffset:8}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
       plugins:{legend:{position:'bottom',labels:{color:'#1a2332',font:{family:'Cairo',size:10},boxWidth:10,padding:6}},
@@ -2272,7 +2333,7 @@ function _buildAnalytics() {
   const medals=['g','s','b','',''];
   document.getElementById('an-top5').innerHTML = top5.map(([n,c],i)=>`
     <div class="top3-item">
-      <div class="top3-medal ${medals[i]}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
+      <div class="top3-medal ${medals[i]}">${i<3?(i+1):i+1}</div>
       <div class="top3-info">
         <div class="top3-name">${n}</div>
         <div class="top3-bar-bg"><div class="top3-bar" style="width:0%;background:${AC[i%AC.length]}" data-w="${c/maxO*100}"></div></div>
@@ -2363,7 +2424,7 @@ function _buildAnalytics() {
 // ── CLIENT MODAL ─────────────────────────────────────
 const OWNERS_DATA = {"أمانة منطقة جازان": [{"name": "⁠انشاء عبارات و حواجز خرسانية وعقوم لدرء اخطار السيول بمدينة جيزان", "type": "إنشاء شبكات السيول ومرافقها", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-05-12", "status": "جارية"}], "الشركة الوطنية للإسكان": [{"name": "تنفيذ و تشغيل وصيانة الحدائق العامة والسقيا لوجهة (قمره) صفوى2 ( عدد ) 3 حدائق", "type": "البنية التحتية البسيطة", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-05-12", "status": "جارية"}, {"name": "Al Ruba Sanaya - Design & Build 1840 Villas", "type": "الإنشاءات العامة للمباني السكنية", "sector": "محفظة مشاريع المباني", "date": "2026-01-18", "status": "تم التقديم"}, {"name": "البنية التحتية الشاملة لمشروع ارض الحرس الوطني (وجهة الربى)", "type": "البنية التحتية الشاملة", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-01-27", "status": "تم التقديم"}, {"name": "مبني صالة المبيعات بمشروع سدو تبوك", "type": "الإنشاءات العامة للمباني السكنية", "sector": "محفظة مشاريع المباني", "date": "2026-02-02", "status": "تم التقديم"}, {"name": "تنفيذ اعمال التنسيق العام لمركز مبيعات وجهة الربى", "type": "الإنشاءات العامة للمباني السكنية", "sector": "محفظة مشاريع المباني", "date": "2026-02-13", "status": "تم التقديم"}, {"name": "اعمال التسويات والبنية التحتية الشاملة لوجهة الجنى", "type": "بنية تحتية", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-02-18", "status": "تم التقديم"}, {"name": "Arassi Lazord - Design & Build 1372 Villas", "type": "الإنشاءات العامة للمباني السكنية", "sector": "محفظة مشاريع المباني", "date": "2026-03-04", "status": "تم التقديم"}, {"name": "Wahj Asalah - Design & Build 956 Villas", "type": "الإنشاءات العامة للمباني السكنية", "sector": "محفظة مشاريع المباني", "date": "2026-03-04", "status": "تم التقديم"}, {"name": "تنفيذ الأعمال الترابية لمشروع الفيصلية (الرشا)", "type": "البنية التحتية البسيطة", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-03-30", "status": "تم التقديم"}, {"name": "أعمال تحسين و تسوية الموقع والأعمال الترابية لمنطقة 3 و المنطقة 6 مشروع لازورد", "type": "البنية التحتية البسيطة", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-04-14", "status": "تم التقديم"}], "القوات الجوية": [{"name": "إنشاء مرافق إضافية بقاعدة الملك سلمان الجوية بالقطاع الأوسط وكلية الملك فيصل الجوية", "type": "الإنشاءات العامة للمرافق الحكومية", "sector": "محفظة مشاريع المباني", "date": "2026-05-13", "status": "جارية"}], "مطار الملك سلمان": [{"name": "RFP KSIA-TEN-00000129: Potable Water & Fire Water Tanks and Pumping Station", "type": "إنشاءات ، بنية تحتية", "sector": "—", "date": "2026-05-16", "status": "جارية"}, {"name": "Sitewide Utilities Irrigation Storage Tanks Pumping Station", "type": "إنشاءات ، بنية تحتية", "sector": "قطاع منطقة الرياض", "date": "2026-05-16", "status": "جارية"}, {"name": "Sitewide Utilities Diversion_Revision", "type": "إنشاءات ، بنية تحتية", "sector": "قطاع منطقة الرياض", "date": "2026-01-03", "status": "تم التقديم"}, {"name": "Sitewide Utilities Wastewater Treatment Plant", "type": "محطات", "sector": "قطاع منطقة الرياض", "date": "2026-03-31", "status": "تم التقديم"}], "الهيئة السعودية للمياة": [{"name": "توريد وتركيب أنابيب الالياف الزجاجية لنظام نقل الرياض القصيم", "type": "خطوط نقل المياة", "sector": "محفظة مشاريع المياه والنقل", "date": "2026-05-23", "status": "جارية"}, {"name": "مشروع تركيب أنظمة المراقبة والحواجز البحرية بمنظومات إنتاج الشعيبة -004", "type": "تركيب وصيانة الأجهزة الأمنية", "sector": "محفظة مشاريع المياه والنقل", "date": "2026-01-17", "status": "تم التقديم"}, {"name": "توريد وتنفيذ خط تجميع مياه ابار وادي ضمد الى محطة تنقية مياه ضمد بجازان", "type": "إنشاء خطوط النقل والخزن الإستراتيجي", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-02-03", "status": "تم التقديم"}, {"name": "مشروع تركيب أنظمة المراقبة والحواجز البحرية بوحدات الإنتاج (حقل- ضباء- الوجه- أملج- الليث- القنفذة-رابغ)", "type": "تركيب وصيانة الأجهزة الأمنية", "sector": "محفظة مشاريع المياه والنقل", "date": "2026-02-18", "status": "تم التقديم"}], "SAR  الخطوط الحديدية السعودية": [{"name": "NSR Track Doubling (Phosphate 3) Depot & Loops 1-3", "type": "إنشاء خطوط السكك الحديدية ومرافقها", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-06-01", "status": "جارية"}, {"name": "Riyadh Rail Link - Design & Build Contractor Package", "type": "الإنشاءات العامة للمرافق الحكومية", "sector": "محفظة مشاريع المباني", "date": "2026-06-01", "status": "جارية"}, {"name": "NSR Track Doubling (Phosphate 3) Section 2 & Loops", "type": "إنشاء خطوط السكك الحديدية ومرافقها", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-04-26", "status": "تم التقديم"}], "وزارة الداخلية -الديوان العام": [{"name": "مشروع إنشاء ثلاث دور إيواء في كل من مناطق (مكة المكرمة ، والرياض، وعسير)", "type": "الإنشاءات العامة للمرافق الحكومية", "sector": "محفظة مشاريع المباني", "date": "2026-06-02", "status": "جارية"}], "الادارة العامة لمشروع ينبع": [{"name": "تصميم وإنشاء أنابيب التبريد بمياه البحر إلى منطقة البتروكيماويات (بي آي سي آي-تي-7068)", "type": "إنشاء محطات التحلية Ro", "sector": "محفظة مشاريع المياه والنقل", "date": "2026-06-05", "status": "جارية"}, {"name": "منافسة لمشروع إنشاء منظومة مياة الشرب بالمنطقة الصناعية (PIC I-T 7078)", "type": "إنشاءات", "sector": "القطاع الغربي", "date": "2026-01-28", "status": "تم التقديم"}, {"name": "الخدمات العامة لتوصيل المنافع (PIC I-7127 )", "type": "البنية التحتية الشاملة", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-04-08", "status": "تم التقديم"}], "أمانة جدة": [{"name": "تنفيذ حلول تصريف مياه الأمطار لمنطقة الرياض (20338)", "type": "إنشاء شبكات السيول ومرافقها", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-06-05", "status": "جارية"}, {"name": "تنفيذ حلول تصريف مياه الأمطار للمنطقة H الحزمة الثانية- الوفاء", "type": "إنشاء شبكات السيول ومرافقها", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-06-10", "status": "جارية"}, {"name": "تنفيذ حلول لتصريف مياه الأمطار للمنطقة (H) الحزمة الأولى – الفروسية (20317)", "type": "إنشاء شبكات السيول ومرافقها", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-06-14", "status": "جارية"}, {"name": "تنفيذ حلول تصريف مياه الامطار لمنطقة BC الحزمة الخامسة - الشاطئ المنطقة الساحلية", "type": "بنية تحتية", "sector": "القطاع الغربي", "date": "2026-02-28", "status": "تم التقديم"}], "Wittco": [{"name": "تنفيذ مشروع نظام نقل المياه الجبيل بريدة المرحلة الثانية", "type": "خطوط نقل المياة", "sector": "القطاع الشرقي", "date": "2026-06-12", "status": "جارية"}, {"name": "تنفيذ مشروع نظام نقل مياه رأس محيسن-الباحة-مكة", "type": "خطوط نقل المياة", "sector": "القطاع الغربي", "date": "2026-06-18", "status": "جارية"}], "الدرعية DGDA": [{"name": "Heros Park Main Construction Works", "type": "إنشاءات ، بنية تحتية", "sector": "قطاع منطقة الرياض", "date": "2026-01-06", "status": "تم التقديم"}, {"name": "DGII The Grand Boulevard Public Realm.", "type": "تأهيل", "sector": "قطاع منطقة الرياض", "date": "2026-05-06", "status": "تم التقديم"}], "الرياض القابضة": [{"name": "مشروع تنفيذ لأعمال تطوير وتوسعة حراج ابن قاسم", "type": "إنشاءات ، بنية تحتية", "sector": "قطاع منطقة الرياض", "date": "2026-01-07", "status": "تم التقديم"}], "الشؤون الخاصة لخادم الحرمين الشريفين": [{"name": "مشروع إنشاء خزان مركزي بمقر الاسطول والمساندة", "type": "إنشاء خطوط النقل والخزن الإستراتيجي", "sector": "محفظة مشاريع المياه والنقل", "date": "2026-01-22", "status": "تم التقديم"}, {"name": "مشروع إحلال واستبدال المغذيات الرئيسية لمحطات المارينا بقصر السلام", "type": "كهرباء", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-05-02", "status": "تم التقديم"}, {"name": "مشروع استبدال وحدات التكييف مع انظمه التحكم بمبنى ( 48أ ) بقصر السلام بجدة", "type": "كهرباء", "sector": "محفظة مشاريع المباني", "date": "2026-05-04", "status": "تم التقديم"}, {"name": "مشروع ربط المحطات ( B5.B2.B1 وبكج 1) و ( SF-1. SF-2.SF-3.SF-4.SF-5.SF-6.SF-7.SF-8.SF-9.SF-10 ) بنظام التحكم والمراقبة اسكادا بقصر السلام بجدة", "type": "كهرباء", "sector": "محفظة مشاريع المباني", "date": "2026-05-09", "status": "تم التقديم"}, {"name": "مشروع ربط محطات الكهرباء الفرعية بالمرينا والمحطة الرئيسية المغذية لها بنظام اسكادا بقصر السلا مبجدة", "type": "كهرباء", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-05-11", "status": "تم التقديم"}, {"name": "مشروع احلال واستبدال كابلات الجهد المتوسط بين المحطات الفرعية المغذية لإنارة الاسوار البحرية والكميرات الامنية بقصر السلام بجدة", "type": "كهرباء", "sector": "محفظة مشاريع المباني", "date": "2026-05-11", "status": "تم التقديم"}], "بلدية محافظة الجبيل": [{"name": "صيانة وتشغيل الطرق والشوارع بمحافظة الجبيل للاعوام 2026ــ2028م", "type": "التشغيل والصيانة - طرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-01-22", "status": "تم التقديم"}, {"name": "سفلتة مخططات المنح بمحافظة الجبيل", "type": "إنشاء الطرق والشوارع والأرصفة ومستلزمات الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-01-22", "status": "تم التقديم"}, {"name": "مشروع ردم وتسوية وسفلتة بضاحية الملك فهد بمحافظة الجبيل", "type": "البنية التحتية البسيطة", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-03-17", "status": "تم التقديم"}, {"name": "مشروع ردم وتسوية وسفلتة بضاحية الملك فهد بمحافظة الجبيل ( الجزء الرابع عشر )", "type": "البنية التحتية البسيطة", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-03-17", "status": "تم التقديم"}], "المؤسسة العامة للموانىء": [{"name": "توريد وتركيب الحواجز البحرية (الدفاع السلبي) لموانئ الساحل الشرقي (ميناء الملك عبدالعزيز بالدمام – ميناء الجبيل التجاري – ميناء الملك فهد الصناعي بالجبيل – ميناء رأس الخير", "type": "تركيب وصيانة الأجهزة الأمنية", "sector": "محفظة مشاريع المياه والنقل", "date": "2026-01-26", "status": "تم التقديم"}, {"name": "توريد وتركيب الحواجز البحرية (الدفاع السلبي) لموانئ الساحل الغربي (جدة الإسلامي – ميناء فرسان – ميناء ينبع التجاري)", "type": "تركيب وصيانة الأجهزة الأمنية", "sector": "محفظة مشاريع المياه والنقل", "date": "2026-03-30", "status": "تم التقديم"}], "بلدية محافظة القنفدة": [{"name": "منافسة عامة لمشروع صيانة الطرق والشوارع بمحافظة القنفذة", "type": "صيانة الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-01-27", "status": "تم التقديم"}], "هيئة المدن الصناعية": [{"name": "ازالة واستبدال العبارة الصندوقية بأنابيب خرسانية جاهزة بالطريق 62 بالمدينة الصناعية 1576830", "type": "إنشاء شبكات السيول ومرافقها", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-01-27", "status": "تم التقديم"}], "بلدية محافظة راس تنورة": [{"name": "صيانة طريق الكورنيش والارصفة الجانبية بمحافظة رأس تنورة للعام 2026م", "type": "التشغيل والصيانة - طرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-01-30", "status": "تم التقديم"}, {"name": "منافسة عامة لفرصة إعادة تأهيل وتطوير طريق الأمير محمد بن فهد للعام 2026م", "type": "صيانة الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-02-14", "status": "تم التقديم"}, {"name": "مشروع صيانة الطرق المستلمة من وزارة النقل بنطاق بلدية محافظة رأس تنورة 2026-2029م", "type": "صيانة الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-02-16", "status": "تم التقديم"}, {"name": "منافسة عامة لفرصة إعادة تأهيل شارع الأمير نايف بن عبد العزيز 2026م بمحافظة رأس تنورة", "type": "صيانة الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-02-21", "status": "تم التقديم"}], "امانة منطقة المدينة المنورة": [{"name": "مشروع  صيانة الطرق والشوارع في مخطط إسكان طريق الملك عبدالعزيز( مخطط الشروق) بالمدينة المنورة", "type": "صيانة الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-01-30", "status": "تم التقديم"}, {"name": "فرصة صيانة الطرق والشوارع في مخطط إسكان ضاحية العاقول (مخطط الهضبة) مخطط رقم (س-4310480)", "type": "صيانة الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-02-06", "status": "تم التقديم"}, {"name": "لفرصة صيانة الطرق والشوارع في مخطط اسكان طريق حائل السريع (مخطط الياسمين) بالمدينة المنورة", "type": "صيانة الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-02-06", "status": "تم التقديم"}], "امانة المنطقة الشرقية": [{"name": "مشروع صيانة ومعالجة الحفر والأرصفة بنطاق بلدية غرب الدمام", "type": "تأهيل", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-02-03", "status": "تم التقديم"}, {"name": "مشروع تشغيل وصيانة الجسور والأنفاق للطرق المحورية للأعوام 2026-2029م", "type": "تأهيل", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-02-03", "status": "تم التقديم"}, {"name": "مشروع تأهيل الشوارع الرئيسية بحي الخدمات المساندة بالدمام المرحلة الثانية", "type": "إنشاء الطرق والشوارع والأرصفة ومستلزمات الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-05-08", "status": "تم التقديم"}, {"name": "مشروع تأهيل شوارع بحي النهضة والمنتزه بالدمام المرحلة الثانية", "type": "إنشاء الطرق والشوارع والأرصفة ومستلزمات الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-05-08", "status": "تم التقديم"}, {"name": "مشروع تطوير شوارع مخطط 1262 بضاحية الملك فهد بالدمام", "type": "إنشاء الطرق والشوارع والأرصفة ومستلزمات الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-05-09", "status": "تم التقديم"}, {"name": "مشروع تأهيل الشوارع الرئيسية بضاحية الملك فهد المرحلة الثالثة", "type": "إنشاء الطرق والشوارع والأرصفة ومستلزمات الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-05-10", "status": "تم التقديم"}, {"name": "مشروع تأهيل شوارع بحي الخالدية بالدمام المرحلة الثانية", "type": "إنشاء الطرق والشوارع والأرصفة ومستلزمات الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-05-10", "status": "تم التقديم"}], "وزارة الدفاع": [{"name": "منافسة عامة لمشروع تطوير مرافق بالادارة العامة والمستودعات", "type": "إنشاءات", "sector": "محفظة مشاريع المباني", "date": "2026-02-04", "status": "تم التقديم"}], "المسار الرياضي": [{"name": "Special Projects Delivery Framework", "type": "الإنشاءات العامة للمرافق الحكومية", "sector": "محفظة مشاريع المباني", "date": "2026-02-11", "status": "تم التقديم"}, {"name": "New playground and sands sports park Design and build works (P012G)", "type": "الإنشاءات العامة للمرافق الحكومية", "sector": "محفظة مشاريع المباني", "date": "2026-03-15", "status": "تم التقديم"}, {"name": "Design and Build for Wadi Hanifa South(P001E)", "type": "البنية التحتية البسيطة", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-05-02", "status": "تم التقديم"}], "DAR GLOBAL Co.": [{"name": "AMAYA Master Plan", "type": "البنية التحتية الشاملة", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-02-21", "status": "تم التقديم"}, {"name": "WADI SAFAR MASTERPLAN, INFRA & LANDSCAPE", "type": "البنية التحتية الشاملة", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-04-29", "status": "تم التقديم"}], "وزارة الرياضة": [{"name": "Main Contractor PQQ_FIFA World Cup 2034™️ Training Sites", "type": "إنشاءات", "sector": "محفظة مشاريع المباني", "date": "2026-02-26", "status": "تم التقديم"}], "بلدية محافظة رابغ": [{"name": "تشغيل وصيانة الطرق والجسور والعبارات المستلمة من وزارة النقل بمحافظة رابغ المرحلة الخامسة", "type": "التشغيل والصيانة - طرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-02-28", "status": "تم التقديم"}, {"name": "تشغيل وصيانة الطرق والجسور والعبارات المستلمة من وزارة النقل بمحافظة رابغ المرحلة السادسة", "type": "التشغيل والصيانة - طرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-02-28", "status": "تم التقديم"}, {"name": "تشغيل وصيانة الطرق والجسور والعبارات المستلمة من وزارة النقل بمحافظة رابغ المرحلة الثالثة", "type": "التشغيل والصيانة - طرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-02-28", "status": "تم التقديم"}, {"name": "تشغيل وصيانة الطرق والجسور والعبارات المستلمة من وزارة النقل بمحافظة رابغ المرحلة الرابعة", "type": "التشغيل والصيانة - طرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-02-28", "status": "تم التقديم"}], "شركة المياة الوطنية": [{"name": "إيصال خدمة المياه لمجمع الملك فهد الطبي العسكري بالظهران", "type": "خطوط نقل المياة", "sector": "محفظة مشاريع المياه والنقل", "date": "2026-03-04", "status": "تم التقديم"}], "ROSHN": [{"name": "RFI - Single Family - Gen 2.5", "type": "الإنشاءات العامة للمباني السكنية", "sector": "محفظة مشاريع المباني", "date": "2026-03-06", "status": "تم التقديم"}, {"name": "Construction of District Retail For Sedra 2 & Sedra 3", "type": "الإنشاءات العامة للمباني السكنية", "sector": "محفظة مشاريع المباني", "date": "2026-03-12", "status": "تم التقديم"}], "أمانة منطقة القصيم": [{"name": "صيانة الشوارع بنطاق بلدية شرق بريدة الفرعية", "type": "إنشاء الطرق والشوارع والأرصفة ومستلزمات الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-03-06", "status": "تم التقديم"}, {"name": "معالجة قصور الأسفلت بمدينة بريدة (مرحلة ثانية)", "type": "إنشاء الطرق والشوارع والأرصفة ومستلزمات الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-04-09", "status": "تم التقديم"}, {"name": "استكمال تنفيذ طريق البيارق", "type": "إنشاء الطرق والشوارع والأرصفة ومستلزمات الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-04-15", "status": "تم التقديم"}, {"name": "استكمال تأهيل وصيانة بعض التقاطعات بمدينة بريدة", "type": "إنشاء الطرق والشوارع والأرصفة ومستلزمات الطرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-05-09", "status": "تم التقديم"}], "امانة العاصمة المقدسة": [{"name": "عملية تطوير المناطق المحيطة بمحور الأمير محمد بن سلمان", "type": "التشغيل والصيانة - طرق", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-03-07", "status": "تم التقديم"}], "حرس الحدود": [{"name": "إنشاء عدد (17) مستودع وساحة استلام وتسليم بالمديرية العامة لحرس الحدود بالبرشاعة", "type": "إنشاءات", "sector": "محفظة مشاريع المباني", "date": "2026-03-31", "status": "تم التقديم"}], "الادارة العامة لمشروع الجبيل": [{"name": "تورید وإنشاء مرافق الخدمات المشتركة في منطقة البلاسكیم", "type": "إنشاءات ، بنية تحتية", "sector": "القطاع الشرقي", "date": "2026-04-06", "status": "تم التقديم"}], "شركة جدة للتنمية والتطوير": [{"name": "أعمال تنفيذ مشروع القرية الرياضية – حي الأجواد بمدينة جدة", "type": "الإنشاءات العامة للمرافق الحكومية", "sector": "محفظة مشاريع المباني", "date": "2026-04-20", "status": "تم التقديم"}], "qiddya": [{"name": "RFP - QPMO-410-CT-07776-D0 Deep Services Phase 1", "type": "البنية التحتية البسيطة", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-04-25", "status": "تم التقديم"}], "البرنامج السعودي لتنمية واعمار اليمن": [{"name": "مشروع انشاء المستشفى الجامعي بجامعة حضرموت", "type": "الإنشاءات العامة للمرافق الحكومية", "sector": "محفظة مشاريع المباني", "date": "2026-05-02", "status": "تم التقديم"}], "شركة كدانة للتنمية والتطوير": [{"name": "الاتفاقية الاطارية لأنسنه المشاعر المقدسة وتحسين المشهد الحضري", "type": "البنية التحتية البسيطة", "sector": "محفظة مشاريع البنية التحتية", "date": "2026-05-11", "status": "تم التقديم"}]};
 let cmCurrentOwner = null, cmCurrentFilter = 'all';
-const CM_COLORS = ['#315b8f','#2f7d62','#c59a46','#b86b37','#2a7f86','#665a92','#a84b54','#8a6f3f','#35756f','#765f9a'];
+const CM_COLORS = ['#315b8f','#2f7d62','#d4a017','#b8860b','#2d6a4f','#254d8f','#173d2b','#b8860b','#40916c','#1b3a6b'];
 
 function openClientModal(ownerName, color) {
   cmCurrentOwner = ownerName;
@@ -2373,7 +2434,7 @@ function openClientModal(ownerName, color) {
   const sub     = tenders.filter(t=>t.status==='تم التقديم').length;
 
   document.getElementById('cm-head').style.background = `linear-gradient(135deg, ${color}, ${color}cc)`;
-  document.getElementById('cm-title').textContent = '🏛️ ' + ownerName;
+  document.getElementById('cm-title').textContent = ownerName;
   document.getElementById('cm-sub').textContent = `إجمالي المناقصات: ${tenders.length}  |  جارية: ${jariya}  |  تم التقديم: ${sub}`;
 
   document.querySelectorAll('.cm-filter').forEach(b=>b.classList.remove('active'));
@@ -2399,13 +2460,13 @@ function renderCmTenders(tenders) {
   }
   document.getElementById('cm-body').innerHTML = tenders.map(t => `
     <div class="cm-tender-row">
-      <div class="cm-tender-icon">${t.status==='جارية'?'🟢':'📋'}</div>
+      <div class="cm-tender-icon">${t.status==='جارية'?'':''}</div>
       <div class="cm-tender-info">
         <div class="cm-tender-name">${t.name}</div>
         <div class="cm-tender-meta">
-          <span>⚙️ ${t.type}</span>
+          <span>${t.type}</span>
           <span>📂 ${t.sector}</span>
-          <span>📅 ${t.date}</span>
+          <span>${t.date}</span>
         </div>
       </div>
       <span class="cm-status-badge ${t.status==='جارية'?'cm-status-jariya':'cm-status-sub'}">${t.status}</span>
@@ -2421,7 +2482,7 @@ function openClientListModal(filter) {
   let filtered, title, color;
   if (filter === 'all') {
     filtered = allT;
-    title = '📋 كل مناقصات 2026';
+    title = 'كل مناقصات 2026';
     color = '#315b8f';
   } else if (filter === 'clients') {
     // Show clients summary
@@ -2429,16 +2490,16 @@ function openClientListModal(filter) {
       .map(([name, ts]) => ({ name, count: ts.length }))
       .sort((a,b) => b.count - a.count);
     document.getElementById('cm-head').style.background = 'linear-gradient(135deg,#16a34a,#15803d)';
-    document.getElementById('cm-title').textContent = '🏛️ قائمة العملاء — 2026';
+    document.getElementById('cm-title').textContent = 'قائمة العملاء — 2026';
     document.getElementById('cm-sub').textContent = `إجمالي العملاء: ${owners.length}`;
     document.querySelectorAll('.cm-filter').forEach(b=>b.classList.remove('active'));
     document.querySelector('.cm-filter').classList.add('active');
     document.getElementById('cm-body').innerHTML = owners.map((o,i) => `
       <div class="cm-tender-row" onclick="openClientModal('${o.name.replace(/'/g,"\'")}','${CM_COLORS[i%CM_COLORS.length]}')" style="cursor:pointer;">
-        <div class="cm-tender-icon">🏛️</div>
+        <div class="cm-tender-icon"></div>
         <div class="cm-tender-info">
           <div class="cm-tender-name">${o.name}</div>
-          <div class="cm-tender-meta"><span>📊 ${o.count} مناقصة</span></div>
+          <div class="cm-tender-meta"><span>${o.count} مناقصة</span></div>
         </div>
         <span class="cm-status-badge cm-status-sub">عرض التفاصيل ↗</span>
       </div>`).join('');
@@ -2446,7 +2507,7 @@ function openClientListModal(filter) {
     return;
   } else {
     filtered = allT.filter(t => t.status === filter);
-    title = filter === 'جارية' ? '🟢 المناقصات الجارية 2026' : '📋 المناقصات المقدمة 2026';
+    title = filter === 'جارية' ? 'المناقصات الجارية 2026' : 'المناقصات المقدمة 2026';
     color = filter === 'جارية' ? '#2f7d62' : '#315b8f';
   }
 
@@ -2459,13 +2520,13 @@ function openClientListModal(filter) {
   document.getElementById('cm-body').innerHTML = filtered.length
     ? filtered.map(t => `
       <div class="cm-tender-row">
-        <div class="cm-tender-icon">${t.status==='جارية'?'🟢':'📋'}</div>
+        <div class="cm-tender-icon">${t.status==='جارية'?'':''}</div>
         <div class="cm-tender-info">
           <div class="cm-tender-name">${t.name}</div>
           <div class="cm-tender-meta">
-            <span>🏛️ ${t.owner}</span>
-            <span>⚙️ ${t.type}</span>
-            <span>📅 ${t.date}</span>
+            <span>${t.owner}</span>
+            <span>${t.type}</span>
+            <span>${t.date}</span>
           </div>
         </div>
         <span class="cm-status-badge ${t.status==='جارية'?'cm-status-jariya':'cm-status-sub'}">${t.status}</span>
@@ -2547,7 +2608,7 @@ function exportClientReport(type) {
     exportClientFullPro(todayStr);
     return;
   }
-  showToast('✅ تم تصدير تقرير العملاء بنجاح!');
+  showToast('تم تصدير تقرير العملاء بنجاح');
 }
 
 async function exportClientFullPro(todayStr) {
@@ -2555,9 +2616,9 @@ async function exportClientFullPro(todayStr) {
   const wb3 = new ExcelJS.Workbook();
   wb3.creator = 'الرواف للمقاولات';
 
-  const NAVY='1A1F3C', BLUE='3B4FB8', GOLD='D4A017', GOLDBG='FFFBF0',
-        WHITE='FFFFFF', GREY='F4F6FB', RED='DC2626', ORANGE='EA580C',
-        GREEN='16A34A', TEAL='0891B2', YELLOW='D97706', PURPLE='7C3AED',
+  const NAVY='1A1F3C', BLUE='1B3A6B', GOLD='D4A017', GOLDBG='FFFBF0',
+        WHITE='FFFFFF', GREY='F4F6FB', RED='173D2B', ORANGE='B8860B',
+        GREEN='2D6A4F', TEAL='40916C', YELLOW='D97706', PURPLE='254D8F',
         DARK='1A2332', MUTED='6B7A99', BORDER='D4DAF5';
 
   const sf = h => ({type:'pattern',pattern:'solid',fgColor:{argb:'FF'+h}});
@@ -2565,7 +2626,7 @@ async function exportClientFullPro(todayStr) {
   const al = (h='right',v='middle',w=false) => ({horizontal:h,vertical:v,wrapText:w,readingOrder:2});
   const bd = (c=BORDER) => { const s={style:'thin',color:{argb:'FF'+c}}; return {top:s,left:s,bottom:s,right:s}; };
   const mb = (c=GOLD)   => { const s={style:'medium',color:{argb:'FF'+c}}; return {top:s,left:s,bottom:s,right:s}; };
-  const COLORS=['3B4FB8','16A34A','D4A017','EA580C','0891B2','7C3AED','DC2626','C4690B','0F766E','9333EA'];
+  const COLORS=['1B3A6B','2D6A4F','D4A017','B8860B','40916C','254D8F','173D2B','A8792A','2D6A4F','254D8F'];
 
   function addTitle(ws, text, cols, bg, fg='FFFFFF', sz=14) {
     const row = ws.addRow([text]); row.height=38;
@@ -2662,8 +2723,8 @@ async function exportClientFullPro(todayStr) {
   // ══ SHEET 5: WORK TYPES ══
   const wsW=wb3.addWorksheet('أنواع الأعمال',{views:[{rightToLeft:true,showGridLines:false}],properties:{tabColor:{argb:'FF'+PURPLE}}});
   wsW.columns=[{width:5},{width:44},{width:16},{width:14}];
-  addTitle(wsW,'⚙️  توزيع المناقصات حسب نوع الأعمال — 2026',4,'7C3AED');
-  addHeaders(wsW,['#','نوع الأعمال','عدد المناقصات','النسبة'],'7C3AED');
+  addTitle(wsW,'⚙️  توزيع المناقصات حسب نوع الأعمال — 2026',4,'254D8F');
+  addHeaders(wsW,['#','نوع الأعمال','عدد المناقصات','النسبة'],'254D8F');
   const wc={};
   allT.forEach(t=>{if(t.type&&t.type!=='—')wc[t.type]=(wc[t.type]||0)+1;});
   Object.entries(wc).sort((a,b)=>b[1]-a[1]).forEach(([n,c],i)=>{
@@ -2757,7 +2818,7 @@ function showDailyAlert() {
     if(today.length)  msg.push(`${today.length} مناقصة تنتهي اليوم`);
     if(urgent3.length) msg.push(`${urgent3.length} تنتهي خلال 3 أيام`);
     if(gToday.length)  msg.push(`${gToday.length} ضمان مستحق اليوم`);
-    document.getElementById('alert-title').textContent = '⚠️ تنبيه يومي — يحتاج متابعة فورية';
+    document.getElementById('alert-title').textContent = 'تنبيه يومي — يحتاج متابعة فورية';
     document.getElementById('alert-sub').textContent = msg.join('  |  ');
     banner.classList.remove('hidden');
   }
@@ -2871,7 +2932,7 @@ function populateCompareSelects() {
   });
 }
 
-const COMPARE_COLORS=['#315b8f','#2f7d62','#c59a46','#b86b37','#2a7f86','#665a92'];
+const COMPARE_COLORS=['#315b8f','#2f7d62','#d4a017','#b8860b','#2d6a4f','#254d8f'];
 function runComparison() {
   const a = document.getElementById('compare-a').value;
   const b = document.getElementById('compare-b').value;
@@ -2901,7 +2962,7 @@ function runComparison() {
     document.getElementById(`compare-body-${letter}`).innerHTML = `
       <div class="compare-stat"><span class="compare-stat-label">جارية</span><span class="compare-stat-val" style="color:#16a34a">${s.jariya}</span></div>
       <div class="compare-stat"><span class="compare-stat-label">تم التقديم</span><span class="compare-stat-val" style="color:#315b8f">${s.sub}</span></div>
-      <div class="compare-stat"><span class="compare-stat-label">حرجة (3 أيام)</span><span class="compare-stat-val" style="color:#a84b54">${s.urgent}</span></div>
+      <div class="compare-stat"><span class="compare-stat-label">حرجة (3 أيام)</span><span class="compare-stat-val" style="color:#173d2b">${s.urgent}</span></div>
       <div class="compare-stat"><span class="compare-stat-label">أكثر نوع أعمال</span><span class="compare-stat-val" style="font-size:12px;color:var(--text-muted)">${s.topType}</span></div>
     `;
   });
@@ -3037,7 +3098,7 @@ renderAll();
   const input = document.getElementById('search-input');
   if (input) { input.value = q; applyFilters(); input.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
 })();
-document.getElementById('last-update').textContent = 'جاري التحميل...';
+document.getElementById('last-update').textContent = 'يتم التحديث…';
 // ثم جلب البيانات الحية
 fetchTenders();
 setInterval(fetchTenders, 5*60*1000);
@@ -3069,16 +3130,16 @@ function exportReport_full() {
     return diff + ' أيام';
   }
   function urgColor(level) {
-    return {urgent:'DC2626',today:'DC2626','3days':'EA580C',week:'D97706',active:'16A34A',other:'6B7A99'}[level]||'6B7A99';
+    return {urgent:'173D2B',today:'173D2B','3days':'B8860B',week:'D97706',active:'2D6A4F',other:'6B7A99'}[level]||'6B7A99';
   }
 
   const wb = new ExcelJS.Workbook();
   wb.creator = 'الرواف للمقاولات';
   wb.created = todayDate;
 
-  const NAVY='1A1F3C', BLUE='3B4FB8', GOLD='D4A017', GOLDBG='FFFBF0',
-        WHITE='FFFFFFFF', GREY='F4F6FB', RED='DC2626', ORANGE='EA580C',
-        GREEN='16A34A', TEAL='0891B2', YELLOW='D97706', PURPLE='7C3AED',
+  const NAVY='1A1F3C', BLUE='1B3A6B', GOLD='D4A017', GOLDBG='FFFBF0',
+        WHITE='FFFFFFFF', GREY='F4F6FB', RED='173D2B', ORANGE='B8860B',
+        GREEN='2D6A4F', TEAL='40916C', YELLOW='D97706', PURPLE='254D8F',
         DARK='1A2332', MUTED='6B7A99', BORDER='D4DAF5';
 
   function solidFill(hex) { return { type:'pattern', pattern:'solid', fgColor:{argb:'FF'+hex} }; }
@@ -3284,7 +3345,7 @@ function exportReport_full() {
   wsO.columns=[{width:5},{width:32},{width:18},{width:18},{width:24}];
   addTitleRow(wsO,'🏛️  توزيع المناقصات حسب الجهة المالكة',5,NAVY,'FFFFFF');
   addHeaderRow(wsO,['#','الجهة المالكة','عدد المناقصات','النسبة المئوية','متوسط الأيام المتبقية'],BLUE);
-  const ownerColors=['3B4FB8','16A34A','D4A017','EA580C','0891B2','7C3AED','DC2626','C4690B'];
+  const ownerColors=['1B3A6B','2D6A4F','D4A017','B8860B','40916C','254D8F','173D2B','A8792A'];
   const oc={};
   allTenders.forEach(t=>{if(t.owner) oc[t.owner]=(oc[t.owner]||[]).concat(t);});
   Object.entries(oc).sort((a,b)=>b[1].length-a[1].length).forEach(([name,ts],i)=>{
@@ -3305,8 +3366,8 @@ function exportReport_full() {
   const wsW = wb.addWorksheet('أنواع الأعمال',{views:[{rightToLeft:true,showGridLines:false}],
     properties:{tabColor:{argb:'FF'+PURPLE}}});
   wsW.columns=[{width:5},{width:28},{width:18},{width:18}];
-  addTitleRow(wsW,'⚙️  توزيع المناقصات حسب نوع الأعمال',4,'7C3AED','FFFFFF');
-  addHeaderRow(wsW,['#','نوع الأعمال','عدد المناقصات','النسبة المئوية'],'7C3AED');
+  addTitleRow(wsW,'⚙️  توزيع المناقصات حسب نوع الأعمال',4,'254D8F','FFFFFF');
+  addHeaderRow(wsW,['#','نوع الأعمال','عدد المناقصات','النسبة المئوية'],'254D8F');
   const wc={};
   allTenders.forEach(t=>{if(t.workType) wc[t.workType]=(wc[t.workType]||0)+1;});
   Object.entries(wc).sort((a,b)=>b[1]-a[1]).forEach(([name,count],i)=>{
@@ -3545,8 +3606,8 @@ function download(wb, name) {
     <div class="client-modal-body">
       <div class="client-modal-filters">
         <button class="cm-filter active" onclick="cmFilter('all',this)">الكل</button>
-        <button class="cm-filter" onclick="cmFilter('جارية',this)">🟢 جارية</button>
-        <button class="cm-filter" onclick="cmFilter('تم التقديم',this)">📋 تم التقديم</button>
+        <button class="cm-filter" onclick="cmFilter('جارية',this)">جارية</button>
+        <button class="cm-filter" onclick="cmFilter('تم التقديم',this)">تم التقديم</button>
       </div>
       <div id="cm-body"></div>
     </div>
@@ -3608,8 +3669,86 @@ window.addEventListener('hashchange', handleExecutiveReportHash);
   });
 })();
 </script>
+<style>
+/* عمود "نوع المناقصة" — Design & Build / Regular */
+.tt-seg{display:inline-flex;border:1px solid #d6deea;border-radius:8px;overflow:hidden}
+.tt-opt{border:none;background:#fff;font-family:inherit;font-size:10.5px;font-weight:800;padding:5px 8px;cursor:pointer;color:#5e6b7a;white-space:nowrap;transition:.15s;line-height:1.1}
+.tt-opt+.tt-opt{border-inline-start:1px solid #d6deea}
+.tt-opt:hover{background:#f0f4f9}
+.tt-opt.db.on{background:#2d6a4f;color:#fff}
+.tt-opt.rg.on{background:#d4a017;color:#3a2a06}
+.tt-opt.on:hover{filter:brightness(1.08)}
+.tt-badge{display:inline-block;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.tt-badge.db{background:#e7f3ec;color:#1f5e3e}
+.tt-badge.rg{background:#fbf3df;color:#9a6c12}
+.tt-badge.none{color:#aab4c0}
+</style>
+<script>
+/* تصنيف نوع المناقصة (Design & Build / Regular) — يُحفظ في localStorage مشترك
+   بين صفحتي المناقصات والعمليات. مدير الإدارة فقط يضبطه؛ تعليم Design & Build
+   يُنشئ إشعاراً لقسم الدراسات والتصاميم في صفحة العمليات. */
+(function () {
+  var TT_KEY = "alrawafTenderTypes";
+  function lsGet(){ try { return JSON.parse(localStorage.getItem(TT_KEY)) || {}; } catch { return {}; } }
+  function lsSave(s){ try { localStorage.setItem(TT_KEY, JSON.stringify(s)); } catch {} }
+  var ttCache = lsGet();
+  // Supabase: مصدر مشترك عبر جدول ops_state (المفتاح tender_types) عند وجود جلسة دخول
+  var SBC = (function(){ try { var c = window.APP_CONFIG || {}; if (!c.supabaseUrl || String(c.supabaseUrl).indexOf("__") >= 0 || !window.supabase) return null; return window.supabase.createClient(c.supabaseUrl, c.supabaseKey, { auth: { persistSession: true, autoRefreshToken: true } }); } catch (e) { return null; } })();
+  var ttRemote = false;
+  function pullRemote(){
+    if (!SBC) return;
+    SBC.from("ops_state").select("v").eq("k", "tender_types").maybeSingle().then(function(res){
+      if (res && !res.error && res.data && res.data.v){ ttCache = res.data.v; lsSave(ttCache); refreshCells(); }
+    }, function(){});
+  }
+  if (SBC) SBC.auth.getSession().then(function(r){ ttRemote = !!(r && r.data && r.data.session); if (ttRemote) pullRemote(); });
+
+  window.isTenderAdmin = function (){ try { var r = sessionStorage.getItem("alrawafPortalRole") || ""; return r === "manager" || r === "vp"; } catch { return false; } };
+  window.getTenderType = function (title){ return ttCache[title] || ""; };
+  window.setTenderType = function (title, type){
+    if (type) ttCache[title] = type; else delete ttCache[title];
+    lsSave(ttCache);
+    if (ttRemote && SBC) SBC.from("ops_state").upsert({ k: "tender_types", v: ttCache, updated_at: new Date().toISOString() }, { onConflict: "k" }).then(function(){}, function(){});
+  };
+  function ttStyle(type){ return type==="design-build" ? "background:#2d6a4f;color:#fff" : "background:#d4a017;color:#3a2a06"; }
+  function ttInner(title){
+    var tt = window.getTenderType(title), enc = encodeURIComponent(title);
+    if (window.isTenderAdmin()){
+      return '<div class="tt-seg" data-title="' + enc + '">' +
+        '<button type="button" class="tt-opt db' + (tt==="design-build"?" on":"") + '" style="' + (tt==="design-build"?ttStyle("design-build"):"") + '" data-type="design-build">Design &amp; Build</button>' +
+        '<button type="button" class="tt-opt rg' + (tt==="remeasured"?" on":"") + '" style="' + (tt==="remeasured"?ttStyle("remeasured"):"") + '" data-type="remeasured">Remeasured</button></div>';
+    }
+    if (tt==="design-build") return '<span class="tt-badge db">Design &amp; Build</span>';
+    if (tt==="remeasured") return '<span class="tt-badge rg">Remeasured</span>';
+    return '<span class="tt-badge none">—</span>';
+  }
+  window.tenderTypeCell = function (title){ return '<span class="tt-cell" data-tt-title="' + encodeURIComponent(title) + '">' + ttInner(title) + '</span>'; };
+  function refreshCells(){ document.querySelectorAll(".tt-cell").forEach(function(c){ c.innerHTML = ttInner(decodeURIComponent(c.dataset.ttTitle)); }); }
+  function ttToast(msg){
+    var el = document.getElementById("tt-toast");
+    if (!el){ el = document.createElement("div"); el.id = "tt-toast";
+      el.style.cssText = "position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#15294d;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:700;z-index:9999;box-shadow:0 12px 34px rgba(0,0,0,.3);border-inline-start:4px solid #d4a017";
+      document.body.appendChild(el); }
+    el.textContent = msg; el.style.display = "block";
+    clearTimeout(el._t); el._t = setTimeout(function(){ el.style.display = "none"; }, 2600);
+  }
+  function onClick(e){
+    var opt = e.target.closest(".tt-opt"); if (!opt) return;
+    if (!window.isTenderAdmin()) return;
+    var seg = opt.closest(".tt-seg"); if (!seg) return;
+    var title = decodeURIComponent(seg.dataset.title), type = opt.dataset.type;
+    var cur = window.getTenderType(title), next = (cur === type) ? "" : type;
+    window.setTenderType(title, next);
+    seg.querySelectorAll(".tt-opt").forEach(function(b){ var on = b.dataset.type === next; b.classList.toggle("on", on); b.style.cssText = on ? ttStyle(b.dataset.type) : ""; });
+    ttToast(next === "design-build" ? "تم تعليمها Design & Build — أُشعِر قسم الدراسات والتصاميم"
+          : next === "remeasured" ? "تم تعليمها Remeasured" : "أُلغي التصنيف");
+  }
+  function bind(){ var tb = document.getElementById("tenders-tbody"); if (tb && !tb.dataset.ttBound){ tb.dataset.ttBound = "1"; tb.addEventListener("click", onClick, true); } }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind); else bind();
+})();
+</script>
 <script src="../internal-interactions.js?v=10"></script>
-<script src="../portal-sidebar.js?v=13"></script>
+<script src="../portal-sidebar.js?v=15"></script>
 </body>
 </html>
 

@@ -104,22 +104,6 @@
   <script src="./config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
-    const cfg = window.APP_CONFIG || {};
-    const isLocalHost = ["127.0.0.1", "localhost", "::1"].includes(window.location.hostname);
-    const localAuthBypass = !!(cfg.localAuthBypass && isLocalHost);
-
-    if (localAuthBypass) {
-      const localUser = cfg.localUser || {};
-      document.getElementById("email").value = "local.dev@alrawaf.local";
-      document.getElementById("password").value = "local-preview";
-      document.getElementById("login-btn").textContent = "دخول محلي";
-      document.getElementById("login-form").addEventListener("submit", (event) => {
-        event.preventDefault();
-        sessionStorage.setItem("alrawafPortalRole", localUser.role === "executive" ? "manager" : "department");
-        sessionStorage.setItem("alrawafDepartmentKey", localUser.departmentKey || "BS");
-        window.location.href = "/tenders/";
-      });
-    } else {
     const SUPABASE_URL = window.APP_CONFIG?.supabaseUrl;
     const SUPABASE_KEY = window.APP_CONFIG?.supabaseKey;
     // إن لم تُحقن المفاتيح بعد (متغيرات البيئة غير مضبوطة في Cloudflare)
@@ -159,17 +143,33 @@
       }
     });
 
+    // الشخصيات التنفيذية المميّزة — صلاحية شاملة + شاشة ترحيب خاصة (تُعرّف بالبريد)
+    const VIP_EMAILS = ["alaaaboelnaja@alrawaf.com.sa", "abdullah@alrawaf.com.sa"];
+
     async function redirectAfterLogin(session) {
+      const email = (session.user.email || "").trim().toLowerCase();
+      const isVip = VIP_EMAILS.includes(email);
       // اقرأ الـ role من جدول profiles ثم وجّه المستخدم
-      const { data: profile } = await sb
-        .from("profiles").select("role, department_key").eq("id", session.user.id).single();
-      // خزّن الـ role في sessionStorage للتوافق مع الكود الحالي
-      sessionStorage.setItem("alrawafPortalRole", profile?.role === "executive" ? "manager" : "department");
+      let profile = null;
+      try {
+        ({ data: profile } = await sb
+          .from("profiles").select("role, department_key, full_name, allowed_pages").eq("id", session.user.id).single());
+      } catch {}
+      // الشخصيات المميّزة تأخذ صلاحية تنفيذية حتى لو كان ملفها ناقصاً
+      const executive = isVip || profile?.role === "executive";
+      sessionStorage.setItem("alrawafPortalRole", executive ? "manager" : "department");
       if (profile?.department_key)
         sessionStorage.setItem("alrawafDepartmentKey", profile.department_key);
-      // توجيه مباشر إلى صفحة المناقصات الجارية بعد الدخول
-      window.location.href = "/tenders/";
-    }
+      // هوية المستخدم لتحديد مدير القسم / الموظف وتصفية المهام
+      sessionStorage.setItem("alrawafUserEmail", session.user.email || "");
+      if (profile?.full_name) sessionStorage.setItem("alrawafUserName", profile.full_name);
+      // الصفحات المسموح بها للمستخدم في الشريط الجانبي (إن حُدِّدت)
+      if (Array.isArray(profile?.allowed_pages) && profile.allowed_pages.length)
+        sessionStorage.setItem("alrawafAllowedPages", JSON.stringify(profile.allowed_pages));
+      else
+        sessionStorage.removeItem("alrawafAllowedPages");
+      // الشخصيات المميّزة → شاشة ترحيب خاصة، والباقي → لوحة التحكم مباشرة
+      window.location.href = isVip ? "/welcome.html" : "/tenders/";
     }
   </script>
 </body>

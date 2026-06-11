@@ -17,14 +17,15 @@
   // ── الثيم (أزرق / افتراضي) — مفتاح مشترك بين كل الصفحات ──
   const THEME_KEY = "alrawafTheme";
   const PALETTE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>';
+  // الافتراضي الآن: الأخضر+الكحلي (الهوية الرسمية). الكحلي الصِّرف بديل اختياري.
   function savedTheme() {
-    try { return localStorage.getItem(THEME_KEY) === "green" ? "green" : "grad"; } catch { return "grad"; }
+    try { return localStorage.getItem(THEME_KEY) === "grad" ? "grad" : "green"; } catch { return "green"; }
   }
   function applyTheme(t) {
-    document.documentElement.setAttribute("data-theme", t === "green" ? "green" : "grad");
+    document.documentElement.setAttribute("data-theme", t === "grad" ? "grad" : "green");
   }
   function refreshThemeButtons(t) {
-    const label = t === "green" ? "المظهر البنفسجي" : "المظهر الأخضر";
+    const label = t === "green" ? "المظهر الكحلي" : "المظهر الأخضر";
     const injected = document.getElementById("portal-theme-toggle");
     if (injected) injected.title = label;
     // زر صفحة العمليات الأصلي (إن وُجد)
@@ -49,7 +50,7 @@
     btn.id = "portal-theme-toggle";
     btn.className = "portal-theme-toggle";
     btn.type = "button";
-    const label = savedTheme() === "green" ? "المظهر البنفسجي" : "المظهر الأخضر";
+    const label = savedTheme() === "green" ? "المظهر الكحلي" : "المظهر الأخضر";
     btn.title = label;
     btn.setAttribute("aria-label", "تغيير المظهر");
     btn.innerHTML = PALETTE_SVG;

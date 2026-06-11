@@ -190,9 +190,9 @@ body.page-tenders .stats-grid .stat-card:hover {
   transform: translateY(-2px) !important;
   box-shadow: 0 8px 28px rgba(59,30,120,.12), inset 0 1px 0 rgba(255,255,255,.92) !important;
 }
-body.page-tenders .stats-grid .stat-card .stat-num   { color: #1a2332 !important; text-shadow: none !important; }
-body.page-tenders .stats-grid .stat-card .stat-label { color: #3a4a6b !important; font-weight: 700 !important; }
-body.page-tenders .stats-grid .stat-card .stat-sub   { color: #6b7fa8 !important; }
+body.page-tenders .stats-grid .stat-card .stat-num   { color: #ffffff !important; text-shadow: none !important; }
+body.page-tenders .stats-grid .stat-card .stat-label { color: #ffffff !important; font-weight: 800 !important; }
+body.page-tenders .stats-grid .stat-card .stat-sub   { color: rgba(255,255,255,.6) !important; }
 body.page-tenders .stats-grid .stat-card.c-blue   { --kpi: #2563eb; }
 body.page-tenders .stats-grid .stat-card.c-yellow { --kpi: #d97706; }
 body.page-tenders .stats-grid .stat-card.c-orange { --kpi: #ea580c; }

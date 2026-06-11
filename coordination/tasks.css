@@ -1,0 +1,248 @@
+/* ══════════════════════════════════════════════════════════════
+   tasks.css — لوحة إدارة مهام الإدارة (نظام مستقل)
+   هوية: أخضر + كحلي + ذهبي · بطاقات ناعمة · سير عمل بالأدوار
+   ══════════════════════════════════════════════════════════════ */
+.tboard-main { display:block !important; width:100%; padding: 26px 30px 70px !important; max-width: 1640px; margin-inline: auto; background:transparent !important; }
+
+/* رأس اللوحة */
+.tb-head { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; flex-wrap:wrap; margin-bottom:18px; }
+.tb-title h1 { font-size:24px; font-weight:900; color:var(--navy,#1f5239); margin:0; }
+.tb-title h1::after { content:''; display:block; width:38px; height:3px; background:var(--gold,#d9a443); border-radius:2px; margin-top:8px; }
+.tb-title p { margin:8px 0 0; font-size:13px; color:#7c8f86; font-weight:600; }
+.tb-controls { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+
+/* مبدّل الدور التجريبي + الفلاتر */
+.tb-identity, .tb-deptfilter {
+  height:42px; border-radius:12px; border:1px solid #d6e2d6; background:#fff;
+  font-family:inherit; font-size:13px; font-weight:700; color:#1c2e26; padding:0 14px; cursor:pointer;
+}
+.tb-identity { display:inline-flex; align-items:center; gap:8px; }
+.tb-identity select { border:none; background:transparent; font:inherit; color:inherit; cursor:pointer; outline:none; }
+.tb-identity .tb-id-badge { font-size:10px; font-weight:900; color:#fff; background:var(--navy,#1f5239); padding:3px 8px; border-radius:999px; }
+
+.tb-new {
+  height:42px; padding:0 20px; border:none; border-radius:12px; cursor:pointer;
+  background:linear-gradient(105deg,#15294d,#2d6a4f); color:#fff; font-family:inherit; font-size:14px; font-weight:800;
+  box-shadow:0 6px 18px rgba(16,37,29,.22); display:inline-flex; align-items:center; gap:8px; transition:transform .15s, box-shadow .15s;
+}
+.tb-new:hover { transform:translateY(-2px); box-shadow:0 10px 26px rgba(16,37,29,.30); }
+.tb-new[hidden]{ display:none; }
+
+/* كروت مكتبات SharePoint للأقسام */
+.tb-library { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:14px; margin-bottom:20px; }
+.tb-library:empty { display:none; }
+.tb-lib-card { position:relative; background:#fff; border:1px solid #e2ebe5; border-radius:16px; box-shadow:0 2px 10px rgba(20,60,40,.05); overflow:hidden; display:flex; transition:transform .15s, box-shadow .15s; }
+.tb-lib-card.has-link:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(20,60,40,.12); }
+.tb-lib-card.has-link { border-inline-start:4px solid #2d6a4f; }
+.tb-lib-main { flex:1; display:flex; align-items:center; gap:13px; padding:15px 16px; text-decoration:none; color:inherit; background:none; border:none; font-family:inherit; text-align:start; width:100%; cursor:pointer; }
+.tb-lib-main:hover { background:#f6faf7; }
+.tb-lib-main.unset { cursor:default; opacity:.9; }
+button.tb-lib-main.unset { cursor:pointer; opacity:1; }
+.tb-lib-ico { width:44px; height:44px; flex:0 0 auto; border-radius:12px; background:linear-gradient(135deg,#15294d,#2d6a4f); color:#fff; display:flex; align-items:center; justify-content:center; }
+.tb-lib-txt { display:flex; flex-direction:column; gap:3px; min-width:0; }
+.tb-lib-txt b { font-size:14px; font-weight:900; color:#14202f; }
+.tb-lib-txt > span { font-size:11.5px; font-weight:600; color:#7c8f86; line-height:1.4; }
+.tb-lib-go { margin-inline-start:auto; font-size:18px; color:#2d6a4f; font-weight:900; flex:0 0 auto; }
+.tb-lib-edit { position:absolute; top:8px; inset-inline-end:8px; background:#f1f4f2; border:1px solid #dde7e0; color:#5e7268; font-family:inherit; font-size:10.5px; font-weight:800; border-radius:8px; padding:3px 9px; cursor:pointer; }
+.tb-lib-edit:hover { background:#e8efe9; }
+
+/* مؤشرات سريعة */
+.tb-kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:22px; }
+.tb-kpi { background:linear-gradient(105deg,#15294d 0%,#173d2b 52%,#2d6a4f 100%); border-top:2px solid #d9a443; border-radius:16px; padding:16px 18px; color:#fff; box-shadow:0 8px 22px rgba(12,24,30,.20); }
+.tb-kpi b { display:block; font-size:30px; font-weight:900; line-height:1; }
+.tb-kpi span { display:block; font-size:12px; color:rgba(255,255,255,.65); font-weight:600; margin-top:6px; }
+
+/* اللوحة (4 أعمدة) */
+.tb-board { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; align-items:start; }
+@media (max-width:1100px){ .tb-board{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width:640px){ .tb-board{ grid-template-columns:1fr;} }
+
+.tb-col { background:#f4f8f5; border:1px solid #e0eae2; border-radius:18px; padding:12px; min-height:120px; }
+.tb-col-head { display:flex; align-items:center; justify-content:space-between; padding:6px 8px 12px; }
+.tb-col-head .tb-col-name { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:900; color:#1c2e26; }
+.tb-col-head .tb-col-dot { width:10px; height:10px; border-radius:50%; }
+.tb-col-head .tb-col-count { font-size:12px; font-weight:800; color:#5e7268; background:#fff; border:1px solid #e0eae2; border-radius:999px; padding:2px 9px; }
+.tb-col[data-col="in-progress"] .tb-col-dot{ background:#2563eb; }
+.tb-col[data-col="review"]      .tb-col-dot{ background:#d9a443; }
+.tb-col[data-col="completed"]   .tb-col-dot{ background:#2d6a4f; }
+.tb-col[data-col="approved"]    .tb-col-dot{ background:#15294d; }
+.tb-col-body { display:flex; flex-direction:column; gap:10px; }
+.tb-empty { text-align:center; color:#9bb0a4; font-size:12px; font-weight:600; padding:18px 8px; }
+
+/* بطاقة المهمة */
+.tb-card { background:#fff; border:1px solid #e2ebe5; border-radius:14px; padding:13px 14px; box-shadow:0 2px 10px rgba(20,60,40,.05); transition:transform .15s, box-shadow .15s; }
+.tb-card:hover { transform:translateY(-2px); box-shadow:0 10px 24px rgba(20,60,40,.10); }
+.tb-card-top { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+.tb-type { font-size:10.5px; font-weight:900; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+.tb-type.t-tender    { background:#e9eef6; color:#1f3a5f; }
+.tb-type.t-btc       { background:#e7f3ec; color:#1f5e3e; }
+.tb-type.t-reduction { background:#fbf1da; color:#9a6c12; }
+.tb-type.t-other     { background:#eef1f3; color:#41525e; }
+.tb-dept { font-size:10.5px; font-weight:800; color:#5e7268; }
+.tb-card-title { font-size:13.5px; font-weight:800; color:#14202f; line-height:1.45; margin-bottom:10px; word-break:break-word; }
+.tb-tinfo { display:flex; flex-direction:column; gap:4px; margin:0 0 10px; padding:8px 10px; background:#f6f9f7; border:1px solid #e6efe8; border-radius:10px; }
+.tb-tinfo-row { font-size:11px; font-weight:700; color:#2e4036; line-height:1.4; }
+.tb-tinfo-row i { display:inline-block; min-width:74px; font-style:normal; font-weight:800; color:#8aa093; font-size:10px; }
+.tb-meta { display:flex; flex-direction:column; gap:6px; margin-bottom:11px; }
+.tb-assignees { display:flex; flex-wrap:wrap; gap:5px; }
+.tb-chip { font-size:11px; font-weight:700; color:#1c2e26; background:#eef4ef; border:1px solid #dbe7df; border-radius:999px; padding:3px 9px; }
+.tb-date { font-size:11px; color:#7c8f86; font-weight:600; }
+.tb-date b { color:#3c4a5e; font-weight:800; }
+
+/* الموعد النهائي على البطاقة */
+.tb-due { display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin:0 0 11px; }
+.tb-due > label { font-size:10.5px; font-weight:800; color:#8aa093; }
+.tb-due-date { font-size:11.5px; font-weight:600; color:#5e7268; }
+.tb-due-date b { color:#2e4036; font-weight:800; }
+.tb-due-edit { display:inline-flex; align-items:center; gap:7px; flex-wrap:wrap; }
+.tb-due-input { height:30px; border:1px solid #d6e2d6; border-radius:8px; padding:0 8px; font-family:inherit; font-size:11.5px; color:#14202f; background:#fff; cursor:pointer; }
+.tb-due-input:focus { outline:none; border-color:#2d6a4f; box-shadow:0 0 0 3px rgba(45,106,79,.12); }
+.tb-due-badge { font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+.tb-due-badge.ok { background:#eef4ef; color:#3c6b54; }
+.tb-due-badge.soon { background:#fbf3df; color:#9a6c12; }
+.tb-due-badge.overdue { background:#fbeae8; color:#c0392b; }
+.tb-due-badge.done-ok { background:#e7f3ec; color:#1f5e3e; }
+.tb-due-badge.sched { background:#e9eff9; color:#1b3a6b; }
+.tb-due-pair { display:inline-flex; align-items:center; gap:5px; }
+.tb-due-pair label { font-size:10px; font-weight:800; color:#8aa093; }
+
+/* حقلا تاريخ البداية/النهاية في نافذة الإنشاء */
+.tb-field-dates { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.tb-field-dates > span { display:flex; flex-direction:column; }
+.tb-field-dates label { display:block; font-size:12.5px; font-weight:800; color:#1c2e26; margin-bottom:7px; }
+.tb-field-dates input[type=date] { width:100%; height:42px; border:1px solid #d6e2d6; border-radius:11px; padding:0 13px; font-family:inherit; font-size:14px; color:#14202f; background:#fff; outline:none; }
+.tb-field-dates input[type=date]:focus { border-color:#2d6a4f; box-shadow:0 0 0 3px rgba(45,106,79,.12); }
+
+/* مبدّل العرض: اللوحة / المؤشرات */
+.tb-viewtoggle { display:inline-flex; border:1px solid #d6e2d6; border-radius:11px; overflow:hidden; height:42px; background:#fff; }
+.tb-viewtoggle button { border:none; background:transparent; font-family:inherit; font-size:13px; font-weight:800; color:#5e7268; padding:0 16px; cursor:pointer; transition:.15s; }
+.tb-viewtoggle button + button { border-inline-start:1px solid #e0eae2; }
+.tb-viewtoggle button.on { background:linear-gradient(105deg,#15294d,#2d6a4f); color:#fff; }
+
+/* عرض المؤشرات (KPI) — لوحة فاتحة (أبيض + كحلي) */
+.tb-kpiview[hidden] { display:none; }
+.tb-kpi-bar-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:18px; flex-wrap:wrap; }
+.tb-kpi-bar-head .tb-kpi-summary { flex:1; margin-bottom:0; }
+.tb-export { display:inline-flex; align-items:center; gap:8px; height:44px; padding:0 18px; border:none; border-radius:12px; cursor:pointer; background:linear-gradient(105deg,#1d6f42,#15803d); color:#fff; font-family:inherit; font-size:13.5px; font-weight:800; box-shadow:0 6px 18px rgba(21,128,61,.25); transition:transform .15s, box-shadow .15s; white-space:nowrap; }
+.tb-export:hover { transform:translateY(-2px); box-shadow:0 10px 26px rgba(21,128,61,.32); }
+.tb-kpi-summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:18px; }
+.tb-kpi-s { background:#fff; border:1px solid #dde4ee; border-top:3px solid #d9a443; border-radius:16px; padding:16px 18px; box-shadow:0 2px 10px rgba(21,41,77,.06); }
+.tb-kpi-s b { display:block; font-size:28px; font-weight:900; line-height:1; color:#15294d; }
+.tb-kpi-s span { display:block; font-size:12px; color:#7785a0; font-weight:700; margin-top:6px; }
+.tb-kpi-na { color:#aab4c0; font-size:11.5px; font-weight:700; }
+.tb-kpi-bar { position:relative; height:18px; background:#edf1f7; border-radius:999px; overflow:hidden; min-width:90px; text-align:center; }
+.tb-kpi-bar.big { height:24px; }
+.tb-kpi-bar.big span { line-height:24px; font-size:11.5px; }
+.tb-kpi-bar-fill { position:absolute; inset-inline-start:0; top:0; height:100%; border-radius:999px; }
+.tb-kpi-bar-fill.good { background:#2d6a4f; }
+.tb-kpi-bar-fill.mid { background:#d9a443; }
+.tb-kpi-bar-fill.bad { background:#c0392b; }
+.tb-kpi-bar span { position:relative; z-index:1; font-size:10.5px; font-weight:900; color:#14202f; line-height:18px; }
+
+/* كروت الموظفين — فاتحة بلمسة كحلي/سماوي */
+.tb-emp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px; }
+.tb-emp-card { background:#fff; border:1px solid #dde4ee; border-radius:16px; padding:15px 16px 12px; cursor:pointer; box-shadow:0 2px 10px rgba(21,41,77,.06); transition:transform .15s, box-shadow .15s, border-color .15s; }
+.tb-emp-card:hover { transform:translateY(-3px); box-shadow:0 12px 28px rgba(21,41,77,.13); border-color:#b9c8e2; }
+.tb-emp-top { display:flex; align-items:center; gap:11px; margin-bottom:12px; }
+.tb-emp-avatar { width:42px; height:42px; flex:0 0 auto; border-radius:50%; background:#e9eff9; color:#1b3a6b; font-size:15px; font-weight:900; display:flex; align-items:center; justify-content:center; border:1.5px solid #cdd9ec; }
+.tb-emp-id { min-width:0; display:flex; flex-direction:column; gap:2px; }
+.tb-emp-id b { font-size:13.5px; font-weight:900; color:#14202f; line-height:1.3; }
+.tb-emp-id span { font-size:10.5px; font-weight:700; color:#7785a0; }
+.tb-emp-alert { margin-inline-start:auto; font-size:10px; font-weight:900; color:#c0392b; background:#fbeae8; border:1px solid #f1cfc9; border-radius:999px; padding:3px 8px; white-space:nowrap; }
+.tb-emp-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:11px; }
+.tb-emp-stat { background:#f6f8fc; border:1px solid #e7ecf5; border-radius:11px; padding:8px 4px; text-align:center; }
+.tb-emp-stat b { display:block; font-size:18px; font-weight:900; color:#1b3a6b; line-height:1.1; }
+.tb-emp-stat span { display:block; font-size:10px; font-weight:700; color:#7785a0; margin-top:3px; }
+.tb-emp-commit { margin-bottom:9px; }
+.tb-emp-more { text-align:center; font-size:10.5px; font-weight:700; color:#9aa8c2; border-top:1px dashed #e7ecf5; padding-top:8px; }
+.tb-emp-card:hover .tb-emp-more { color:#1b3a6b; }
+
+/* ملف الموظف التفصيلي */
+.tb-ep { width:620px; }
+.tb-ep .tb-modal-head h3 small { font-size:12px; font-weight:700; color:rgba(255,255,255,.75); margin-inline-start:8px; }
+.tb-ep-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+.tb-ep-stat { background:#f6f8fc; border:1px solid #e7ecf5; border-radius:12px; padding:11px 6px; text-align:center; }
+.tb-ep-stat b { display:block; font-size:21px; font-weight:900; color:#1b3a6b; line-height:1.1; }
+.tb-ep-stat span { display:block; font-size:10.5px; font-weight:700; color:#7785a0; margin-top:4px; }
+.tb-ep-stat.ok b { color:#1f5e3e; }
+.tb-ep-stat.bad b { color:#c0392b; }
+.tb-ep-commit { margin-bottom:16px; }
+.tb-ep-sec { font-size:12.5px; font-weight:900; color:#15294d; margin:14px 0 8px; padding-bottom:6px; border-bottom:2px solid #edf1f7; }
+.tb-ep-task { display:flex; align-items:center; justify-content:space-between; gap:10px; background:#fff; border:1px solid #e7ecf5; border-radius:11px; padding:10px 13px; margin-bottom:7px; cursor:pointer; transition:.15s; }
+.tb-ep-task:hover { border-color:#b9c8e2; background:#f9fbfe; }
+.tb-ep-task-main { display:flex; flex-direction:column; gap:3px; min-width:0; }
+.tb-ep-task-main b { font-size:12.5px; font-weight:800; color:#14202f; line-height:1.4; word-break:break-word; }
+.tb-ep-task-main span { font-size:10.5px; font-weight:700; color:#7785a0; }
+.tb-ep-close { background:rgba(255,255,255,.15); border:none; color:#fff; width:30px; height:30px; border-radius:8px; cursor:pointer; font-size:15px; }
+
+/* أزرار الحركة على البطاقة */
+.tb-actions { display:flex; gap:7px; flex-wrap:wrap; }
+.tb-btn { flex:1; min-width:0; height:34px; border-radius:9px; border:1px solid transparent; cursor:pointer; font-family:inherit; font-size:12px; font-weight:800; transition:filter .15s; white-space:nowrap; padding:0 10px; }
+.tb-btn:hover { filter:brightness(.96); }
+.tb-btn.primary { background:linear-gradient(105deg,#15294d,#2d6a4f); color:#fff; }
+.tb-btn.gold    { background:var(--gold,#d9a443); color:#3a2a06; }
+.tb-btn.ghost   { background:#fff; border-color:#d6e2d6; color:#5e7268; flex:0 0 auto; }
+.tb-waiting { font-size:11.5px; font-weight:700; color:#9a6c12; background:#fbf3df; border:1px solid #eedcb0; border-radius:9px; padding:7px 10px; text-align:center; }
+.tb-approved-tag { font-size:11.5px; font-weight:800; color:#15294d; background:#e9eef6; border:1px solid #cdd9ec; border-radius:9px; padding:7px 10px; text-align:center; display:flex; align-items:center; justify-content:center; gap:6px; }
+
+/* نافذة الإنشاء */
+.tb-overlay { position:fixed; inset:0; background:rgba(12,24,20,.55); -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); z-index:6000; display:flex; align-items:center; justify-content:center; padding:20px; }
+.tb-overlay[hidden]{ display:none; }
+.tb-modal { width:560px; max-width:100%; background:#fff; border-radius:20px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,.35); max-height:92vh; display:flex; flex-direction:column; }
+.tb-modal-head { background:linear-gradient(105deg,#15294d,#2d6a4f); color:#fff; padding:18px 22px; border-bottom:2px solid var(--gold,#d9a443); display:flex; align-items:center; justify-content:space-between; }
+.tb-modal-head h3 { margin:0; font-size:17px; font-weight:900; }
+.tb-modal-head button { background:rgba(255,255,255,.15); border:none; color:#fff; width:30px; height:30px; border-radius:8px; cursor:pointer; font-size:15px; }
+.tb-modal-body { padding:20px 22px; overflow:auto; }
+.tb-field { margin-bottom:16px; }
+.tb-field > label { display:block; font-size:12.5px; font-weight:800; color:#1c2e26; margin-bottom:7px; }
+.tb-field input[type=text], .tb-field select, .tb-field textarea {
+  width:100%; height:42px; border:1px solid #d6e2d6; border-radius:11px; padding:0 13px; font-family:inherit; font-size:14px; color:#14202f; background:#fff; outline:none;
+}
+.tb-field textarea { height:auto; padding:11px 13px; resize:vertical; }
+.tb-field input:focus, .tb-field select:focus, .tb-field textarea:focus { border-color:#2d6a4f; box-shadow:0 0 0 3px rgba(45,106,79,.12); }
+.tb-types { display:grid; grid-template-columns:repeat(2,1fr); gap:9px; }
+.tb-type-opt { display:flex; align-items:center; gap:9px; border:1.5px solid #d6e2d6; border-radius:12px; padding:11px 13px; cursor:pointer; font-size:13px; font-weight:800; color:#1c2e26; transition:.15s; }
+.tb-type-opt:hover { border-color:#b9d2c2; }
+.tb-type-opt.sel { border-color:#2d6a4f; background:#eef6f1; box-shadow:0 0 0 2px rgba(45,106,79,.10); }
+.tb-type-opt .d { width:9px; height:9px; border-radius:50%; }
+.tb-assign-grid { display:flex; flex-wrap:wrap; gap:8px; max-height:190px; overflow:auto; padding:3px; }
+.tb-assign-opt { display:inline-flex; align-items:center; gap:7px; border:1.5px solid #d6e2d6; border-radius:999px; padding:6px 12px; cursor:pointer; font-size:12.5px; font-weight:700; color:#1c2e26; transition:.15s; }
+.tb-assign-opt.sel { border-color:#2d6a4f; background:#eef6f1; color:#1f5e3e; }
+.tb-assign-opt small { color:#8aa093; font-weight:600; font-size:10.5px; }
+.tb-modal-foot { padding:16px 22px; border-top:1px solid #eef2ef; display:flex; gap:10px; justify-content:flex-end; }
+.tb-modal-foot .save { background:linear-gradient(105deg,#15294d,#2d6a4f); color:#fff; border:none; border-radius:11px; padding:11px 22px; font-family:inherit; font-size:14px; font-weight:800; cursor:pointer; }
+.tb-modal-foot .cancel { background:#f1f4f2; color:#5e7268; border:none; border-radius:11px; padding:11px 18px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; }
+
+/* جرس إشعارات مدير الإدارة */
+.tb-bell { position:relative; height:42px; width:42px; border-radius:12px; border:1px solid #d6e2d6; background:#fff; cursor:pointer; font-size:18px; }
+.tb-bell .tb-bell-count { position:absolute; top:-6px; inset-inline-start:-6px; min-width:18px; height:18px; border-radius:999px; background:#c0392b; color:#fff; font-size:10px; font-weight:900; display:flex; align-items:center; justify-content:center; padding:0 4px; }
+.tb-bell[hidden]{ display:none; }
+
+.tb-toast { position:fixed; bottom:24px; inset-inline-start:50%; transform:translateX(50%); background:#15294d; color:#fff; padding:13px 22px; border-radius:12px; font-size:13.5px; font-weight:700; box-shadow:0 14px 40px rgba(0,0,0,.3); z-index:7000; border-inline-start:4px solid var(--gold,#d9a443); }
+
+/* نبض الجرس عند وجود إشعارات */
+.tb-bell.has-notif { animation: tb-bell-pulse 1.8s ease-in-out infinite; border-color:#c0392b; }
+@keyframes tb-bell-pulse { 0%,100%{ box-shadow:0 0 0 0 rgba(192,57,43,.35);} 50%{ box-shadow:0 0 0 6px rgba(192,57,43,0);} }
+
+/* لوحة الإشعارات المنسدلة */
+.tb-notif-panel { position:fixed; width:300px; max-width:calc(100vw - 24px); background:#fff; border:1px solid #e2ebe5; border-radius:14px; box-shadow:0 18px 50px rgba(16,37,29,.22); z-index:6500; overflow:hidden; }
+.tb-notif-panel[hidden]{ display:none; }
+.tb-np-head { display:flex; align-items:center; justify-content:space-between; padding:12px 15px; font-size:13.5px; font-weight:900; color:#14202f; background:#f4f8f5; border-bottom:1px solid #e6efe8; }
+.tb-np-head span { font-size:11px; font-weight:900; color:#fff; background:#15294d; border-radius:999px; min-width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; padding:0 6px; }
+.tb-np-body { max-height:340px; overflow:auto; }
+.tb-np-item { display:flex; gap:10px; align-items:flex-start; padding:11px 14px; cursor:pointer; border-bottom:1px solid #f0f4f1; transition:background .15s; }
+.tb-np-item:hover { background:#f6faf7; }
+.tb-np-item:last-child { border-bottom:none; }
+.tb-np-dot { width:9px; height:9px; border-radius:50%; margin-top:5px; flex:0 0 auto; }
+.tb-np-item.assigned .tb-np-dot { background:#2563eb; }
+.tb-np-item.review   .tb-np-dot { background:#d9a443; }
+.tb-np-item.approve  .tb-np-dot { background:#2d6a4f; }
+.tb-np-item.designbuild .tb-np-dot { background:#8e44ad; }
+.tb-np-txt { display:flex; flex-direction:column; gap:3px; min-width:0; }
+.tb-np-txt b { font-size:12.5px; font-weight:800; color:#14202f; line-height:1.4; }
+.tb-np-txt span { font-size:11px; font-weight:600; color:#7c8f86; line-height:1.4; word-break:break-word; }
+.tb-np-empty { padding:22px 14px; text-align:center; font-size:12.5px; font-weight:600; color:#9bb0a4; }
+
+/* وميض البطاقة عند فتحها من الإشعار */
+.tb-card.tb-flash { animation: tb-flash 1.5s ease; }
+@keyframes tb-flash { 0%,100%{ box-shadow:0 2px 10px rgba(20,60,40,.05);} 25%,60%{ box-shadow:0 0 0 3px rgba(217,164,67,.6), 0 10px 24px rgba(20,60,40,.15);} }

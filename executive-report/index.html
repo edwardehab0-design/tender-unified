@@ -11,14 +11,15 @@
   <link rel="stylesheet" href="../shared-visual.css?v=4">
   <link rel="stylesheet" href="../internal-unified.css?v=15">
   <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("alrawafTheme")==="green"?"green":"grad");}catch(e){}</script>
-<link rel="stylesheet" href="../portal-sidebar.css?v=19">
-<link rel="stylesheet" href="../portal-theme.css?v=10">
+<link rel="stylesheet" href="../portal-sidebar.css?v=26">
+<link rel="stylesheet" href="../portal-theme.css?v=26">
   <script src="../config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="../auth-guard.js"></script>
   <link rel="stylesheet" href="../portal-header.css?v=6">
+<link rel="stylesheet" href="../portal-premium.css?v=26">
 </head>
-<body>
+<body class="premium">
   <main class="report-page">
     <section class="hero">
       <div class="hero-copy">
@@ -47,7 +48,7 @@
           <input id="search-input" type="search" placeholder="بحث داخل التقرير">
         </div>
         <div id="report-stage" class="report-stage">
-          <div id="status-box" class="status-box">جاري التحميل...</div>
+          <div id="status-box" class="status-box">—</div>
           <div id="overview-view" class="overview-view"></div>
           <div id="table-view" class="table-wrap">
             <table id="report-table"></table>
@@ -70,6 +71,6 @@
   })();
   </script>
   <script src="../internal-interactions.js?v=10"></script>
-  <script src="../portal-sidebar.js?v=13"></script>
+  <script src="../portal-sidebar.js?v=15"></script>
 </body>
 </html>
