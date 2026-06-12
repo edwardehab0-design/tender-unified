@@ -1,4 +1,6 @@
 const cfg = window.TENDER_PORTAL_CONFIG || {};
+const portfolioSources = cfg.sources?.portfolio || ["/api/portfolio", "./portfolio/data.json"];
+const tenderSources = cfg.sources?.liveTenders || ["/api/live-tenders", "./tenders/data.json"];
 
 async function readJson(url) {
   const res = await fetch(`${url}?t=${Date.now()}`, { cache: "no-store" });
@@ -34,7 +36,7 @@ function fmtDate(value) {
 
 async function hydratePortal() {
   try {
-    const { data, url } = await readFirst(["/api/portfolio", "./portfolio/data.json"]);
+    const { data, url } = await readFirst(portfolioSources);
     const count = data?.summary?.projectCount || data?.projects?.length || 0;
     setStatus("status-portfolio", `${count} مشروع`, url.includes("/api/") ? "متصل API" : "Excel SharePoint - نسخة محلية");
   } catch {
@@ -42,7 +44,7 @@ async function hydratePortal() {
   }
 
   try {
-    const { data, url } = await readFirst(["/api/live-tenders", "./tenders/data.json"]);
+    const { data, url } = await readFirst(tenderSources);
     const live = data?.tenders?.length || 0;
     const submitted = data?.submitted?.length || 0;
     setStatus("status-tenders", `${live + submitted} مناقصة`, url.includes("/api/") ? "متصل API" : fmtDate(data?.last_updated));

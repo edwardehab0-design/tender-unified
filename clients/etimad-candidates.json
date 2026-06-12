@@ -1,0 +1,6 @@
+{
+  "generatedAt": "2026-06-12",
+  "source": "etimad-import-placeholder",
+  "description": "Candidate opportunities imported from Etimad or future Etimad preplanning feeds before they are accepted into the live tenders list. Keep this file empty until a real Etimad export/importer is connected.",
+  "opportunities": []
+}

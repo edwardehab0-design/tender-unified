@@ -1,5 +1,8 @@
 const sameOriginData = './data.json';
 const githubFallbackData = 'https://raw.githubusercontent.com/edwardehab0-design/tender-portal-unified/main/executive-report/data.json';
+const PORTAL_CONFIG = window.TENDER_PORTAL_CONFIG || {};
+const configuredSources = PORTAL_CONFIG.sources?.executiveReport || [];
+const DATA_SOURCES = configuredSources.length ? configuredSources.concat(githubFallbackData) : [sameOriginData, githubFallbackData];
 
 const state = {
   report: null,
@@ -30,9 +33,8 @@ async function fetchJson(url) {
 }
 
 async function loadReport() {
-  const sources = [sameOriginData, githubFallbackData];
   let lastError = null;
-  for (const source of sources) {
+  for (const source of DATA_SOURCES) {
     try {
       state.report = await fetchJson(source);
       render();

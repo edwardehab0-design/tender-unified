@@ -4,6 +4,14 @@ const path = require("path");
 
 const root = __dirname;
 const port = Number(process.env.PORT || 4177);
+const apiRoutes = {
+  "/api/portfolio": "portfolio/data.json",
+  "/api/live-tenders": "tenders/data.json",
+  "/api/executive-report": "executive-report/data.json",
+  "/api/client-references": "clients/references.json",
+  "/api/opportunity-rules": "clients/opportunity-rules.json",
+  "/api/etimad-candidates": "clients/etimad-candidates.json"
+};
 const types = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -21,8 +29,10 @@ const server = http.createServer((req, res) => {
   let pathname = decodeURIComponent(url.pathname);
   if (pathname.endsWith("/")) pathname += "index.html";
 
-  const file = path.normalize(path.join(root, pathname));
-  if (!file.startsWith(root)) {
+  const relativePath = apiRoutes[pathname] || pathname.replace(/^\/+/, "");
+  const file = path.normalize(path.join(root, relativePath));
+  const relativeToRoot = path.relative(root, file);
+  if (relativeToRoot.startsWith("..") || path.isAbsolute(relativeToRoot)) {
     res.writeHead(403, { "content-type": "text/plain; charset=utf-8" });
     res.end("Forbidden");
     return;

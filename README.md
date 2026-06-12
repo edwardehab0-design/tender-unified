@@ -16,9 +16,10 @@
 
 ## مصادر البيانات الحالية
 
+- `tenders/data.json`: بيانات المناقصات الجارية وبيانات تم التقديم، ويتم تحديثه من موقع Tender.
 - `portfolio/data.json`: بيانات محفظة المناقصات الحالية.
-- `data.json`: بيانات المناقصات الجارية وبيانات تم التقديم، ويتم تحديثه من موقع Tender.
-- `tenders/data.json`, `clients/data.json`, `analytics/data.json`: نسخ محلية قديمة للاختبار فقط، وليست المصدر النهائي.
+- `executive-report/data.json`: بيانات تقارير الإدارة العليا.
+- `data.json`, `clients/data.json`, `analytics/data.json`: نسخ قديمة/مساندة ولا يجب اعتبارها المصدر النهائي عند التطوير.
 
 الواجهة تبحث أولا عن مصادر API حية، ثم ترجع تلقائيا للملفات المحلية عند عدم توفر API:
 
@@ -32,9 +33,11 @@
 
 يمكن تغيير مسارات API منه عند النشر.
 
+محليا، `local-server.js` يحاكي مسارات API أعلاه ويعيد الملفات المحلية المقابلة حتى تكون المراجعة بلا أخطاء 404 غير مفيدة.
+
 ## التحديث الحي من Tender
 
-تم تجهيز GitHub Actions لتحديث `data.json` تلقائيا كل 10 دقائق من موقع Tender:
+تم تجهيز GitHub Actions لتحديث `tenders/data.json` تلقائيا كل 10 دقائق من موقع Tender:
 
 `.github/workflows/sync-tender-data.yml`
 
@@ -49,4 +52,4 @@
 - `ALRAWAF_CLIENT_ID` اختياري إذا تغير.
 - `ALRAWAF_TENANT` اختياري، والقيمة الافتراضية `alrawaf.com.sa`.
 
-بعد كل تحديث ناجح، يتم عمل commit تلقائي لـ `data.json`، ثم يعيد Cloudflare Pages النشر من GitHub.
+بعد كل تحديث ناجح، يتم عمل commit تلقائي لـ `tenders/data.json`، ثم يعيد Cloudflare Pages النشر من GitHub.

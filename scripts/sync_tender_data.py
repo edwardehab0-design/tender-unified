@@ -2,7 +2,7 @@
 Cloud sync for the unified tender portal.
 
 Fetches both live in-progress tenders and submitted tenders from the Tender
-site, then writes a single root data.json consumed by Cloudflare Pages.
+site, then writes the configured JSON file consumed by Cloudflare Pages.
 """
 
 import hashlib
