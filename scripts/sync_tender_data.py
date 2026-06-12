@@ -25,8 +25,8 @@ log = logging.getLogger(__name__)
 ALRAWAF_URL = "https://www.alrawaf-ms.com"
 ALRAWAF_USER = os.getenv("ALRAWAF_USERNAME")
 ALRAWAF_PASS = os.getenv("ALRAWAF_PASSWORD")
-ALRAWAF_CLIENT_ID = os.getenv("ALRAWAF_CLIENT_ID", "8e8af720-b54b-4f52-8858-95109b4a2c5d")
-ALRAWAF_TENANT = os.getenv("ALRAWAF_TENANT", "alrawaf.com.sa")
+ALRAWAF_CLIENT_ID = os.getenv("ALRAWAF_CLIENT_ID") or "8e8af720-b54b-4f52-8858-95109b4a2c5d"
+ALRAWAF_TENANT = os.getenv("ALRAWAF_TENANT") or "alrawaf.com.sa"
 OUTPUT_FILE = os.getenv("OUTPUT_FILE", "data.json")
 
 # Supabase (تُضبط كأسرار في GitHub Actions)
