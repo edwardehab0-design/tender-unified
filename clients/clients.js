@@ -397,6 +397,11 @@
       const portfolioAmount = portfolioProjects.reduce((sum, project) => sum + (project.amount || 0), 0);
       const live = tenders.filter((tender) => tender.isLive);
       const submitted = tenders.filter((tender) => !tender.isLive);
+      // معدّل الفوز: المشاريع المرسّاة في المحفظة منسوبةً إلى أكبر قاعدة معروفة
+      // (التقديمات السابقة أو عدد الفوز) — يُحسب من البيانات الحالية دون مصدر إضافي.
+      const portfolioWins = portfolioProjects.filter((project) => String(project.status).startsWith("awarded")).length;
+      const winBase = Math.max(portfolioWins, submitted.length);
+      const winRate = winBase > 0 ? Math.round((portfolioWins / winBase) * 100) : null;
       const sectors = countBy(tenders, "sector");
       const workTypes = countBy(tenders, "workType");
       const portfolioSectors = countBy(portfolioProjects, "portfolio");
@@ -436,6 +441,8 @@
         submitted,
         portfolioProjects,
         portfolioAmount,
+        portfolioWins,
+        winRate,
         total: tenders.length,
         sectors,
         workTypes,
@@ -849,6 +856,7 @@
             <span>ملاءمة ${profile.fitScore}</span>
             <span>علاقة ${profile.relationshipScore}</span>
             <span>مخاطر ${profile.riskScore}</span>
+            ${profile.winRate !== null ? `<span>فوز ${profile.winRate}%</span>` : ""}
             ${profile.externalInsights.sources.length ? `<span>${escapeHtml(profile.externalInsights.primaryLabel)}</span>` : ""}
           </span>
         </span>
@@ -898,7 +906,7 @@
           ${metric("تم التقديم", profile.submitted.length)}
           ${metric("مشاريع المحفظة", profile.portfolioProjects.length)}
           ${metric("قيمة المحفظة", formatMoney(profile.portfolioAmount))}
-          ${metric("تنبيهات اعتماد", getProfileAlerts(profile).length)}
+          ${metric("معدّل الفوز", profile.winRate === null ? "—" : profile.winRate + "%")}
           ${metric("مراجع خارجية", profile.externalInsights.sources.length)}
           ${metric("أقرب موعد", formatDays(profile.daysToNext))}
         </div>
@@ -911,6 +919,7 @@
             <div class="signal-list">
               ${signal("ملاءمة الأعمال", profile.fitScore, `أقوى نوع عمل: ${profile.topWorkType}`)}
               ${signal("قوة العلاقة", profile.relationshipScore, `${profile.submitted.length} تقديم سابق و${profile.portfolioProjects.length} مشروع محفظة`)}
+              ${signal("معدّل الفوز", profile.winRate || 0, `${profile.portfolioWins} مشروع مرسّى من ${profile.submitted.length} تقديم سابق`)}
               ${signal("ضغط الوقت", profile.urgencyScore, profile.nearest ? profile.nearest.title : "لا توجد فرصة جارية")}
               ${signal("مستوى المخاطر", profile.riskScore, profile.segment)}
               ${signal("الإسناد الخارجي", Math.round(clamp(profile.externalInsights.sources.length * 26 + profile.externalInsights.priorityBoost * 2, 0, 100)), profile.externalInsights.primaryLabel)}
@@ -1171,9 +1180,8 @@
       showToast("لا توجد بيانات للتصدير.");
       return;
     }
-    const headers = ["فترة التحليل", "العميل", "التصنيف", "الأولوية", "المخاطر", "الملاءمة", "العلاقة", "الجارية", "تم التقديم", "مشاريع المحفظة", "قيمة المحفظة", "تنبيهات اعتماد", "أعلى درجة تنبيه", "المرجع الخارجي الأساسي", "عدد المراجع الخارجية", "القطاع", "نوع العمل", "التوصية"];
+    const headers = ["فترة التحليل", "العميل", "التصنيف", "الأولوية", "المخاطر", "الملاءمة", "العلاقة", "الجارية", "تم التقديم", "مشاريع المحفظة", "قيمة المحفظة", "مشاريع مرسّاة", "معدّل الفوز %", "المرجع الخارجي الأساسي", "عدد المراجع الخارجية", "القطاع", "نوع العمل", "التوصية"];
     const rows = state.profiles.map((profile) => {
-      const alerts = getProfileAlerts(profile);
       return [
         getReportingWindowLabel(),
         profile.owner,
@@ -1186,8 +1194,8 @@
         profile.submitted.length,
         profile.portfolioProjects.length,
         profile.portfolioAmount,
-        alerts.length,
-        alerts[0]?.alertScore || 0,
+        profile.portfolioWins,
+        profile.winRate === null ? "" : profile.winRate,
         profile.externalInsights.primaryLabel,
         profile.externalInsights.sources.length,
         profile.topSector,
