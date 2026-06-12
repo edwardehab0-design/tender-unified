@@ -2,13 +2,13 @@
   "source": "SharePoint Excel",
   "sourceUrl": "https://etech321.sharepoint.com/:x:/s/e-tech/IQBUS72YnIkdSbJgXENbslnUAUGJqGmiN8KSVH3EH8KTvvQ?e=b5McqU",
   "sheet": "نمو المحفظة - إدارة المناقصات",
-  "generatedAt": "2026-06-10T04:43:00.964793+00:00",
+  "generatedAt": "2026-06-12T19:46:18.498578+00:00",
   "currency": "SAR",
   "vatRate": 0.15,
   "summary": {
-    "projectCount": 17,
-    "totalAmountExclVat": 8630224750.5,
-    "totalAmountInclVat": 9924758463.074999
+    "projectCount": 18,
+    "totalAmountExclVat": 8256585672.5,
+    "totalAmountInclVat": 9495073523.375
   },
   "projects": [
     {
@@ -64,7 +64,7 @@
       "client": "الهيئة السعودية للمياة",
       "status": "awarded_signed",
       "statusLabel": "تم الترسية وتم توقيع العقد",
-      "portfolio": "محفظة خاصة"
+      "portfolio": "المياه والنقل"
     },
     {
       "number": "6",
@@ -79,9 +79,9 @@
     },
     {
       "number": "7",
-      "amount": 400000000.0,
-      "amountExclVat": 400000000.0,
-      "amountInclVat": 459999999.99999994,
+      "amount": 360000000.0,
+      "amountExclVat": 360000000.0,
+      "amountInclVat": 413999999.99999994,
       "project": "البنية التحتية لمشروع لازورد العزيزية",
       "client": "الشركة الوطنية للإسكان",
       "status": "submitted_negotiation",
@@ -90,9 +90,9 @@
     },
     {
       "number": "8",
-      "amount": 425000000.0,
-      "amountExclVat": 425000000.0,
-      "amountInclVat": 488749999.99999994,
+      "amount": 424500000.0,
+      "amountExclVat": 424500000.0,
+      "amountInclVat": 488174999.99999994,
       "project": "محطة المعالجة-مطار الملك سلمان",
       "client": "مطار الملك سلمان",
       "status": "submitted_negotiation",
@@ -123,17 +123,6 @@
     },
     {
       "number": "11",
-      "amount": 942269513.0,
-      "amountExclVat": 942269513.0,
-      "amountInclVat": 1083609939.9499998,
-      "project": "أعمال الفلل - ثنايا الربى - الرياض - بعدد 1771 فيلا",
-      "client": "الشركة الوطنية للإسكان",
-      "status": "submitted_negotiation",
-      "statusLabel": "تم التقديم وقيد التفاوض والترسية",
-      "portfolio": "المبانى"
-    },
-    {
-      "number": "12",
       "amount": 60852980.0,
       "amountExclVat": 60852980.0,
       "amountInclVat": 69980927.0,
@@ -141,10 +130,10 @@
       "client": "الهيئة السعودية للمياة",
       "status": "submitted_negotiation",
       "statusLabel": "تم التقديم وقيد التفاوض والترسية",
-      "portfolio": "محفظة خاصة"
+      "portfolio": "المياه والنقل"
     },
     {
-      "number": "13",
+      "number": "12",
       "amount": 290000000.0,
       "amountExclVat": 290000000.0,
       "amountInclVat": 333500000.0,
@@ -155,7 +144,7 @@
       "portfolio": "المباني"
     },
     {
-      "number": "14",
+      "number": "13",
       "amount": 64800000.0,
       "amountExclVat": 64800000.0,
       "amountInclVat": 74520000.0,
@@ -166,7 +155,7 @@
       "portfolio": "البنية التحتية"
     },
     {
-      "number": "15",
+      "number": "14",
       "amount": 11626254.0,
       "amountExclVat": 11626254.0,
       "amountInclVat": 13370192.1,
@@ -177,7 +166,7 @@
       "portfolio": "البنية التحتية"
     },
     {
-      "number": "16",
+      "number": "15",
       "amount": 186556827.0,
       "amountExclVat": 186556827.0,
       "amountInclVat": 214540351.04999998,
@@ -188,7 +177,7 @@
       "portfolio": "المبانى"
     },
     {
-      "number": "17",
+      "number": "16",
       "amount": 1357282684.5,
       "amountExclVat": 1357282684.5,
       "amountInclVat": 1560875087.175,
@@ -197,6 +186,28 @@
       "status": "submitted_negotiation",
       "statusLabel": "تم التقديم وقيد التفاوض والترسية",
       "portfolio": "المبانى"
+    },
+    {
+      "number": "17",
+      "amount": 270000000.0,
+      "amountExclVat": 270000000.0,
+      "amountInclVat": 310500000.0,
+      "project": "Irrigation Storage Tanks Pumping Station",
+      "client": "مطار الملك سلمان",
+      "status": "submitted_negotiation",
+      "statusLabel": "تم التقديم وقيد التفاوض والترسية",
+      "portfolio": "البنية التحتية"
+    },
+    {
+      "number": "18",
+      "amount": 339130435.0,
+      "amountExclVat": 339130435.0,
+      "amountInclVat": 390000000.24999994,
+      "project": "Potable Water & Fire Water Tanks and Pumping Station",
+      "client": "مطار الملك سلمان",
+      "status": "submitted_negotiation",
+      "statusLabel": "تم التقديم وقيد التفاوض والترسية",
+      "portfolio": "البنية التحتية"
     }
   ]
 }
