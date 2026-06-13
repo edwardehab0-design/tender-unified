@@ -427,12 +427,14 @@
       const relationshipScore = clamp(18 + submitted.length * 5 + portfolioProjects.length * 14 + Math.min(Object.keys(workTypes).length, 6) * 3 + externalInsights.relationshipBoost, 0, 100);
       const urgencyScore = calculateUrgencyScore(live, daysToNext);
       const riskScore = calculateRiskScore({ live, submitted, daysToNext, missingClassification, sectors, portfolioProjects });
+      const valueScore = calculateValueScore(portfolioAmount);
       const priorityScore = clamp(
-        opportunityScore * .30 +
-        fitScore * .25 +
-        relationshipScore * .20 +
-        urgencyScore * .15 +
-        (100 - riskScore) * .10,
+        opportunityScore * .25 +
+        valueScore * .15 +
+        fitScore * .22 +
+        relationshipScore * .18 +
+        urgencyScore * .12 +
+        (100 - riskScore) * .08,
         0,
         100
       );
@@ -460,6 +462,7 @@
         urgentLive,
         missingClassification,
         opportunityScore: Math.round(opportunityScore),
+        valueScore: Math.round(valueScore),
         fitScore: Math.round(fitScore),
         relationshipScore: Math.round(relationshipScore),
         urgencyScore: Math.round(urgencyScore),
@@ -696,6 +699,19 @@
     return 28;
   }
 
+  // درجة قيمة الأعمال مع العميل، مشتقّة من حجم مشاريع المحفظة بالريال
+  // (قيم مطلقة لأن مبالغ المحفظة بمئات الملايين إلى المليارات).
+  function calculateValueScore(portfolioAmount) {
+    const amount = Number(portfolioAmount) || 0;
+    if (amount >= 1e9) return 100;
+    if (amount >= 5e8) return 88;
+    if (amount >= 2e8) return 74;
+    if (amount >= 1e8) return 60;
+    if (amount >= 5e7) return 46;
+    if (amount > 0) return 30;
+    return 0;
+  }
+
   function calculateRiskScore({ live, submitted, daysToNext, missingClassification, sectors, portfolioProjects }) {
     let score = 24;
     if (live.length && !submitted.length) score += 28;
@@ -925,6 +941,7 @@
             <div class="signal-list">
               ${signal("ملاءمة الأعمال", profile.fitScore, `أقوى نوع عمل: ${profile.topWorkType}`)}
               ${signal("قوة العلاقة", profile.relationshipScore, `${profile.submitted.length} تقديم سابق و${profile.portfolioProjects.length} مشروع محفظة`)}
+              ${signal("قيمة الأعمال", profile.valueScore, `حجم محفظة العميل: ${formatMoney(profile.portfolioAmount)}`)}
               ${signal("معدّل الفوز", profile.winRate || 0, `${profile.portfolioWins} مشروع مرسّى من ${profile.submitted.length} تقديم سابق`)}
               ${signal("ضغط الوقت", profile.urgencyScore, profile.nearest ? profile.nearest.title : "لا توجد فرصة جارية")}
               ${signal("مستوى المخاطر", profile.riskScore, profile.segment)}
