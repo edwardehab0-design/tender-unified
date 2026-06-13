@@ -377,6 +377,48 @@ input, select {
   font-weight: 800;
 }
 
+.value-at-risk { padding: 12px 16px 16px; }
+.value-at-risk .var-note {
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.var-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  border: 1px solid #f0d9c9;
+  background: #fff8f3;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.var-row:last-child { margin-bottom: 0; }
+.var-row:hover, .var-row:focus { background: #fdeee2; border-color: #e6b48f; outline: none; }
+.var-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.var-main strong {
+  font-size: 14px;
+  color: var(--navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.var-main span { font-size: 12px; color: var(--muted); font-weight: 700; }
+.var-amount { font-size: 16px; color: #b9842f; white-space: nowrap; flex: 0 0 auto; }
+.var-clear {
+  padding: 14px 16px;
+  margin: 0;
+  color: #1f6b3b;
+  font-weight: 800;
+  background: #eef7f0;
+  border: 1px solid #cfe7d6;
+  border-radius: 8px;
+}
+
 .charts {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

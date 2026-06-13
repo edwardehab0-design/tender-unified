@@ -167,8 +167,38 @@ function render() {
   renderStatusDonut(stageRows);
   renderStatusSummary(stageRows);
   renderPortfolioCards(rows);
+  renderValueAtRisk(stageRows);
   renderStatusStages(stageRows);
   renderTable(rows);
+}
+
+// القيمة المعرّضة للخطر: مشاريع تم الترسية عليها ولم يُوقَّع عقدها بعد —
+// أموال مكتسبة تنتظر تأميناً بالتوقيع، مرتّبة بالقيمة وقابلة للفتح.
+function renderValueAtRisk(rows) {
+  const el = qs("value-at-risk");
+  if (!el) return;
+  const items = rows
+    .filter((p) => p.status === "awarded_not_signed")
+    .sort((a, b) => b.amountExclVat - a.amountExclVat);
+  const total = sum(items.map((p) => p.amountExclVat));
+  const totalEl = qs("var-total");
+  if (totalEl) totalEl.textContent = items.length
+    ? `${sar.format(total)} · ${numberFmt.format(items.length)} مشروع`
+    : "لا توجد";
+  if (!items.length) {
+    el.innerHTML = `<p class="var-clear">لا توجد مشاريع مُرسّاة بانتظار التوقيع — كل العقود موقّعة ✓</p>`;
+    return;
+  }
+  el.innerHTML = `<p class="var-note">مشاريع تم الترسية عليها وتنتظر توقيع العقد — تحتاج متابعة لتأمينها.</p>`
+    + items.map((p) => `
+      <div class="var-row" data-detail-id="${escapeAttr(p.detailId)}" tabindex="0" role="button">
+        <div class="var-main">
+          <strong title="${escapeAttr(p.project)}">${escapeHtml(p.project)}</strong>
+          <span>${escapeHtml(p.client)}</span>
+        </div>
+        <b class="var-amount">${sar.format(p.amountExclVat)}</b>
+      </div>
+    `).join("");
 }
 
 function renderKpis(rows) {
@@ -532,6 +562,20 @@ qs("projects-body").addEventListener("click", (event) => {
 });
 
 qs("projects-body").addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const row = event.target.closest("[data-detail-id]");
+  if (!row) return;
+  event.preventDefault();
+  openProjectDrawer(findProjectById(row.dataset.detailId));
+});
+
+qs("value-at-risk").addEventListener("click", (event) => {
+  const row = event.target.closest("[data-detail-id]");
+  if (!row) return;
+  openProjectDrawer(findProjectById(row.dataset.detailId));
+});
+
+qs("value-at-risk").addEventListener("keydown", (event) => {
   if (event.key !== "Enter" && event.key !== " ") return;
   const row = event.target.closest("[data-detail-id]");
   if (!row) return;
