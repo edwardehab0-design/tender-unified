@@ -167,8 +167,46 @@ function render() {
   renderStatusDonut(stageRows);
   renderStatusSummary(stageRows);
   renderPortfolioCards(rows);
+  renderConcentration(rows);
   renderStatusStages(stageRows);
   renderTable(rows);
+}
+
+// تركّز المحفظة: حصص أكبر عميل/أكبر 3/أكبر محفظة + مؤشر هيرفندال (HHI)
+// لقياس مدى اعتماد القيمة على جهات قليلة، مع حكم تحذيري.
+function renderConcentration(rows) {
+  const el = qs("concentration-body");
+  if (!el) return;
+  const total = sum(rows.map((p) => p.amountExclVat || 0));
+  if (!total) {
+    el.innerHTML = `<p class="concentration-empty">لا توجد قيمة كافية لحساب التركّز ضمن التصفية الحالية.</p>`;
+    return;
+  }
+  const byValue = (grouped) => [...grouped.entries()]
+    .map(([name, item]) => [name, item.amountExclVat])
+    .sort((a, b) => b[1] - a[1]);
+  const clients = byValue(groupBy(rows, "client"));
+  const portfolios = byValue(groupBy(rows, "portfolio"));
+  const top1 = clients[0] ? clients[0][1] / total : 0;
+  const top3 = sum(clients.slice(0, 3).map(([, value]) => value)) / total;
+  const topSector = portfolios[0] ? portfolios[0][1] / total : 0;
+  const hhi = Math.round(clients.reduce((acc, [, value]) => acc + Math.pow(value / total, 2), 0) * 10000);
+
+  const pct = (ratio) => `${Math.round(ratio * 100)}%`;
+  const level = top1 >= 0.30 || top3 >= 0.60 ? "high" : (top1 >= 0.20 || top3 >= 0.45 ? "mid" : "low");
+  const verdict = level === "high"
+    ? `تركّز مرتفع: «${clients[0][0]}» يستحوذ على ${pct(top1)} من قيمة المحفظة — يُنصح بتنويع قاعدة العملاء.`
+    : level === "mid"
+      ? `تركّز متوسط: أكبر ٣ عملاء يمثّلون ${pct(top3)} من القيمة — راقب درجة الاعتماد.`
+      : `توزيع متوازن: لا اعتماد مفرط على جهة واحدة.`;
+
+  const tile = (label, value, warn) => `<div class="conc-tile${warn ? " warn" : ""}"><span>${label}</span><b>${value}</b></div>`;
+  el.innerHTML =
+    tile(`أكبر عميل · ${escapeHtml(clients[0][0])}`, pct(top1), top1 >= 0.30) +
+    tile("أكبر ٣ عملاء", pct(top3), top3 >= 0.60) +
+    tile(`أكبر محفظة · ${escapeHtml(portfolios[0][0])}`, pct(topSector), topSector >= 0.45) +
+    tile("مؤشر التركّز (HHI)", numberFmt.format(hhi), hhi >= 2500) +
+    `<p class="concentration-verdict ${level}">${escapeHtml(verdict)}</p>`;
 }
 
 function renderKpis(rows) {

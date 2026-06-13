@@ -377,6 +377,42 @@ input, select {
   font-weight: 800;
 }
 
+.concentration {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  padding: 16px;
+}
+
+.conc-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 9px;
+  background: #f7f9fc;
+  border: 1px solid #e7edf5;
+}
+
+.conc-tile span { color: var(--muted); font-size: 12px; font-weight: 800; }
+.conc-tile b { font-size: 22px; color: var(--navy); }
+.conc-tile.warn { background: #fdf3f3; border-color: #f3c9c9; }
+.conc-tile.warn b { color: #c0392b; }
+
+.concentration-verdict {
+  grid-column: 1 / -1;
+  margin: 2px 0 0;
+  padding: 11px 14px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+.concentration-verdict.low  { background: #eef7f0; color: #1f6b3b; border: 1px solid #cfe7d6; }
+.concentration-verdict.mid  { background: #fff7ea; color: #8a5a12; border: 1px solid #f0dcb4; }
+.concentration-verdict.high { background: #fdf3f3; color: #b03a2e; border: 1px solid #f3c9c9; }
+.concentration-empty { padding: 16px; color: var(--muted); font-weight: 700; }
+
 .charts {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
