@@ -2616,13 +2616,14 @@ function _buildAnalytics() {
   const urgentCount  = allTenders.filter(t=>['today','3days'].includes(getUrgency(t.submitDate).level)).length;
   const guaCount     = allTenders.filter(t=>isGuaranteeToday(t.guarantee)).length;
   const successRate  = totalC ? Math.round(subC/totalC*100) : 0;
+  const activeMonths = Math.max(new Set(combined.map(t=>(t.date||'').slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m))).size, 1);
   document.getElementById('an-quick-stats').innerHTML = [
     {l:'إجمالي الجهات المالكة', v: uniqueOwners + ' جهة', action:'aggregate:owners'},
     {l:'أنواع الأعمال المختلفة', v: uniqueTypes + ' نوع', action:'aggregate:worktypes'},
     {l:'مناقصات حرجة (3 أيام)', v: urgentCount, action:'detail:urgent'},
     {l:'ضمانات مستحقة اليوم', v: guaCount, action:'detail:guarantee'},
     {l:'نسبة التقديم من الإجمالي', v: successRate + '%', action:'detail:submitted'},
-    {l:'متوسط المناقصات شهرياً', v: Math.round(subC/5) + ' مناقصة', action:'timeline:months'},
+    {l:'متوسط المناقصات شهرياً', v: Math.round(subC/activeMonths) + ' مناقصة', action:'timeline:months'},
   ].map(({l,v,action})=>`
     <div class="an-stat-row" data-analytics-action="${action}">
       <span class="an-stat-label">${l}</span>
@@ -3873,7 +3874,7 @@ function exportReport_full() {
 
   // KPI strip
   const cnt={
-    total:allTenders.length,
+    total:allTenders.length + allSubmitted.length,
     running:allTenders.filter(t=>['active','week','3days','today'].includes(urgLevel(t))).length,
     today:allTenders.filter(t=>urgLevel(t)==='today').length,
     critical:allTenders.filter(t=>['today','3days'].includes(urgLevel(t))).length,
@@ -4050,7 +4051,7 @@ function exportReport_full() {
   addHeaderRow(wsS,['البيان','العدد','النسبة','الملاحظة'],NAVY);
 
   const cnt2={
-    total:allTenders.length,
+    total:allTenders.length + allSubmitted.length,
     running:allTenders.filter(t=>['active','week','3days','today'].includes(urgLevel(t))).length,
     today:allTenders.filter(t=>urgLevel(t)==='today').length,
     days3:allTenders.filter(t=>urgLevel(t)==='3days').length,
@@ -4195,7 +4196,7 @@ function exportReport(type) {
 
   } else if (type === 'full') { exportReport_full(); return;
   } else if (type === 'monthly') {
-    const c = {active:0,week:0,'3days':0,today:0,urgent:0,guarantee:0,total:allTenders.length};
+    const c = {active:0,week:0,'3days':0,today:0,urgent:0,guarantee:0,total:allTenders.length + allSubmitted.length};
     allTenders.forEach(t => {
       const u = getUrgency(t.submitDate);
       if (u.level==='urgent') c.urgent++;
