@@ -382,13 +382,19 @@
   }
 
   function buildProfiles(rows) {
+    const canonicalMap = buildCanonicalOwnerMap(
+      rows.map((row) => row.owner).concat(state.portfolioProjects.map((project) => project.client))
+    );
+    const canonicalOwner = (name) => canonicalMap.get(name) || name;
+
     const groups = new Map();
     rows.forEach((row) => {
-      if (!groups.has(row.owner)) groups.set(row.owner, []);
-      groups.get(row.owner).push(row);
+      const owner = canonicalOwner(row.owner);
+      if (!groups.has(owner)) groups.set(owner, []);
+      groups.get(owner).push(row);
     });
     state.portfolioProjects.forEach((project) => {
-      const owner = findMatchingOwner(project.client, groups) || project.client;
+      const owner = canonicalOwner(project.client);
       if (!groups.has(owner)) groups.set(owner, []);
     });
 
@@ -1264,11 +1270,23 @@
     return shortest > 5 && (a.includes(b) || b.includes(a));
   }
 
-  function findMatchingOwner(client, groups) {
-    for (const owner of groups.keys()) {
-      if (clientNamesMatch(owner, client)) return owner;
-    }
-    return "";
+  // توحيد هوية العميل: تُبنى خريطة من أسماء الجهات الفعلية فتُدمج المتطابقة
+  // (مثل اختلاف ة/ه أو لاحقة مختصرة)، ويُعتمد الاسم الأطول كاسم ظاهر للعميل.
+  function buildCanonicalOwnerMap(names) {
+    const canonicals = [];
+    const map = new Map();
+    [...new Set(names.filter(Boolean))]
+      .sort((a, b) => b.length - a.length)
+      .forEach((name) => {
+        const hit = canonicals.find((canonical) => clientNamesMatch(canonical, name));
+        if (hit) {
+          map.set(name, hit);
+        } else {
+          canonicals.push(name);
+          map.set(name, name);
+        }
+      });
+    return map;
   }
 
   function formatMoney(valueText) {
